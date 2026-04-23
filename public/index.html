@@ -141,44 +141,50 @@
         let currentHls = null;
         
         // ==================== DATOS DE CANALES ====================
-        const canalesData = [
-            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion" },
-            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion" },
-            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion" },
-            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion" },
-            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion" },
-            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion" },
-            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion" }
-        ];
+       let canalesData = [];
+
+async function cargarCanales() {
+    try {
+        const response = await fetch('canales.json');
+        if (!response.ok) throw new Error('No se pudo cargar canales.json');
+        const data = await response.json();
+        canalesData = data.canales.filter(c => c.activo === true);
+        renderChannels(canalesData);
+    } catch (error) {
+        console.error('Error cargando canales:', error);
+        document.getElementById('channelsList').innerHTML = '<div class="error-message">❌ Error cargando canales.json</div>';
+    }
+}
 
         // ==================== RENDERIZAR CANALES ====================
-        function renderChannels() {
-            let html = `<div class="country-group"><div class="country-title">🇧🇴 Bolivia</div>`;
-            canalesData.forEach(canal => {
-                html += `
-                    <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.url}" data-nombre-original="${canal.nombre}">
-                        <div class="channel-logo">
-                            <img src="${canal.logo}" alt="${canal.nombre}" onerror="this.style.display='none'; this.parentElement.innerHTML='<span>${canal.nombre.charAt(0)}</span>'">
-                        </div>
-                        <span class="channel-name">${canal.nombre}</span>
-                        <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}')">▶</button>
+        function renderChannels(canales) {
+    // Agrupar por país
+    const porPais = {};
+    canales.forEach(canal => {
+        if (!porPais[canal.pais]) porPais[canal.pais] = [];
+        porPais[canal.pais].push(canal);
+    });
+    
+    let html = '';
+    for (const [pais, canalesDelPais] of Object.entries(porPais)) {
+        html += `<div class="country-group"><div class="country-title">${pais}</div>`;
+        canalesDelPais.forEach(canal => {
+            html += `
+                <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.web_url}" data-nombre-original="${canal.nombre}">
+                    <div class="channel-logo">
+                        <img src="${canal.logo}" onerror="this.parentElement.innerHTML='${canal.nombre.charAt(0)}'">
                     </div>
-                `;
-            });
-            html += `</div>`;
-            
-            document.getElementById('channelsList').innerHTML = html;
-            document.getElementById('stats').innerHTML = `📊 ${canalesData.length} canales | 1 país`;
-            
-            document.querySelectorAll('.channel-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    loadChannel(item.dataset.url, item.dataset.nombreOriginal);
-                });
-            });
-            
-            setupSearch();
-        }
-
+                    <span class="channel-name">${canal.nombre}</span>
+                    <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.web_url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}')">▶</button>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    document.getElementById('channelsList').innerHTML = html;
+    document.getElementById('stats').innerHTML = `📊 ${canales.length} canales | ${Object.keys(porPais).length} países`;
+    setupSearch();
+}
         // ==================== BUSCAR ====================
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
@@ -400,9 +406,9 @@
 
         // ==================== INICIALIZAR ====================
         document.addEventListener('DOMContentLoaded', () => {
-            renderChannels();
-            setupCustomUrl();
-        });
+    cargarCanales();
+    setupCustomUrl();
+});
     </script>
 </body>
 </html>
