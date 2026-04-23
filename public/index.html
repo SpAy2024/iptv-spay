@@ -198,28 +198,28 @@
         }
 
         // ==================== OBTENER STREAM DE DAILYMOTION VÍA PROXY ====================
-        async function getDailymotionStream(videoId) {
-            try {
-                // Proxy local en puerto 3001 (cambiar después por Render)
-                const proxyUrl = 'http://localhost:3001/api';
-                const response = await fetch(`${proxyUrl}/video/${videoId}`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('📡 Datos recibidos del proxy:', data);
-                
-                if (data.qualities && data.qualities.auto && data.qualities.auto[0]) {
-                    return data.qualities.auto[0].url;
-                }
-                return null;
-            } catch (error) {
-                console.error('❌ Error obteniendo stream de Dailymotion:', error);
-                return null;
-            }
+       async function getDailymotionStream(videoId) {
+    try {
+        // Usar el proxy desplegado en Render
+        const proxyUrl = 'https://iptv-spay.onrender.com/api';
+        const response = await fetch(`${proxyUrl}/video/${videoId}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
+        
+        const data = await response.json();
+        console.log('📡 Datos recibidos del proxy:', data);
+        
+        if (data.qualities && data.qualities.auto && data.qualities.auto[0]) {
+            return data.qualities.auto[0].url;
+        }
+        return null;
+    } catch (error) {
+        console.error('❌ Error obteniendo stream de Dailymotion:', error);
+        return null;
+    }
+}
 
         // ==================== REPRODUCIR STREAM CON CABECERAS ====================
         function reproducirStream(streamUrl, channelName, loadingMsg) {
