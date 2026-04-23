@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Mi IPTV Player - Canales Bolivia</title>
+    <title>Mi IPTV Player - Canales Bolivia, Argentina, Brasil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -45,12 +45,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
             overflow: hidden;
         }
         .channel-logo img { width: 100%; height: 100%; object-fit: cover; }
-        .channel-name { flex: 1; font-size: 0.9em; font-weight: 500; line-height: 1.2; }
+        .channel-name { flex: 1; font-size: 0.85em; font-weight: 500; line-height: 1.2; word-break: break-word; }
         .btn-play {
             background: #4CAF50;
             color: white;
@@ -60,6 +60,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-weight: bold;
+            font-size: 0.75em;
         }
         .btn-play:hover { background: #45a049; transform: scale(1.05); }
         .player-area { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -101,11 +102,11 @@
         @media (max-width: 768px) {
             .sidebar { height: 40vh; padding: 15px; }
             .player-area { height: 60vh; }
-            .channel-logo { width: 35px; height: 35px; font-size: 16px; }
-            .channel-name { font-size: 0.8em; }
-            .btn-play { padding: 4px 8px; font-size: 0.7em; }
+            .channel-logo { width: 35px; height: 35px; font-size: 14px; }
+            .channel-name { font-size: 0.75em; }
+            .btn-play { padding: 3px 6px; font-size: 0.65em; }
         }
-        .stats { text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; font-size: 0.85em; }
+        .stats { text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; font-size: 0.8em; }
         .custom-url-section { margin-top: 20px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 10px; }
         .custom-url-section input { background: rgba(255,255,255,0.95); border: none; border-radius: 20px; padding: 8px 15px; width: 100%; margin-bottom: 8px; }
         .custom-url-section button { background: #ff9800; width: 100%; padding: 6px; }
@@ -123,7 +124,7 @@
                 <div class="stats" id="stats"></div>
                 <div class="custom-url-section">
                     <input type="text" id="customUrl" placeholder="🔗 Pega URL .m3u8 o ID de Dailymotion (x...)" value="">
-                    <button id="playCustom" class="btn btn-warning">▶ Probar</button>
+                    <button id="playCustom" class="btn btn-warning">▶ Probar URL</button>
                 </div>
             </div>
             <div class="col-md-8 col-lg-9 player-area">
@@ -142,18 +143,95 @@
         let currentHls = null;
         let canalesData = [];
 
-        // ==================== CARGAR CANALES DESDE JSON ====================
-        async function cargarCanales() {
+        // ==================== MIS CANALES DE DAILYMOTION ====================
+        const misCanalesDailymotion = [
+            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion" },
+            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion" },
+            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion" },
+            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion" },
+            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion" },
+            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion" },
+            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion" }
+        ];
+
+        // ==================== CARGAR LISTA M3U DESDE URL ====================
+        async function cargarListaM3U(url, paisOrigen) {
             try {
-                const response = await fetch('canales.json');
+                const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                canalesData = data.canales.filter(c => c.activo === true);
-                renderChannels(canalesData);
+                const m3uContent = await response.text();
+                return parsearM3U(m3uContent, paisOrigen);
             } catch (error) {
-                console.error('Error cargando canales.json:', error);
-                document.getElementById('channelsList').innerHTML = `<div class="error-message">❌ Error cargando canales.json<br><small>${error.message}</small></div>`;
+                console.error(`Error cargando ${url}:`, error);
+                return [];
             }
+        }
+
+        // ==================== PARSEAR M3U ====================
+        function parsearM3U(content, paisOrigen) {
+            const lines = content.split('\n');
+            const canales = [];
+            let currentChannel = null;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('#EXTINF')) {
+                    // Extraer nombre (después de la última coma)
+                    const lastComma = line.lastIndexOf(',');
+                    const nombre = lastComma !== -1 ? line.substring(lastComma + 1).trim() : 'Canal sin nombre';
+                    
+                    // Extraer logo si existe
+                    const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+                    const logo = logoMatch ? logoMatch[1] : '';
+                    
+                    // Extraer ID si existe
+                    const idMatch = line.match(/tvg-id="([^"]*)"/);
+                    const id = idMatch ? idMatch[1] : '';
+                    
+                    currentChannel = {
+                        id: id,
+                        nombre: nombre,
+                        pais: paisOrigen,
+                        logo: logo,
+                        url: '',
+                        tipo: 'm3u8'
+                    };
+                } else if (line && !line.startsWith('#') && currentChannel) {
+                    currentChannel.url = line;
+                    // Solo agregar si la URL es válida
+                    if (currentChannel.url.startsWith('http')) {
+                        canales.push(currentChannel);
+                    }
+                    currentChannel = null;
+                }
+            }
+            return canales;
+        }
+
+        // ==================== CARGAR TODOS LOS CANALES ====================
+        async function cargarTodosLosCanales() {
+            // Iniciar con mis canales de Dailymotion
+            let todosLosCanales = [...misCanalesDailymotion];
+            
+            console.log('📡 Cargando canales desde iptv-org...');
+            
+            // Cargar canales de Bolivia desde iptv-org
+            const canalesBolivia = await cargarListaM3U('https://iptv-org.github.io/iptv/countries/bo.m3u', 'Bolivia');
+            console.log(`🇧🇴 Bolivia: ${canalesBolivia.length} canales encontrados`);
+            
+            // Cargar canales de Argentina desde iptv-org
+            const canalesArgentina = await cargarListaM3U('https://iptv-org.github.io/iptv/countries/ar.m3u', 'Argentina');
+            console.log(`🇦🇷 Argentina: ${canalesArgentina.length} canales encontrados`);
+            
+            // Cargar canales de Brasil desde iptv-org
+            const canalesBrasil = await cargarListaM3U('https://iptv-org.github.io/iptv/countries/br.m3u', 'Brasil');
+            console.log(`🇧🇷 Brasil: ${canalesBrasil.length} canales encontrados`);
+            
+            // Agregar todos
+            todosLosCanales = todosLosCanales.concat(canalesBolivia, canalesArgentina, canalesBrasil);
+            
+            console.log(`✅ Total canales: ${todosLosCanales.length}`);
+            return todosLosCanales;
         }
 
         // ==================== RENDERIZAR CANALES ====================
@@ -170,13 +248,18 @@
             for (const pais of paisesOrdenados) {
                 html += `<div class="country-group"><div class="country-title">${pais}</div>`;
                 porPais[pais].forEach(canal => {
+                    // Usar emoji si no hay logo
+                    const logoHtml = canal.logo ? 
+                        `<img src="${canal.logo}" alt="${canal.nombre}" onerror="this.parentElement.innerHTML='${canal.nombre.charAt(0)}'">` : 
+                        `<span style="font-size: 18px;">📺</span>`;
+                    
                     html += `
-                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.web_url}" data-nombre-original="${canal.nombre}">
+                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.url}" data-nombre-original="${canal.nombre}" data-tipo="${canal.tipo}">
                             <div class="channel-logo">
-                                <img src="${canal.logo}" alt="${canal.nombre}" onerror="this.parentElement.innerHTML='${canal.nombre.charAt(0)}'">
+                                ${logoHtml}
                             </div>
-                            <span class="channel-name">${canal.nombre}</span>
-                            <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.web_url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}')">▶</button>
+                            <span class="channel-name">${canal.nombre.substring(0, 45)}</span>
+                            <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}', '${canal.tipo}')">▶</button>
                         </div>
                     `;
                 });
@@ -188,7 +271,7 @@
             
             document.querySelectorAll('.channel-item').forEach(item => {
                 item.addEventListener('click', () => {
-                    loadChannel(item.dataset.url, item.dataset.nombreOriginal);
+                    loadChannel(item.dataset.url, item.dataset.nombreOriginal, item.dataset.tipo);
                 });
             });
             
@@ -213,12 +296,11 @@
             return match ? match[1] : null;
         }
 
-        // ==================== REPRODUCIR STREAM (CORREGIDO) ====================
+        // ==================== REPRODUCIR STREAM ====================
         function reproducirStream(streamUrl, channelName, loadingMsg) {
             const video = document.getElementById('videoPlayer');
             const iframe = document.getElementById('dmIframe');
             
-            // Ocultar iframe y mostrar video
             iframe.style.display = 'none';
             video.style.display = 'block';
             
@@ -227,21 +309,19 @@
                 currentHls = null;
             }
             
-            if (Hls.isSupported()) {
-                currentHls = new Hls({ 
-                    debug: false, 
-                    enableWorker: true,
-                    xhrSetup: (xhr, url) => {
-                        xhr.withCredentials = false;  // FUNDAMENTAL: evitar CORS
-                        // No agregar cabeceras personalizadas para evitar bloqueos
-                    }
-                });
+            if (video.src) {
+                video.pause();
+                video.src = '';
+            }
+            
+            if (Hls.isSupported() && (streamUrl.includes('.m3u8') || streamUrl.includes('m3u8'))) {
+                currentHls = new Hls({ debug: false, enableWorker: true });
                 currentHls.loadSource(streamUrl);
                 currentHls.attachMedia(video);
                 currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                     loadingMsg.style.display = 'none';
                     document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play().catch(e => console.error('Error reproduciendo:', e));
+                    video.play().catch(e => console.error(e));
                 });
                 currentHls.on(Hls.Events.ERROR, (event, data) => {
                     console.error('Error HLS:', data);
@@ -255,24 +335,24 @@
                     document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
                     video.play();
                 });
+            } else if (streamUrl.includes('.mp4')) {
+                video.src = streamUrl;
+                video.addEventListener('canplay', () => {
+                    loadingMsg.style.display = 'none';
+                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO</small>`;
+                    video.play();
+                });
             } else {
                 loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ HLS no soportado</small>`;
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ No se puede reproducir</small>`;
             }
         }
 
         // ==================== CARGAR CANAL ====================
-        async function loadChannel(url, channelName) {
+        async function loadChannel(url, channelName, tipo = 'm3u8') {
             const loadingMsg = document.getElementById('loadingMessage');
             const video = document.getElementById('videoPlayer');
             const iframe = document.getElementById('dmIframe');
-            
-            // Limpiar estado anterior
-            if (currentHls) { currentHls.destroy(); currentHls = null; }
-            if (video.src) { video.pause(); video.src = ''; }
-            iframe.src = '';
-            iframe.style.display = 'none';
-            video.style.display = 'block';
             
             loadingMsg.style.display = 'block';
             document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
@@ -282,31 +362,27 @@
                 if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
             });
             
+            // Caso Dailymotion
             const dailymotionId = extractDailymotionId(url);
-            
-            // CASO DAILYMOTION: usar embed (sin CORS)
-            if (dailymotionId) {
-                console.log('🎬 Es Dailymotion, ID:', dailymotionId);
-                iframe.style.display = 'block';
-                video.style.display = 'none';
-                iframe.src = `https://geo.dailymotion.com/player.html?video=${dailymotionId}&autoplay=1`;
-                loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
-                return;
+            if (dailymotionId || tipo === 'dailymotion') {
+                const videoId = dailymotionId || (url.includes('/video/') ? url.split('/video/')[1].split('?')[0] : null);
+                if (videoId) {
+                    iframe.style.display = 'block';
+                    video.style.display = 'none';
+                    iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
+                    loadingMsg.style.display = 'none';
+                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
+                    return;
+                }
             }
             
-            // CASO M3U8 DIRECTO
-            // CASO M3U8 DIRECTO (usando proxy para evitar CORS)
-if (url.includes('.m3u8')) {
-    console.log('🎬 Es M3U8 directo:', url);
-    // Usar el proxy de Render para evitar CORS
-    const proxyUrl = `https://iptv-spay.onrender.com/proxy?url=${encodeURIComponent(url)}`;
-    reproducirStream(proxyUrl, channelName, loadingMsg);
-}
-            // CASO DESCONOCIDO
+            // Caso M3U8
+            if (url.includes('.m3u8') || url.includes('m3u8')) {
+                reproducirStream(url, channelName, loadingMsg);
+            } 
             else {
                 loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Formato no soportado</small>`;
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>⚠️ Formato no soportado</small>`;
             }
         }
 
@@ -319,9 +395,9 @@ if (url.includes('.m3u8')) {
                 const input = customUrl.value.trim();
                 if (!input) return;
                 if (input.match(/^x[a-z0-9]+$/i)) {
-                    loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
+                    loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada", "dailymotion");
                 } else {
-                    loadChannel(input, "URL Personalizada");
+                    loadChannel(input, "URL Personalizada", "m3u8");
                 }
             };
             
@@ -330,17 +406,20 @@ if (url.includes('.m3u8')) {
                     const input = customUrl.value.trim();
                     if (!input) return;
                     if (input.match(/^x[a-z0-9]+$/i)) {
-                        loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
+                        loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada", "dailymotion");
                     } else {
-                        loadChannel(input, "URL Personalizada");
+                        loadChannel(input, "URL Personalizada", "m3u8");
                     }
                 }
             });
         }
 
         // ==================== INICIALIZAR ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarCanales();
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Iniciando carga de canales...');
+            const canales = await cargarTodosLosCanales();
+            canalesData = canales;
+            renderChannels(canalesData);
             setupCustomUrl();
         });
     </script>
