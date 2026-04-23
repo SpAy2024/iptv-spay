@@ -1,0 +1,26 @@
+#EXTM3U
+# Playlist completa - Todos los países
+# Generado: 2026-04-23T15:12:44.840Z
+
+
+# ===== BOLIVIA =====
+#EXTINF:-1 tvg-id="RedUnoLPZ.bo" tvg-name="RED UNO LPZ HD" tvg-logo="https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg" group-title="Bolivia",RED UNO LPZ HD
+https://www.dailymotion.com/video/xa0fwio
+#EXTINF:-1 tvg-id="RedUnoCBBA.bo" tvg-name="RED UNO CBBA HD" tvg-logo="https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg" group-title="Bolivia",RED UNO CBBA HD
+https://www.dailymotion.com/video/xa0qka8
+#EXTINF:-1 tvg-id="RedUnoSCZ.bo" tvg-name="RED UNO SCZ HD" tvg-logo="https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg" group-title="Bolivia",RED UNO SCZ HD
+https://www.dailymotion.com/video/x9n2qyk
+#EXTINF:-1 tvg-id="Unitel.bo" tvg-name="UNITEL BOLIVIA HD" tvg-logo="https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg" group-title="Bolivia",UNITEL BOLIVIA HD
+https://www.dailymotion.com/video/x7wzxiw
+#EXTINF:-1 tvg-id="POVUnitel.bo" tvg-name="POV UNITEL HD" tvg-logo="https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg" group-title="Bolivia",POV UNITEL HD
+https://www.dailymotion.com/video/x8eimg9
+#EXTINF:-1 tvg-id="ATB.bo" tvg-name="ATB BOLIVIA HD" tvg-logo="https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg" group-title="Bolivia",ATB BOLIVIA HD
+https://www.dailymotion.com/video/x84eirw
+#EXTINF:-1 tvg-id="Telesur.bo" tvg-name="TELESUR HD" tvg-logo="https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg" group-title="Bolivia",TELESUR HD
+https://www.dailymotion.com/video/x82ug5r
+
+# ===== INTERNACIONAL =====
+#EXTINF:-1 tvg-id="CGTN.es" tvg-name="CGTN ES HD" tvg-logo="https://i.ibb.co/TWhHxHC/CGTN-HD.jpg" group-title="Internacional",CGTN ES HD
+https://espanol-livews.cgtn.com/hls/LSveOGBaBw41Ea7ukkVAUdKQ220802LSTexu6xAuFH8VZNBLE1ZNEa220802cd/playlist.m3u8
+#EXTINF:-1 tvg-id="AnimeStation01.hd" tvg-name="ANIME STATION 01 HD" tvg-logo="https://i.postimg.cc/Vk1L3YMK/a-ST01.jpg" group-title="Internacional",ANIME STATION 01 HD
+https://live20.bozztv.com/akamaissh101/ssh101/livestreamingtv/chunks.m3u8

@@ -1,0 +1,9 @@
+#EXTM3U
+# Playlist - Internacional
+# Generado: 2026-04-23T15:12:44.840Z
+# Total canales: 2
+
+#EXTINF:-1 tvg-id="CGTN.es" tvg-name="CGTN ES HD" tvg-logo="https://i.ibb.co/TWhHxHC/CGTN-HD.jpg",CGTN ES HD
+https://espanol-livews.cgtn.com/hls/LSveOGBaBw41Ea7ukkVAUdKQ220802LSTexu6xAuFH8VZNBLE1ZNEa220802cd/playlist.m3u8
+#EXTINF:-1 tvg-id="AnimeStation01.hd" tvg-name="ANIME STATION 01 HD" tvg-logo="https://i.postimg.cc/Vk1L3YMK/a-ST01.jpg",ANIME STATION 01 HD
+https://live20.bozztv.com/akamaissh101/ssh101/livestreamingtv/chunks.m3u8
