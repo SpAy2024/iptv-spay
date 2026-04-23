@@ -1,60 +1,66 @@
 {
   "canales": [
     {
-      "id": "ATB.bo",
-      "nombre": "ATB",
+      "id": "RedUnoLPZ.bo",
+      "nombre": "RED UNO LPZ HD",
       "pais": "Bolivia",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/ATB_logo.svg/200px-ATB_logo.svg.png",
-      "web_url": "https://www.atb.com.bo/atb-en-vivo/",
-      "dailymotion_id": "x84eirw",
+      "logo": "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg",
+      "web_url": "https://www.dailymotion.com/video/xa0fwio",
+      "es_dailymotion": true,
       "activo": true
     },
     {
-      "id": "RedUno.bo",
-      "nombre": "Red Uno",
+      "id": "RedUnoCBBA.bo",
+      "nombre": "RED UNO CBBA HD",
       "pais": "Bolivia",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Red_Uno_de_Bolivia_logo.png/200px-Red_Uno_de_Bolivia_logo.png",
-      "web_url": "https://cdnh1.mediotiempo.co/reduno/live/reduno/index.m3u8",
+      "logo": "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg",
+      "web_url": "https://www.dailymotion.com/video/xa0qka8",
+      "es_dailymotion": true,
+      "activo": true
+    },
+    {
+      "id": "RedUnoSCZ.bo",
+      "nombre": "RED UNO SCZ HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg",
+      "web_url": "https://www.dailymotion.com/video/x9n2qyk",
+      "es_dailymotion": true,
       "activo": true
     },
     {
       "id": "Unitel.bo",
-      "nombre": "Unitel",
+      "nombre": "UNITEL BOLIVIA HD",
       "pais": "Bolivia",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Unitel_logo.svg/200px-Unitel_logo.svg.png",
-      "web_url": "https://cdnh1.mediotiempo.co/unitel/live/unitel/index.m3u8",
+      "logo": "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg",
+      "web_url": "https://www.dailymotion.com/video/x7wzxiw",
+      "es_dailymotion": true,
       "activo": true
     },
     {
-      "id": "TVGlobo.br",
-      "nombre": "TV Globo",
-      "pais": "Brazil",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/TV_Globo_logo_2021.png/200px-TV_Globo_logo_2021.png",
-      "web_url": "https://globo-live-hls.akamaized.net/globo/globo/2021/playlist.m3u8",
+      "id": "POVUnitel.bo",
+      "nombre": "POV UNITEL HD",
+      "pais": "Bolivia",
+      "logo": "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg",
+      "web_url": "https://www.dailymotion.com/video/x8eimg9",
+      "es_dailymotion": true,
       "activo": true
     },
     {
-      "id": "RecordTV.br",
-      "nombre": "Record TV",
-      "pais": "Brazil",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/RecordTV_logo_2016.png/200px-RecordTV_logo_2016.png",
-      "web_url": "https://recordtv.r7.com/ao-vivo.m3u8",
+      "id": "ATB.bo",
+      "nombre": "ATB BOLIVIA HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg",
+      "web_url": "https://www.dailymotion.com/video/x84eirw",
+      "es_dailymotion": true,
       "activo": true
     },
     {
-      "id": "Telefe.ar",
-      "nombre": "Telefe",
-      "pais": "Argentina",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Telefe_logo_2019.svg/200px-Telefe_logo_2019.svg.png",
-      "web_url": "https://edge01.cdn.eltrecetv.com.ar/eltrece/eltrece.m3u8",
-      "activo": true
-    },
-    {
-      "id": "TVPublica.ar",
-      "nombre": "TV Pública",
-      "pais": "Argentina",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/TV_Publica_logo.png/200px-TV_Publica_logo.png",
-      "web_url": "https://tdf.vod.rcp.net.ar/tdf/tdf.m3u8",
+      "id": "Telesur.bo",
+      "nombre": "TELESUR HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg",
+      "web_url": "https://www.dailymotion.com/video/x82ug5r",
+      "es_dailymotion": true,
       "activo": true
     }
   ]

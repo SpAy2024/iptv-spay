@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi IPTV Player - Canales Bolivia, Brasil y Argentina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mi IPTV Player - Canales Bolivia</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,12 +49,9 @@
             flex-shrink: 0;
             overflow: hidden;
         }
-        .channel-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .channel-name { flex: 1; font-size: 0.95em; font-weight: 500; }
+        .channel-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .channel-logo span { font-size: 20px; font-weight: bold; }
+        .channel-name { flex: 1; font-size: 0.9em; font-weight: 500; line-height: 1.2; }
         .btn-play {
             background: #4CAF50;
             color: white;
@@ -68,7 +65,7 @@
         .btn-play:hover { background: #45a049; transform: scale(1.05); }
         .player-area { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
         .player-container { width: 100%; height: 100%; position: relative; background: #000; }
-        #videoPlayer, #dmIframe { width: 100%; height: 100%; border: none; }
+        #videoPlayer { width: 100%; height: 100%; background: #000; }
         .current-channel {
             position: absolute;
             top: 20px;
@@ -102,8 +99,11 @@
             display: none;
         }
         @media (max-width: 768px) {
-            .sidebar { height: 40vh; }
+            .sidebar { height: 40vh; padding: 15px; }
             .player-area { height: 60vh; }
+            .channel-logo { width: 35px; height: 35px; font-size: 16px; }
+            .channel-name { font-size: 0.8em; }
+            .btn-play { padding: 4px 8px; font-size: 0.7em; }
         }
         .stats { text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; font-size: 0.85em; }
         .custom-url-section { margin-top: 20px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 10px; }
@@ -118,18 +118,17 @@
             <div class="col-md-4 col-lg-3 sidebar">
                 <h3 class="text-center mb-3">📺 Canales IPTV</h3>
                 <p class="text-center small">Selecciona un canal para reproducir</p>
-                <input type="text" id="searchInput" class="form-control mb-3" placeholder="🔍 Buscar canal o país...">
+                <input type="text" id="searchInput" class="form-control mb-3" placeholder="🔍 Buscar canal...">
                 <div id="channelsList"><div class="text-center p-3"><div class="spinner-border text-light"></div><p class="mt-2">Cargando canales...</p></div></div>
                 <div class="stats" id="stats"></div>
                 <div class="custom-url-section">
-                    <input type="text" id="customUrl" placeholder="🔗 Pega URL .m3u8 o ID de Dailymotion">
+                    <input type="text" id="customUrl" placeholder="🔗 Pega URL .m3u8 o de Dailymotion">
                     <button id="playCustom" class="btn btn-warning">▶ Probar</button>
                 </div>
             </div>
             <div class="col-md-8 col-lg-9 player-area">
                 <div class="player-container">
-                    <video id="videoPlayer" controls preload="auto" style="display: none;"></video>
-                    <iframe id="dmIframe" style="display: none; width: 100%; height: 100%; border: none;" allow="autoplay; fullscreen"></iframe>
+                    <video id="videoPlayer" controls preload="auto"></video>
                     <div id="currentChannel" class="current-channel">⚡ No hay canal seleccionado</div>
                     <div id="loadingMessage" class="loading-message">📡 Cargando...</div>
                 </div>
@@ -140,115 +139,96 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         let currentHls = null;
-        let canalesData = [];
-
-        // ==================== CARGAR CANALES DESDE JSON ====================
-        async function cargarCanales() {
-            try {
-                const response = await fetch('canales.json');
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                // Filtrar solo canales activos
-                canalesData = data.canales.filter(c => c.activo === true);
-                renderChannels(canalesData);
-            } catch (error) {
-                console.error('Error cargando canales.json:', error);
-                document.getElementById('channelsList').innerHTML = `
-                    <div class="error-message">
-                        ❌ Error cargando canales.json<br>
-                        <small>Asegúrate que el archivo existe en la carpeta public</small>
-                    </div>
-                `;
-            }
-        }
+        
+        // ==================== DATOS DE CANALES ====================
+        const canalesData = [
+            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion" },
+            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion" },
+            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion" },
+            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion" },
+            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion" },
+            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion" },
+            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion" }
+        ];
 
         // ==================== RENDERIZAR CANALES ====================
-        function renderChannels(canales) {
-            // Agrupar por país
-            const porPais = {};
-            canales.forEach(canal => {
-                if (!porPais[canal.pais]) porPais[canal.pais] = [];
-                porPais[canal.pais].push(canal);
-            });
+        function renderChannels() {
+            const porPais = { Bolivia: [] };
+            canalesData.forEach(canal => porPais.Bolivia.push(canal));
             
-            const paisesOrdenados = Object.keys(porPais).sort();
             let html = '';
-            
-            for (const pais of paisesOrdenados) {
-                html += `<div class="country-group"><div class="country-title">${pais}</div>`;
-                
-                porPais[pais].forEach(canal => {
-                    // Detectar si es Dailymotion o M3U8
-                    const esDailymotion = canal.web_url && (canal.web_url.includes('dailymotion.com') || canal.web_url.includes('dmcdn'));
-                    const esM3U8 = canal.web_url && canal.web_url.includes('.m3u8');
-                    const tipo = esDailymotion ? 'dailymotion' : (esM3U8 ? 'm3u8' : 'web');
-                    
-                    // Para Dailymotion, extraer el ID del video
-                    let videoId = '';
-                    if (esDailymotion) {
-                        const match = canal.web_url.match(/\/video\/([^\/\?]+)/);
-                        videoId = match ? match[1] : '';
-                    }
-                    
-                    const dataValue = esDailymotion ? videoId : canal.web_url;
-                    
-                    html += `
-                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-pais="${canal.pais.toLowerCase()}" data-tipo="${tipo}" data-url="${dataValue.replace(/'/g, "\\'")}" data-nombre-original="${canal.nombre}">
-                            <div class="channel-logo">
-                                <img src="${canal.logo}" alt="${canal.nombre}" onerror="this.parentElement.innerHTML='${canal.nombre.charAt(0)}'">
-                            </div>
-                            <span class="channel-name">${canal.nombre}</span>
-                            <button class="btn-play" onclick="event.stopPropagation(); loadChannelByType('${tipo}', '${dataValue.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}')">▶</button>
+            html += `<div class="country-group"><div class="country-title">🇧🇴 Bolivia</div>`;
+            canalesData.forEach(canal => {
+                html += `
+                    <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.url}" data-nombre-original="${canal.nombre}">
+                        <div class="channel-logo">
+                            <img src="${canal.logo}" alt="${canal.nombre}" onerror="this.style.display='none'; this.parentElement.innerHTML='<span>${canal.nombre.charAt(0)}</span>'">
                         </div>
-                    `;
-                });
-                
-                html += `</div>`;
-            }
+                        <span class="channel-name">${canal.nombre}</span>
+                        <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}')">▶</button>
+                    </div>
+                `;
+            });
+            html += `</div>`;
             
             document.getElementById('channelsList').innerHTML = html;
-            document.getElementById('stats').innerHTML = `📊 ${canales.length} canales | ${paisesOrdenados.length} países`;
+            document.getElementById('stats').innerHTML = `📊 ${canalesData.length} canales | 1 país`;
             
-            // Agregar event listeners
             document.querySelectorAll('.channel-item').forEach(item => {
                 item.addEventListener('click', () => {
-                    loadChannelByType(item.dataset.tipo, item.dataset.url, item.dataset.nombreOriginal);
+                    loadChannel(item.dataset.url, item.dataset.nombreOriginal);
                 });
             });
             
-            // Configurar búsqueda
             setupSearch();
         }
 
-        // ==================== BUSCAR CANALES ====================
+        // ==================== BUSCAR ====================
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
-            searchInput.removeEventListener('input', searchInput._listener);
-            searchInput._listener = function(e) {
+            searchInput.oninput = function(e) {
                 const term = e.target.value.toLowerCase();
                 document.querySelectorAll('.channel-item').forEach(item => {
                     const nombre = item.dataset.nombre;
-                    const pais = item.dataset.pais;
-                    item.style.display = (nombre.includes(term) || pais.includes(term)) ? 'flex' : 'none';
+                    item.style.display = nombre.includes(term) ? 'flex' : 'none';
                 });
             };
-            searchInput.addEventListener('input', searchInput._listener);
         }
 
-        // ==================== CARGAR CANAL SEGÚN TIPO ====================
-        function loadChannelByType(tipo, urlOrId, channelName) {
+        // ==================== EXTRAER ID DE DAILYMOTION ====================
+        function extractDailymotionId(url) {
+            const match = url.match(/\/video\/([a-z0-9]+)/i);
+            return match ? match[1] : null;
+        }
+
+        // ==================== OBTENER STREAM DE DAILYMOTION ====================
+        async function getDailymotionStream(videoId) {
+            try {
+                const apiUrl = `https://www.dailymotion.com/player/metadata/video/${videoId}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                if (data.qualities && data.qualities.auto && data.qualities.auto[0]) {
+                    return data.qualities.auto[0].url;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error obteniendo stream de Dailymotion:', error);
+                return null;
+            }
+        }
+
+        // ==================== CARGAR CANAL ====================
+        async function loadChannel(url, channelName) {
             const loadingMsg = document.getElementById('loadingMessage');
             const video = document.getElementById('videoPlayer');
-            const iframe = document.getElementById('dmIframe');
             
             // Limpiar estado anterior
-            video.style.display = 'none';
-            iframe.style.display = 'none';
             if (currentHls) { currentHls.destroy(); currentHls = null; }
             if (video.src) { video.pause(); video.src = ''; }
             
             loadingMsg.style.display = 'block';
-            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
+            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando stream...</small>`;
             
             // Resaltar canal activo
             document.querySelectorAll('.channel-item').forEach(item => {
@@ -256,49 +236,59 @@
                 if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
             });
             
-            // Caso Dailymotion
-            if (tipo === 'dailymotion' && urlOrId) {
-                iframe.style.display = 'block';
-                iframe.src = `https://www.dailymotion.com/embed/video/${urlOrId}?autoplay=1&mute=0`;
+            // Detectar si es Dailymotion
+            const dailymotionId = extractDailymotionId(url);
+            
+            if (dailymotionId) {
+                // Es un video de Dailymotion
+                console.log('🎬 Es Dailymotion, ID:', dailymotionId);
+                const streamUrl = await getDailymotionStream(dailymotionId);
+                
+                if (streamUrl) {
+                    console.log('✅ Stream obtenido:', streamUrl);
+                    reproducirStream(streamUrl, channelName, loadingMsg);
+                } else {
+                    loadingMsg.style.display = 'none';
+                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ No se pudo obtener el stream</small>`;
+                }
+            } else if (url.includes('.m3u8')) {
+                // Es URL M3U8 directa
+                reproducirStream(url, channelName, loadingMsg);
+            } else {
+                // URL desconocida
                 loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
-                return;
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Formato no soportado</small>`;
             }
+        }
+
+        // ==================== REPRODUCIR STREAM ====================
+        function reproducirStream(streamUrl, channelName, loadingMsg) {
+            const video = document.getElementById('videoPlayer');
             
-            // Caso M3U8 o URL directa
-            video.style.display = 'block';
-            
-            if (Hls.isSupported() && (urlOrId.includes('.m3u8') || urlOrId.includes('m3u8'))) {
+            if (Hls.isSupported()) {
                 currentHls = new Hls({ debug: false, enableWorker: true });
-                currentHls.loadSource(urlOrId);
+                currentHls.loadSource(streamUrl);
                 currentHls.attachMedia(video);
                 currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                     loadingMsg.style.display = 'none';
                     document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play().catch(e => console.error(e));
+                    video.play().catch(e => console.error('Error reproduciendo:', e));
                 });
-                currentHls.on(Hls.Events.ERROR, () => {
+                currentHls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error('Error HLS:', data);
                     loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Stream no disponible</small>`;
+                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = urlOrId;
+                video.src = streamUrl;
                 video.addEventListener('loadedmetadata', () => {
                     loadingMsg.style.display = 'none';
                     document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
                     video.play();
-                }, { once: true });
+                });
             } else {
-                video.src = urlOrId;
-                video.addEventListener('canplay', () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play();
-                }, { once: true });
-                video.addEventListener('error', () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error al cargar</small>`;
-                }, { once: true });
+                loadingMsg.style.display = 'none';
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ HLS no soportado</small>`;
             }
         }
 
@@ -307,34 +297,15 @@
             const playCustom = document.getElementById('playCustom');
             const customUrl = document.getElementById('customUrl');
             
-            playCustom.addEventListener('click', () => {
+            playCustom.onclick = () => {
                 const input = customUrl.value.trim();
-                if (!input) return;
-                // Detectar si es ID de Dailymotion (empieza con x y 5-8 caracteres)
-                if (input.match(/^x[a-z0-9]+$/i)) {
-                    loadChannelByType('dailymotion', input, "URL Personalizada");
-                } else {
-                    loadChannelByType('m3u8', input, "URL Personalizada");
-                }
-            });
-            
-            customUrl.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const input = customUrl.value.trim();
-                    if (input) {
-                        if (input.match(/^x[a-z0-9]+$/i)) {
-                            loadChannelByType('dailymotion', input, "URL Personalizada");
-                        } else {
-                            loadChannelByType('m3u8', input, "URL Personalizada");
-                        }
-                    }
-                }
-            });
+                if (input) loadChannel(input, "URL Personalizada");
+            };
         }
 
         // ==================== INICIALIZAR ====================
         document.addEventListener('DOMContentLoaded', () => {
-            cargarCanales();
+            renderChannels();
             setupCustomUrl();
         });
     </script>
