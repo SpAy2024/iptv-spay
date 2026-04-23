@@ -50,7 +50,6 @@
             overflow: hidden;
         }
         .channel-logo img { width: 100%; height: 100%; object-fit: cover; }
-        .channel-logo span { font-size: 20px; font-weight: bold; }
         .channel-name { flex: 1; font-size: 0.9em; font-weight: 500; line-height: 1.2; }
         .btn-play {
             background: #4CAF50;
@@ -66,6 +65,7 @@
         .player-area { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
         .player-container { width: 100%; height: 100%; position: relative; background: #000; }
         #videoPlayer { width: 100%; height: 100%; background: #000; }
+        #dmIframe { width: 100%; height: 100%; border: none; display: none; }
         .current-channel {
             position: absolute;
             top: 20px;
@@ -122,13 +122,14 @@
                 <div id="channelsList"><div class="text-center p-3"><div class="spinner-border text-light"></div><p class="mt-2">Cargando canales...</p></div></div>
                 <div class="stats" id="stats"></div>
                 <div class="custom-url-section">
-                    <input type="text" id="customUrl" placeholder="🔗 Pega URL .m3u8 o ID de Dailymotion">
+                    <input type="text" id="customUrl" placeholder="🔗 Pega URL .m3u8 o ID de Dailymotion (x...)" value="">
                     <button id="playCustom" class="btn btn-warning">▶ Probar</button>
                 </div>
             </div>
             <div class="col-md-8 col-lg-9 player-area">
                 <div class="player-container">
-                    <video id="videoPlayer" controls preload="auto"></video>
+                    <video id="videoPlayer" controls preload="auto" style="display: block;"></video>
+                    <iframe id="dmIframe" allow="autoplay; fullscreen"></iframe>
                     <div id="currentChannel" class="current-channel">⚡ No hay canal seleccionado</div>
                     <div id="loadingMessage" class="loading-message">📡 Cargando...</div>
                 </div>
@@ -139,52 +140,61 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         let currentHls = null;
-        
-        // ==================== DATOS DE CANALES ====================
-       let canalesData = [];
+        let canalesData = [];
 
-async function cargarCanales() {
-    try {
-        const response = await fetch('canales.json');
-        if (!response.ok) throw new Error('No se pudo cargar canales.json');
-        const data = await response.json();
-        canalesData = data.canales.filter(c => c.activo === true);
-        renderChannels(canalesData);
-    } catch (error) {
-        console.error('Error cargando canales:', error);
-        document.getElementById('channelsList').innerHTML = '<div class="error-message">❌ Error cargando canales.json</div>';
-    }
-}
+        // ==================== CARGAR CANALES DESDE JSON ====================
+        async function cargarCanales() {
+            try {
+                const response = await fetch('canales.json');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                canalesData = data.canales.filter(c => c.activo === true);
+                renderChannels(canalesData);
+            } catch (error) {
+                console.error('Error cargando canales.json:', error);
+                document.getElementById('channelsList').innerHTML = `<div class="error-message">❌ Error cargando canales.json<br><small>${error.message}</small></div>`;
+            }
+        }
 
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels(canales) {
-    // Agrupar por país
-    const porPais = {};
-    canales.forEach(canal => {
-        if (!porPais[canal.pais]) porPais[canal.pais] = [];
-        porPais[canal.pais].push(canal);
-    });
-    
-    let html = '';
-    for (const [pais, canalesDelPais] of Object.entries(porPais)) {
-        html += `<div class="country-group"><div class="country-title">${pais}</div>`;
-        canalesDelPais.forEach(canal => {
-            html += `
-                <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.web_url}" data-nombre-original="${canal.nombre}">
-                    <div class="channel-logo">
-                        <img src="${canal.logo}" onerror="this.parentElement.innerHTML='${canal.nombre.charAt(0)}'">
-                    </div>
-                    <span class="channel-name">${canal.nombre}</span>
-                    <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.web_url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}')">▶</button>
-                </div>
-            `;
-        });
-        html += `</div>`;
-    }
-    document.getElementById('channelsList').innerHTML = html;
-    document.getElementById('stats').innerHTML = `📊 ${canales.length} canales | ${Object.keys(porPais).length} países`;
-    setupSearch();
-}
+            const porPais = {};
+            canales.forEach(canal => {
+                if (!porPais[canal.pais]) porPais[canal.pais] = [];
+                porPais[canal.pais].push(canal);
+            });
+            
+            const paisesOrdenados = Object.keys(porPais).sort();
+            let html = '';
+            
+            for (const pais of paisesOrdenados) {
+                html += `<div class="country-group"><div class="country-title">${pais}</div>`;
+                porPais[pais].forEach(canal => {
+                    html += `
+                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.web_url}" data-nombre-original="${canal.nombre}">
+                            <div class="channel-logo">
+                                <img src="${canal.logo}" alt="${canal.nombre}" onerror="this.parentElement.innerHTML='${canal.nombre.charAt(0)}'">
+                            </div>
+                            <span class="channel-name">${canal.nombre}</span>
+                            <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.web_url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}')">▶</button>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+            
+            document.getElementById('channelsList').innerHTML = html;
+            document.getElementById('stats').innerHTML = `📊 ${canales.length} canales | ${paisesOrdenados.length} países`;
+            
+            document.querySelectorAll('.channel-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    loadChannel(item.dataset.url, item.dataset.nombreOriginal);
+                });
+            });
+            
+            setupSearch();
+        }
+
         // ==================== BUSCAR ====================
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
@@ -203,64 +213,15 @@ async function cargarCanales() {
             return match ? match[1] : null;
         }
 
-        // ==================== OBTENER STREAM DE DAILYMOTION VÍA PROXY ====================
-      async function getDailymotionStream(videoId) {
-    try {
-        const proxyUrl = 'https://iptv-spay.onrender.com/api/video';
-        const response = await fetch(`${proxyUrl}/${videoId}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('📡 Datos recibidos:', data);
-        
-        // Extraer la URL del stream de las qualities
-        if (data.qualities && data.qualities.auto && data.qualities.auto[0] && data.qualities.auto[0].url) {
-            const streamUrl = data.qualities.auto[0].url;
-            console.log('✅ Stream URL:', streamUrl);
-            return streamUrl;
-        }
-        
-        // Fallback: buscar en otra estructura
-        if (data.stream_url) {
-            return data.stream_url;
-        }
-        
-        return null;
-    } catch (error) {
-        console.error('❌ Error obteniendo stream de Dailymotion:', error);
-        return null;
-    }
-
-    try {
-        // Usar el proxy desplegado en Render
-        const proxyUrl = 'https://iptv-spay.onrender.com/api';
-        const response = await fetch(`${proxyUrl}/video/${videoId}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('📡 Datos recibidos del proxy:', data);
-        
-        if (data.qualities && data.qualities.auto && data.qualities.auto[0]) {
-            return data.qualities.auto[0].url;
-        }
-        return null;
-    } catch (error) {
-        console.error('❌ Error obteniendo stream de Dailymotion:', error);
-        return null;
-    }
-}
-
-        // ==================== REPRODUCIR STREAM CON CABECERAS ====================
+        // ==================== REPRODUCIR STREAM (CORREGIDO) ====================
         function reproducirStream(streamUrl, channelName, loadingMsg) {
             const video = document.getElementById('videoPlayer');
+            const iframe = document.getElementById('dmIframe');
             
-            // Destruir HLS anterior si existe
+            // Ocultar iframe y mostrar video
+            iframe.style.display = 'none';
+            video.style.display = 'block';
+            
             if (currentHls) {
                 currentHls.destroy();
                 currentHls = null;
@@ -271,10 +232,8 @@ async function cargarCanales() {
                     debug: false, 
                     enableWorker: true,
                     xhrSetup: (xhr, url) => {
-                        xhr.withCredentials = true;
-                        xhr.setRequestHeader('Origin', 'https://www.dailymotion.com');
-                        xhr.setRequestHeader('Referer', 'https://www.dailymotion.com/');
-                        xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+                        xhr.withCredentials = false;  // FUNDAMENTAL: evitar CORS
+                        // No agregar cabeceras personalizadas para evitar bloqueos
                     }
                 });
                 currentHls.loadSource(streamUrl);
@@ -290,7 +249,6 @@ async function cargarCanales() {
                     document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                // Safari nativo
                 video.src = streamUrl;
                 video.addEventListener('loadedmetadata', () => {
                     loadingMsg.style.display = 'none';
@@ -305,100 +263,76 @@ async function cargarCanales() {
 
         // ==================== CARGAR CANAL ====================
         async function loadChannel(url, channelName) {
-    const loadingMsg = document.getElementById('loadingMessage');
-    const video = document.getElementById('videoPlayer');
-    let iframe = document.getElementById('dmIframe');
-    
-    // Ocultar iframe si existe
-    if (iframe) {
-        iframe.style.display = 'none';
-        iframe.src = '';
-    }
-    
-    // Limpiar estado anterior de HLS
-    if (currentHls) { 
-        currentHls.destroy(); 
-        currentHls = null; 
-    }
-    if (video.src) { 
-        video.pause(); 
-        video.src = ''; 
-    }
-    
-    // Mostrar video (por si estaba oculto)
-    video.style.display = 'block';
-    
-    loadingMsg.style.display = 'block';
-    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
-    
-    // Resaltar canal activo
-    document.querySelectorAll('.channel-item').forEach(item => {
-        item.classList.remove('active');
-        if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
-    });
-    
-    // Detectar si es Dailymotion
-    const dailymotionId = extractDailymotionId(url);
-    
-    if (dailymotionId) {
-        console.log('🎬 Es Dailymotion, ID:', dailymotionId);
-        
-        // Crear iframe si no existe
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.id = 'dmIframe';
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.border = 'none';
-            document.querySelector('.player-container').appendChild(iframe);
-        }
-        
-        // Ocultar video y mostrar iframe
-        video.style.display = 'none';
-        iframe.style.display = 'block';
-        iframe.src = `https://geo.dailymotion.com/player.html?video=${dailymotionId}&autoplay=1`;
-        
-        loadingMsg.style.display = 'none';
-        document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
-        return;
-    }
-    
-    // Para URLs M3U8 directas
-    if (url.includes('.m3u8')) {
-        reproducirStream(url, channelName, loadingMsg);
-    } else {
-        // URL desconocida
-        loadingMsg.style.display = 'none';
-        document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Formato no soportado</small>`;
-    }
+            const loadingMsg = document.getElementById('loadingMessage');
+            const video = document.getElementById('videoPlayer');
+            const iframe = document.getElementById('dmIframe');
+            
+            // Limpiar estado anterior
+            if (currentHls) { currentHls.destroy(); currentHls = null; }
+            if (video.src) { video.pause(); video.src = ''; }
+            iframe.src = '';
+            iframe.style.display = 'none';
+            video.style.display = 'block';
+            
+            loadingMsg.style.display = 'block';
+            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
+            
+            document.querySelectorAll('.channel-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
+            });
+            
+            const dailymotionId = extractDailymotionId(url);
+            
+            // CASO DAILYMOTION: usar embed (sin CORS)
+            if (dailymotionId) {
+                console.log('🎬 Es Dailymotion, ID:', dailymotionId);
+                iframe.style.display = 'block';
+                video.style.display = 'none';
+                iframe.src = `https://geo.dailymotion.com/player.html?video=${dailymotionId}&autoplay=1`;
+                loadingMsg.style.display = 'none';
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
+                return;
+            }
+            
+            // CASO M3U8 DIRECTO
+            // CASO M3U8 DIRECTO (usando proxy para evitar CORS)
+if (url.includes('.m3u8')) {
+    console.log('🎬 Es M3U8 directo:', url);
+    // Usar el proxy de Render para evitar CORS
+    const proxyUrl = `https://iptv-spay.onrender.com/proxy?url=${encodeURIComponent(url)}`;
+    reproducirStream(proxyUrl, channelName, loadingMsg);
 }
+            // CASO DESCONOCIDO
+            else {
+                loadingMsg.style.display = 'none';
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Formato no soportado</small>`;
+            }
+        }
 
         // ==================== URL PERSONALIZADA ====================
         function setupCustomUrl() {
-            const playCustom = document.getElementById('playCustom');
             const customUrl = document.getElementById('customUrl');
+            const playCustom = document.getElementById('playCustom');
             
             playCustom.onclick = () => {
                 const input = customUrl.value.trim();
-                if (input) {
-                    // Detectar si es ID de Dailymotion (empieza con x)
-                    if (input.match(/^x[a-z0-9]+$/i)) {
-                        loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
-                    } else {
-                        loadChannel(input, "URL Personalizada");
-                    }
+                if (!input) return;
+                if (input.match(/^x[a-z0-9]+$/i)) {
+                    loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
+                } else {
+                    loadChannel(input, "URL Personalizada");
                 }
             };
             
             customUrl.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const input = customUrl.value.trim();
-                    if (input) {
-                        if (input.match(/^x[a-z0-9]+$/i)) {
-                            loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
-                        } else {
-                            loadChannel(input, "URL Personalizada");
-                        }
+                    if (!input) return;
+                    if (input.match(/^x[a-z0-9]+$/i)) {
+                        loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
+                    } else {
+                        loadChannel(input, "URL Personalizada");
                     }
                 }
             });
@@ -406,9 +340,9 @@ async function cargarCanales() {
 
         // ==================== INICIALIZAR ====================
         document.addEventListener('DOMContentLoaded', () => {
-    cargarCanales();
-    setupCustomUrl();
-});
+            cargarCanales();
+            setupCustomUrl();
+        });
     </script>
 </body>
 </html>
