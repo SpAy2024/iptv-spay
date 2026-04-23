@@ -299,45 +299,73 @@
 
         // ==================== CARGAR CANAL ====================
         async function loadChannel(url, channelName) {
-            const loadingMsg = document.getElementById('loadingMessage');
-            const video = document.getElementById('videoPlayer');
-            
-            // Limpiar estado anterior
-            if (currentHls) { currentHls.destroy(); currentHls = null; }
-            if (video.src) { video.pause(); video.src = ''; }
-            
-            loadingMsg.style.display = 'block';
-            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando stream...</small>`;
-            
-            // Resaltar canal activo
-            document.querySelectorAll('.channel-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
-            });
-            
-            // Detectar si es Dailymotion
-            const dailymotionId = extractDailymotionId(url);
-            
-            if (dailymotionId) {
-                console.log('🎬 Es Dailymotion, ID:', dailymotionId);
-                const streamUrl = await getDailymotionStream(dailymotionId);
-                
-                if (streamUrl) {
-                    console.log('✅ Stream obtenido:', streamUrl);
-                    reproducirStream(streamUrl, channelName, loadingMsg);
-                } else {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ No se pudo obtener el stream</small>`;
-                }
-            } else if (url.includes('.m3u8')) {
-                // Es URL M3U8 directa
-                reproducirStream(url, channelName, loadingMsg);
-            } else {
-                // URL desconocida
-                loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Formato no soportado</small>`;
-            }
+    const loadingMsg = document.getElementById('loadingMessage');
+    const video = document.getElementById('videoPlayer');
+    let iframe = document.getElementById('dmIframe');
+    
+    // Ocultar iframe si existe
+    if (iframe) {
+        iframe.style.display = 'none';
+        iframe.src = '';
+    }
+    
+    // Limpiar estado anterior de HLS
+    if (currentHls) { 
+        currentHls.destroy(); 
+        currentHls = null; 
+    }
+    if (video.src) { 
+        video.pause(); 
+        video.src = ''; 
+    }
+    
+    // Mostrar video (por si estaba oculto)
+    video.style.display = 'block';
+    
+    loadingMsg.style.display = 'block';
+    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
+    
+    // Resaltar canal activo
+    document.querySelectorAll('.channel-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
+    });
+    
+    // Detectar si es Dailymotion
+    const dailymotionId = extractDailymotionId(url);
+    
+    if (dailymotionId) {
+        console.log('🎬 Es Dailymotion, ID:', dailymotionId);
+        
+        // Crear iframe si no existe
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'dmIframe';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            document.querySelector('.player-container').appendChild(iframe);
         }
+        
+        // Ocultar video y mostrar iframe
+        video.style.display = 'none';
+        iframe.style.display = 'block';
+        iframe.src = `https://geo.dailymotion.com/player.html?video=${dailymotionId}&autoplay=1`;
+        
+        loadingMsg.style.display = 'none';
+        document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
+        return;
+    }
+    
+    // Para URLs M3U8 directas
+    if (url.includes('.m3u8')) {
+        reproducirStream(url, channelName, loadingMsg);
+    } else {
+        // URL desconocida
+        loadingMsg.style.display = 'none';
+        document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Formato no soportado</small>`;
+    }
+}
 
         // ==================== URL PERSONALIZADA ====================
         function setupCustomUrl() {
