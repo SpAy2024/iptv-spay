@@ -1,0 +1,8 @@
+#EXTM3U
+# Playlist - Brazil
+# Generado: 2026-04-23T10:02:25.435Z
+
+#EXTINF:-1 tvg-id="TVGlobo.br" tvg-name="TV Globo" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/TV_Globo_logo_2021.png/200px-TV_Globo_logo_2021.png",TV Globo
+https://globo-live-hls.akamaized.net/globo/globo/2021/playlist.m3u8
+#EXTINF:-1 tvg-id="RecordTV.br" tvg-name="Record TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/RecordTV_logo_2016.png/200px-RecordTV_logo_2016.png",Record TV
+https://recordtv.r7.com/ao-vivo.m3u8

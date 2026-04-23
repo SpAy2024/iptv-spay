@@ -1,0 +1,8 @@
+#EXTM3U
+# Playlist - Argentina
+# Generado: 2026-04-23T10:02:25.438Z
+
+#EXTINF:-1 tvg-id="Telefe.ar" tvg-name="Telefe" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Telefe_logo_2019.svg/200px-Telefe_logo_2019.svg.png",Telefe
+https://edge01.cdn.eltrecetv.com.ar/eltrece/eltrece.m3u8
+#EXTINF:-1 tvg-id="TVPublica.ar" tvg-name="TV Pública" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/TV_Publica_logo.png/200px-TV_Publica_logo.png",TV Pública
+https://tdf.vod.rcp.net.ar/tdf/tdf.m3u8
