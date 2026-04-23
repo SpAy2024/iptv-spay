@@ -198,7 +198,36 @@
         }
 
         // ==================== OBTENER STREAM DE DAILYMOTION VÍA PROXY ====================
-       async function getDailymotionStream(videoId) {
+      async function getDailymotionStream(videoId) {
+    try {
+        const proxyUrl = 'https://iptv-spay.onrender.com/api/video';
+        const response = await fetch(`${proxyUrl}/${videoId}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('📡 Datos recibidos:', data);
+        
+        // Extraer la URL del stream de las qualities
+        if (data.qualities && data.qualities.auto && data.qualities.auto[0] && data.qualities.auto[0].url) {
+            const streamUrl = data.qualities.auto[0].url;
+            console.log('✅ Stream URL:', streamUrl);
+            return streamUrl;
+        }
+        
+        // Fallback: buscar en otra estructura
+        if (data.stream_url) {
+            return data.stream_url;
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('❌ Error obteniendo stream de Dailymotion:', error);
+        return null;
+    }
+
     try {
         // Usar el proxy desplegado en Render
         const proxyUrl = 'https://iptv-spay.onrender.com/api';
