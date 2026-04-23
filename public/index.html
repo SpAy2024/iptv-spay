@@ -122,7 +122,7 @@
                 <div id="channelsList"><div class="text-center p-3"><div class="spinner-border text-light"></div><p class="mt-2">Cargando canales...</p></div></div>
                 <div class="stats" id="stats"></div>
                 <div class="custom-url-section">
-                    <input type="text" id="customUrl" placeholder="🔗 Pega URL .m3u8 o de Dailymotion">
+                    <input type="text" id="customUrl" placeholder="🔗 Pega URL .m3u8 o ID de Dailymotion">
                     <button id="playCustom" class="btn btn-warning">▶ Probar</button>
                 </div>
             </div>
@@ -153,11 +153,7 @@
 
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels() {
-            const porPais = { Bolivia: [] };
-            canalesData.forEach(canal => porPais.Bolivia.push(canal));
-            
-            let html = '';
-            html += `<div class="country-group"><div class="country-title">🇧🇴 Bolivia</div>`;
+            let html = `<div class="country-group"><div class="country-title">🇧🇴 Bolivia</div>`;
             canalesData.forEach(canal => {
                 html += `
                     <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.url}" data-nombre-original="${canal.nombre}">
@@ -201,20 +197,74 @@
             return match ? match[1] : null;
         }
 
-        // ==================== OBTENER STREAM DE DAILYMOTION ====================
+        // ==================== OBTENER STREAM DE DAILYMOTION VÍA PROXY ====================
         async function getDailymotionStream(videoId) {
             try {
-                const apiUrl = `https://www.dailymotion.com/player/metadata/video/${videoId}`;
-                const response = await fetch(apiUrl);
+                // Proxy local en puerto 3001 (cambiar después por Render)
+                const proxyUrl = 'http://localhost:3001/api';
+                const response = await fetch(`${proxyUrl}/video/${videoId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
                 const data = await response.json();
+                console.log('📡 Datos recibidos del proxy:', data);
                 
                 if (data.qualities && data.qualities.auto && data.qualities.auto[0]) {
                     return data.qualities.auto[0].url;
                 }
                 return null;
             } catch (error) {
-                console.error('Error obteniendo stream de Dailymotion:', error);
+                console.error('❌ Error obteniendo stream de Dailymotion:', error);
                 return null;
+            }
+        }
+
+        // ==================== REPRODUCIR STREAM CON CABECERAS ====================
+        function reproducirStream(streamUrl, channelName, loadingMsg) {
+            const video = document.getElementById('videoPlayer');
+            
+            // Destruir HLS anterior si existe
+            if (currentHls) {
+                currentHls.destroy();
+                currentHls = null;
+            }
+            
+            if (Hls.isSupported()) {
+                currentHls = new Hls({ 
+                    debug: false, 
+                    enableWorker: true,
+                    xhrSetup: (xhr, url) => {
+                        xhr.withCredentials = true;
+                        xhr.setRequestHeader('Origin', 'https://www.dailymotion.com');
+                        xhr.setRequestHeader('Referer', 'https://www.dailymotion.com/');
+                        xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+                    }
+                });
+                currentHls.loadSource(streamUrl);
+                currentHls.attachMedia(video);
+                currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    loadingMsg.style.display = 'none';
+                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
+                    video.play().catch(e => console.error('Error reproduciendo:', e));
+                });
+                currentHls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error('Error HLS:', data);
+                    loadingMsg.style.display = 'none';
+                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // Safari nativo
+                video.src = streamUrl;
+                video.addEventListener('loadedmetadata', () => {
+                    loadingMsg.style.display = 'none';
+                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
+                    video.play();
+                });
+            } else {
+                loadingMsg.style.display = 'none';
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ HLS no soportado</small>`;
             }
         }
 
@@ -240,7 +290,6 @@
             const dailymotionId = extractDailymotionId(url);
             
             if (dailymotionId) {
-                // Es un video de Dailymotion
                 console.log('🎬 Es Dailymotion, ID:', dailymotionId);
                 const streamUrl = await getDailymotionStream(dailymotionId);
                 
@@ -261,37 +310,6 @@
             }
         }
 
-        // ==================== REPRODUCIR STREAM ====================
-        function reproducirStream(streamUrl, channelName, loadingMsg) {
-            const video = document.getElementById('videoPlayer');
-            
-            if (Hls.isSupported()) {
-                currentHls = new Hls({ debug: false, enableWorker: true });
-                currentHls.loadSource(streamUrl);
-                currentHls.attachMedia(video);
-                currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play().catch(e => console.error('Error reproduciendo:', e));
-                });
-                currentHls.on(Hls.Events.ERROR, (event, data) => {
-                    console.error('Error HLS:', data);
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = streamUrl;
-                video.addEventListener('loadedmetadata', () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play();
-                });
-            } else {
-                loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ HLS no soportado</small>`;
-            }
-        }
-
         // ==================== URL PERSONALIZADA ====================
         function setupCustomUrl() {
             const playCustom = document.getElementById('playCustom');
@@ -299,8 +317,28 @@
             
             playCustom.onclick = () => {
                 const input = customUrl.value.trim();
-                if (input) loadChannel(input, "URL Personalizada");
+                if (input) {
+                    // Detectar si es ID de Dailymotion (empieza con x)
+                    if (input.match(/^x[a-z0-9]+$/i)) {
+                        loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
+                    } else {
+                        loadChannel(input, "URL Personalizada");
+                    }
+                }
             };
+            
+            customUrl.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const input = customUrl.value.trim();
+                    if (input) {
+                        if (input.match(/^x[a-z0-9]+$/i)) {
+                            loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada");
+                        } else {
+                            loadChannel(input, "URL Personalizada");
+                        }
+                    }
+                }
+            });
         }
 
         // ==================== INICIALIZAR ====================
