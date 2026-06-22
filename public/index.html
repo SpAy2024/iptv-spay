@@ -404,77 +404,120 @@
         }
 
         // ==================== REPRODUCIR STREAM ====================
-        function reproducirStream(streamUrl, channelName, loadingMsg) {
-            const video = document.getElementById('videoPlayer');
-            const iframe = document.getElementById('dmIframe');
-            
-            iframe.style.display = 'none';
-            video.style.display = 'block';
-            
-            if (currentHls) { currentHls.destroy(); currentHls = null; }
-            if (video.src) { video.pause(); video.src = ''; }
-            
-            if (Hls.isSupported() && streamUrl.includes('.m3u8')) {
-                currentHls = new Hls({ debug: false, enableWorker: true });
-                currentHls.loadSource(streamUrl);
-                currentHls.attachMedia(video);
-                currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play().catch(e => console.error(e));
-                });
-                currentHls.on(Hls.Events.ERROR, (event, data) => {
-                    console.error('Error HLS:', data);
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = streamUrl;
-                video.addEventListener('loadedmetadata', () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play();
-                });
-            } else {
-                loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ No se puede reproducir</small>`;
+      // ==================== REPRODUCIR STREAM ====================
+function reproducirStream(streamUrl, channelName, loadingMsg) {
+    const video = document.getElementById('videoPlayer');
+    const iframe = document.getElementById('dmIframe');
+    
+    iframe.style.display = 'none';
+    video.style.display = 'block';
+    
+    // Destruir HLS anterior por si acaso
+    if (currentHls) {
+        currentHls.destroy();
+        currentHls = null;
+    }
+    
+    if (video.src) {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+    }
+    
+    if (Hls.isSupported() && streamUrl.includes('.m3u8')) {
+        currentHls = new Hls({ debug: false, enableWorker: true });
+        currentHls.loadSource(streamUrl);
+        currentHls.attachMedia(video);
+        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+            loadingMsg.style.display = 'none';
+            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
+            video.play().catch(e => console.error('Error reproduciendo:', e));
+        });
+        currentHls.on(Hls.Events.ERROR, (event, data) => {
+            console.error('Error HLS:', data);
+            loadingMsg.style.display = 'none';
+            if (data.fatal) {
+                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
             }
-        }
+        });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = streamUrl;
+        video.addEventListener('loadedmetadata', () => {
+            loadingMsg.style.display = 'none';
+            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
+            video.play();
+        }, { once: true });
+    } else {
+        loadingMsg.style.display = 'none';
+        document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ No se puede reproducir</small>`;
+    }
+}
 
         // ==================== CARGAR CANAL ====================
-        async function loadChannel(url, channelName, tipo = 'm3u8') {
-            const loadingMsg = document.getElementById('loadingMessage');
-            const video = document.getElementById('videoPlayer');
-            const iframe = document.getElementById('dmIframe');
-            
-            loadingMsg.style.display = 'block';
-            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
-            
-            document.querySelectorAll('.channel-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
-            });
-            
-            const dailymotionId = extractDailymotionId(url);
-            if (dailymotionId || tipo === 'dailymotion') {
-                const videoId = dailymotionId || (url.includes('/video/') ? url.split('/video/')[1].split('?')[0] : null);
-                if (videoId) {
-                    iframe.style.display = 'block';
-                    video.style.display = 'none';
-                    iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
-                    return;
-                }
-            }
-            
-            if (url.includes('.m3u8')) {
-                reproducirStream(url, channelName, loadingMsg);
-            } else {
-                loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>⚠️ Formato no soportado</small>`;
-            }
+       // ==================== CARGAR CANAL ====================
+async function loadChannel(url, channelName, tipo = 'm3u8') {
+    const loadingMsg = document.getElementById('loadingMessage');
+    const video = document.getElementById('videoPlayer');
+    const iframe = document.getElementById('dmIframe');
+    
+    // ====== LIMPIAR COMPLETAMENTE EL ESTADO ANTERIOR ======
+    // 1. Destruir HLS anterior
+    if (currentHls) {
+        console.log('🛑 Destruyendo HLS anterior...');
+        currentHls.destroy();
+        currentHls = null;
+    }
+    
+    // 2. Detener y limpiar el video
+    if (video.src) {
+        video.pause();
+        video.removeAttribute('src');
+        video.load(); // Reinicia el elemento video
+    }
+    
+    // 3. Limpiar el iframe de Dailymotion
+    if (iframe) {
+        iframe.src = '';
+        iframe.style.display = 'none';
+    }
+    
+    // 4. Ocultar el video y mostrar el mensaje de carga
+    video.style.display = 'block';
+    loadingMsg.style.display = 'block';
+    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
+    
+    // Resaltar canal activo
+    document.querySelectorAll('.channel-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
+    });
+    
+    // ====== REPRODUCIR NUEVO CANAL ======
+    const dailymotionId = extractDailymotionId(url);
+    
+    // Caso Dailymotion
+    if (dailymotionId || tipo === 'dailymotion') {
+        const videoId = dailymotionId || (url.includes('/video/') ? url.split('/video/')[1].split('?')[0] : null);
+        if (videoId) {
+            iframe.style.display = 'block';
+            video.style.display = 'none';
+            iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
+            loadingMsg.style.display = 'none';
+            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
+            return;
         }
+    }
+    
+    // Caso M3U8
+    if (url.includes('.m3u8')) {
+        reproducirStream(url, channelName, loadingMsg);
+    } else {
+        loadingMsg.style.display = 'none';
+        document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>⚠️ Formato no soportado</small>`;
+    }
+}
+
+
 
         // ==================== URL PERSONALIZADA ====================
         function setupCustomUrl() {
