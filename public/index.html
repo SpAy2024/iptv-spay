@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SpayCine TV - Canales en vivo</title>
+    <title>SpayCine - Canales TV, Películas, Series y Anime</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -97,6 +97,31 @@
             box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15);
         }
 
+        /* ===== FILTROS ===== */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        .filter-btn {
+            background: rgba(255,255,255,0.08);
+            border: none;
+            color: rgba(255,255,255,0.6);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.7em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .filter-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .filter-btn.active { 
+            background: #e50914; 
+            color: #fff; 
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.2);
+        }
+
         /* ===== PAÍSES ===== */
         .country-group {
             margin-bottom: 18px;
@@ -119,12 +144,9 @@
             gap: 8px;
             letter-spacing: -0.2px;
         }
-        .country-title::before {
-            content: "📺";
-            font-size: 0.9em;
-        }
+        .country-title .emoji { font-size: 1.1em; }
 
-        /* ===== CANALES (tarjetas estilo Netflix) ===== */
+        /* ===== CANALES ===== */
         .channel-item {
             display: flex;
             align-items: center;
@@ -204,7 +226,110 @@
         }
         .btn-play i { font-size: 0.7em; }
 
-        /* ===== ÁREA DEL REPRODUCTOR ===== */
+        /* ===== PELÍCULAS/SERIES GRID ===== */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            padding: 5px 0;
+            max-height: calc(100vh - 320px);
+            overflow-y: auto;
+        }
+        .movie-grid::-webkit-scrollbar { width: 4px; }
+        .movie-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        
+        .movie-card {
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .movie-card:hover { 
+            transform: scale(1.04); 
+            background: rgba(255,255,255,0.12);
+            border-color: #e50914;
+            box-shadow: 0 8px 30px rgba(229, 9, 20, 0.15);
+        }
+        .movie-card img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+        }
+        .movie-card .title {
+            font-size: 0.7em;
+            padding: 8px 6px 4px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: rgba(255,255,255,0.9);
+        }
+        .movie-card .year {
+            font-size: 0.6em;
+            color: rgba(255,255,255,0.4);
+            padding-bottom: 8px;
+        }
+
+        /* ===== DETALLE ===== */
+        .detalle-contenido {
+            padding: 10px;
+        }
+        .detalle-contenido h4 {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .detalle-contenido .sub {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.8em;
+        }
+        .servidores-lista {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .servidor-btn {
+            background: rgba(255,255,255,0.08);
+            border: none;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.7em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .servidor-btn:hover {
+            background: #e50914;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+        .episodio-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            gap: 12px;
+        }
+        .episodio-item:hover { background: rgba(255,255,255,0.08); }
+        .episodio-item .num { 
+            font-weight: 700; 
+            color: #e50914;
+            min-width: 30px;
+            font-size: 0.85em;
+        }
+        .episodio-item .ep-titulo { flex: 1; font-size: 0.8em; }
+
+        /* ===== REPRODUCTOR ===== */
         .player-area {
             height: 100vh;
             background: #000;
@@ -231,7 +356,7 @@
             display: none;
         }
 
-        /* ===== INFORMACIÓN DEL CANAL ACTUAL ===== */
+        /* ===== INFO CANAL ACTUAL ===== */
         .current-channel {
             position: absolute;
             bottom: 60px;
@@ -341,19 +466,6 @@
             box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .sidebar { height: 45vh; padding: 14px 12px; }
-            .player-area { height: 55vh; }
-            .channel-logo { width: 32px; height: 32px; font-size: 12px; }
-            .channel-name { font-size: 0.7em; }
-            .btn-play { padding: 4px 10px; font-size: 0.6em; }
-            .nav-tab { font-size: 0.65em; padding: 6px 12px; }
-            .logo { font-size: 1.1em; }
-            .current-channel { bottom: 30px; left: 15px; padding: 8px 14px; font-size: 0.75em; max-width: 85%; }
-            .current-channel .name { font-size: 0.95em; }
-        }
-
         /* ===== LOADING INICIAL ===== */
         .initial-load {
             display: flex;
@@ -372,6 +484,23 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar { height: 45vh; padding: 14px 12px; }
+            .player-area { height: 55vh; }
+            .channel-logo { width: 32px; height: 32px; font-size: 12px; }
+            .channel-name { font-size: 0.7em; }
+            .btn-play { padding: 4px 10px; font-size: 0.6em; }
+            .nav-tab { font-size: 0.65em; padding: 6px 12px; }
+            .logo { font-size: 1.1em; }
+            .current-channel { bottom: 30px; left: 15px; padding: 8px 14px; font-size: 0.75em; max-width: 85%; }
+            .current-channel .name { font-size: 0.95em; }
+            .movie-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+            .movie-card img { height: 120px; }
+            .movie-card .title { font-size: 0.6em; }
+            .filter-btn { font-size: 0.6em; padding: 3px 10px; }
+        }
     </style>
 </head>
 <body>
@@ -388,16 +517,31 @@
                 <!-- Navegación -->
                 <div class="nav-tabs-custom">
                     <button class="nav-tab active" data-section="tv">📺 TV</button>
+                    <button class="nav-tab" data-section="peliculas">🎥 Películas</button>
+                    <button class="nav-tab" data-section="series">📺 Series</button>
+                    <button class="nav-tab" data-section="anime">🎌 Anime</button>
                 </div>
 
                 <!-- Búsqueda -->
-                <input type="text" id="searchInput" placeholder="🔍 Buscar canal...">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar canal, película o serie...">
 
-                <!-- Lista de canales -->
-                <div id="channelsList">
-                    <div class="initial-load">
-                        <div class="spinner"></div>
-                        <span>Cargando canales...</span>
+                <!-- Filtros (solo para TV) -->
+                <div class="filters" id="filterContainer">
+                    <button class="filter-btn active" data-filter="all">🌐 Todos</button>
+                    <button class="filter-btn" data-filter="noticias">📰 Noticias</button>
+                    <button class="filter-btn" data-filter="deportes">⚽ Deportes</button>
+                    <button class="filter-btn" data-filter="entretenimiento">🎬 Entretenimiento</button>
+                    <button class="filter-btn" data-filter="musica">🎵 Música</button>
+                    <button class="filter-btn" data-filter="cultural">🎭 Cultural</button>
+                </div>
+
+                <!-- Contenedor de contenido -->
+                <div id="contentContainer">
+                    <div id="channelsList">
+                        <div class="initial-load">
+                            <div class="spinner"></div>
+                            <span>Cargando canales...</span>
+                        </div>
                     </div>
                 </div>
 
@@ -406,7 +550,7 @@
 
                 <!-- URL Personalizada -->
                 <div class="custom-url-section">
-                    <input type="text" id="customUrl" placeholder="🔗 URL M3U8 o ID Dailymotion">
+                    <input type="text" id="customUrl" placeholder="🔗 URL M3U8 o ID Dailymotion (ej: x84eirw)">
                     <button id="playCustom">▶ Probar URL</button>
                 </div>
             </div>
@@ -434,24 +578,123 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         // ==================== CONFIGURACIÓN ====================
+        const TMDB_API_KEY = '55c0bb848e296dd8d81046079236067d';
+        const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_BASE = 'https://image.tmdb.org/t/p/w200';
+        const API_BASE = 'https://spaycine.xyz/api';
         const PROXY_URL = 'https://iptv-spay.onrender.com/proxy?url=';
 
         // ==================== VARIABLES GLOBALES ====================
         let currentHls = null;
         let canalesData = [];
+        let seccionActual = 'tv';
+        let categoriaActual = 'all';
         let timeoutBusqueda = null;
-        let canalesFiltrados = [];
+        let contenidoActual = null;
+
+        // ==================== PAÍSES ====================
+        const PAISES = [
+            { codigo: 'bo', nombre: 'Bolivia', emoji: '🇧🇴' },
+            { codigo: 'ar', nombre: 'Argentina', emoji: '🇦🇷' },
+            { codigo: 'br', nombre: 'Brasil', emoji: '🇧🇷' },
+            { codigo: 'cl', nombre: 'Chile', emoji: '🇨🇱' },
+            { codigo: 'co', nombre: 'Colombia', emoji: '🇨🇴' },
+            { codigo: 'ec', nombre: 'Ecuador', emoji: '🇪🇨' },
+            { codigo: 'py', nombre: 'Paraguay', emoji: '🇵🇾' },
+            { codigo: 'pe', nombre: 'Perú', emoji: '🇵🇪' },
+            { codigo: 'uy', nombre: 'Uruguay', emoji: '🇺🇾' },
+            { codigo: 've', nombre: 'Venezuela', emoji: '🇻🇪' },
+            { codigo: 'cr', nombre: 'Costa Rica', emoji: '🇨🇷' },
+            { codigo: 'sv', nombre: 'El Salvador', emoji: '🇸🇻' },
+            { codigo: 'gt', nombre: 'Guatemala', emoji: '🇬🇹' },
+            { codigo: 'hn', nombre: 'Honduras', emoji: '🇭🇳' },
+            { codigo: 'ni', nombre: 'Nicaragua', emoji: '🇳🇮' },
+            { codigo: 'pa', nombre: 'Panamá', emoji: '🇵🇦' },
+            { codigo: 'do', nombre: 'República Dominicana', emoji: '🇩🇴' },
+            { codigo: 'pr', nombre: 'Puerto Rico', emoji: '🇵🇷' },
+            { codigo: 'es', nombre: 'España', emoji: '🇪🇸' },
+            { codigo: 'mx', nombre: 'México', emoji: '🇲🇽' }
+        ];
 
         // ==================== MIS CANALES DE DAILYMOTION ====================
         const misCanalesDailymotion = [
-            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion" },
-            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion" },
-            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion" },
-            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion" },
-            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion" },
-            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion" },
-            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion" }
+            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
+            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" }
         ];
+
+        // ==================== FUNCIONES DE API (SpayCine) ====================
+        async function obtenerPeliculas() {
+            try {
+                const response = await fetch(`${API_BASE}/listar_contenido.php?tipo=pelicula`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error('Error cargando películas:', error);
+                return [];
+            }
+        }
+
+        async function obtenerSeries() {
+            try {
+                const response = await fetch(`${API_BASE}/listar_contenido.php?tipo=serie`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error('Error cargando series:', error);
+                return [];
+            }
+        }
+
+        async function obtenerEpisodios(serieId, temporada) {
+            try {
+                const response = await fetch(`${API_BASE}/episodios.php?id=${serieId}&t=${temporada}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error('Error cargando episodios:', error);
+                return null;
+            }
+        }
+
+        async function extraerM3U8DesdeServidor(urlServidor) {
+            try {
+                console.log('🔍 Extrayendo M3U8 desde:', urlServidor);
+                const proxyUrl = `${PROXY_URL}${encodeURIComponent(urlServidor)}`;
+                const response = await fetch(proxyUrl);
+                const html = await response.text();
+                
+                const patrones = [
+                    /https?:\/\/[^\s"']+\.m3u8[^\s"']*/i,
+                    /"file":"([^"]+\.m3u8[^"]*)"/i,
+                    /'file':'([^']+\.m3u8[^']*)'/i,
+                    /src=["']([^"']+\.m3u8[^"']*)["']/i,
+                    /url=["']([^"']+\.m3u8[^"']*)["']/i,
+                    /source=["']([^"']+\.m3u8[^"']*)["']/i
+                ];
+                
+                for (const patron of patrones) {
+                    const match = html.match(patron);
+                    if (match) {
+                        const url = match[1] || match[0];
+                        if (url && url.includes('.m3u8')) {
+                            console.log('✅ M3U8 encontrado:', url);
+                            return url;
+                        }
+                    }
+                }
+                
+                console.log('⚠️ No se encontró M3U8 en la página');
+                return null;
+            } catch (error) {
+                console.error('Error extrayendo M3U8:', error);
+                return null;
+            }
+        }
 
         // ==================== CARGAR LISTA M3U ====================
         async function cargarListaM3U(url, paisOrigen) {
@@ -480,6 +723,9 @@
                     const logo = logoMatch ? logoMatch[1] : '';
                     const idMatch = line.match(/tvg-id="([^"]*)"/);
                     const id = idMatch ? idMatch[1] : '';
+                    const groupMatch = line.match(/group-title="([^"]*)"/);
+                    const grupo = groupMatch ? groupMatch[1] : '';
+                    let categoria = detectarCategoria(nombre, grupo);
                     
                     currentChannel = {
                         id: id,
@@ -487,7 +733,9 @@
                         pais: paisOrigen,
                         logo: logo,
                         url: '',
-                        tipo: 'm3u8'
+                        tipo: 'm3u8',
+                        categoria: categoria,
+                        grupo: grupo
                     };
                 } else if (line && !line.startsWith('#') && currentChannel) {
                     currentChannel.url = line;
@@ -500,42 +748,52 @@
             return canales;
         }
 
+        function detectarCategoria(nombre, grupo) {
+            const texto = (nombre + ' ' + grupo).toLowerCase();
+            const palabrasClave = {
+                'noticias': ['noticia', 'news', 'informe', 'actualidad', 'cnn', 'bbc', 'telefe noticias', 'el trece', 'tvn', 'canal 13', 'red uno', 'unitel', 'atb', 'telesur'],
+                'deportes': ['deporte', 'sport', 'fútbol', 'futbol', 'gol', 'espn', 'tyc', 'fox sports', 'goal', 'racing', 'boca', 'river', 'liga', 'champions', 'uefa', 'libertadores', 'sudamericana', 'nfl', 'nba', 'mlb', 'tennis', 'tenis', 'motogp', 'formula', 'f1', 'automovilismo', 'boxeo', 'ufc', 'wwe', 'lucha', 'baseball', 'beisbol', 'basketball', 'baloncesto', 'deportes', 'sports', 'dazn'],
+                'entretenimiento': ['entretenimiento', 'series', 'películas', 'pelicula', 'cine', 'telefe', 'el trece', 'entreten', 'show', 'telenovela'],
+                'musica': ['música', 'musica', 'music', 'mtv', 'viva', 'radio', 'sound'],
+                'cultural': ['cultural', 'educativo', 'educación', 'documental', 'history', 'discovery', 'cultura']
+            };
+            for (const [categoria, palabras] of Object.entries(palabrasClave)) {
+                for (const palabra of palabras) {
+                    if (texto.includes(palabra)) return categoria;
+                }
+            }
+            return 'entretenimiento';
+        }
+
         // ==================== CARGAR TODOS LOS CANALES ====================
         async function cargarTodosLosCanales() {
             let todosLosCanales = [...misCanalesDailymotion];
+            console.log('📡 Cargando canales desde iptv-org...');
             
-            const paises = ['bo', 'ar', 'br', 'cl', 'co', 'ec', 'py', 'pe', 'uy', 've', 'cr', 'sv', 'gt', 'hn', 'ni', 'pa', 'do', 'pr', 'es', 'mx'];
-            const nombres = {
-                'bo': 'Bolivia', 'ar': 'Argentina', 'br': 'Brasil', 'cl': 'Chile',
-                'co': 'Colombia', 'ec': 'Ecuador', 'py': 'Paraguay', 'pe': 'Perú',
-                'uy': 'Uruguay', 've': 'Venezuela', 'cr': 'Costa Rica', 'sv': 'El Salvador',
-                'gt': 'Guatemala', 'hn': 'Honduras', 'ni': 'Nicaragua', 'pa': 'Panamá',
-                'do': 'República Dominicana', 'pr': 'Puerto Rico', 'es': 'España', 'mx': 'México'
-            };
-            
-            for (const codigo of paises) {
+            for (const pais of PAISES) {
                 try {
-                    const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${codigo}.m3u`, nombres[codigo]);
+                    const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
+                    console.log(`${pais.emoji} ${pais.nombre}: ${canales.length} canales`);
                     todosLosCanales = todosLosCanales.concat(canales);
                 } catch (error) {
-                    console.error(`Error cargando ${codigo}:`, error);
+                    console.error(`Error cargando ${pais.codigo}:`, error);
                 }
             }
             
             try {
                 const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
+                console.log(`⚽ Deportes: ${deportes.length} canales`);
                 todosLosCanales = todosLosCanales.concat(deportes);
             } catch (error) {
                 console.error('Error cargando deportes:', error);
             }
             
+            console.log(`✅ Total canales: ${todosLosCanales.length}`);
             return todosLosCanales;
         }
 
-        // ==================== RENDERIZAR CANALES (Estilo Netflix) ====================
-        function renderChannels(canales) {
-            canalesFiltrados = canales;
-            
+        // ==================== RENDERIZAR TV ====================
+        function renderTV(canales) {
             const porPais = {};
             canales.forEach(canal => {
                 if (!porPais[canal.pais]) porPais[canal.pais] = [];
@@ -544,26 +802,24 @@
             
             const paisesOrdenados = Object.keys(porPais).sort();
             let html = '';
-            
             for (const pais of paisesOrdenados) {
-                html += `<div class="country-group" data-pais="${pais}">
-                    <div class="country-title">${pais}</div>`;
-                
+                html += `<div class="country-group" data-pais="${pais}"><div class="country-title"><span class="emoji">📺</span> ${pais}</div>`;
                 porPais[pais].forEach(canal => {
                     const logoHtml = canal.logo ? 
                         `<img src="${canal.logo}" alt="${canal.nombre}" onerror="this.outerHTML='<span class=\\'fallback\\'>${canal.nombre.charAt(0)}</span>'">` : 
                         `<span class="fallback">${canal.nombre.charAt(0)}</span>`;
                     
-                    const tipo = canal.tipo || 'm3u8';
                     const nombreSanitizado = canal.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     const urlSanitizada = canal.url.replace(/'/g, "\\'");
+                    const tipo = canal.tipo || 'm3u8';
+                    const categoriaAttr = canal.categoria || 'entretenimiento';
                     
                     html += `
-                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${urlSanitizada}" data-nombre-original="${nombreSanitizado}" data-tipo="${tipo}">
+                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${urlSanitizada}" data-nombre-original="${nombreSanitizado}" data-tipo="${tipo}" data-categoria="${categoriaAttr}">
                             <div class="channel-logo">${logoHtml}</div>
                             <span class="channel-name">${canal.nombre}</span>
                             <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${urlSanitizada}', '${nombreSanitizado}', '${tipo}')">
-                                <i class="fas fa-play"></i> Ver
+                                <i class="fas fa-play"></i>
                             </button>
                         </div>
                     `;
@@ -571,8 +827,8 @@
                 html += `</div>`;
             }
             
-            document.getElementById('channelsList').innerHTML = html;
-            actualizarStats();
+            document.getElementById('contentContainer').innerHTML = html;
+            document.getElementById('stats').innerHTML = `📊 ${canales.length} canales | ${paisesOrdenados.length} países`;
             
             document.querySelectorAll('.channel-item').forEach(item => {
                 item.addEventListener('click', function() {
@@ -580,24 +836,250 @@
                 });
             });
             
-            aplicarBusqueda();
+            aplicarFiltrosTV();
         }
 
-        // ==================== ACTUALIZAR ESTADÍSTICAS ====================
-        function actualizarStats() {
-            const total = document.querySelectorAll('.channel-item:not(.hidden)').length;
-            const totalGeneral = document.querySelectorAll('.channel-item').length;
-            document.getElementById('stats').innerHTML = `📊 ${total} canales disponibles`;
+        // ==================== RENDERIZAR PELÍCULAS/SERIES/ANIME ====================
+        function renderContenido(items, tipo) {
+            let html = `<div class="movie-grid">`;
+            items.forEach(item => {
+                const poster = item.poster_url || item.poster_path ? `${IMG_BASE}${item.poster_path}` : 'https://via.placeholder.com/200x300/1a1a2e/666?text=No+Image';
+                const title = item.titulo || item.title || item.name || 'Sin título';
+                const year = item.year || (item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : ''));
+                const id = item.id;
+                html += `
+                    <div class="movie-card" onclick="verDetalle(${id}, '${tipo}')">
+                        <img src="${poster}" alt="${title}" onerror="this.src='https://via.placeholder.com/200x300/1a1a2e/666?text=${encodeURIComponent(title)}'">
+                        <div class="title">${title}</div>
+                        <div class="year">${year}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            document.getElementById('contentContainer').innerHTML = html;
+            const tipoTexto = tipo === 'peliculas' ? 'películas' : tipo === 'series' ? 'series' : 'animes';
+            document.getElementById('stats').innerHTML = `📊 ${items.length} ${tipoTexto}`;
         }
 
-        // ==================== BUSCAR ====================
-        function aplicarBusqueda() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        // ==================== DETALLE ====================
+        async function verDetalle(id, tipo) {
+            if (tipo === 'peliculas') {
+                const peliculas = await obtenerPeliculas();
+                const item = peliculas.find(p => p.id === id);
+                if (!item) return;
+                contenidoActual = item;
+                let html = `
+                    <div class="detalle-contenido">
+                        <button onclick="cargarSeccion('${tipo}')" class="btn btn-sm btn-secondary mb-2" style="background:rgba(255,255,255,0.1);border:none;color:#fff;">← Volver</button>
+                        <h4>${item.titulo} (${item.year || ''})</h4>
+                        <div class="servidores-lista">
+                `;
+                if (item.servidores && item.servidores.length > 0) {
+                    item.servidores.forEach(serv => {
+                        html += `<button class="servidor-btn" onclick="reproducirDesdeServidor({server:'${serv.server}', url:'${serv.url}'}, '${item.titulo}')">▶ ${serv.server}</button>`;
+                    });
+                } else {
+                    html += `<span class="sub">Sin servidores disponibles</span>`;
+                }
+                html += `</div></div>`;
+                document.getElementById('contentContainer').innerHTML = html;
+                document.getElementById('stats').innerHTML = `🎬 ${item.titulo}`;
+            } else if (tipo === 'series' || tipo === 'anime') {
+                const series = await obtenerSeries();
+                const item = series.find(s => s.id === id);
+                if (!item) return;
+                contenidoActual = item;
+                let html = `
+                    <div class="detalle-contenido">
+                        <button onclick="cargarSeccion('${tipo}')" class="btn btn-sm btn-secondary mb-2" style="background:rgba(255,255,255,0.1);border:none;color:#fff;">← Volver</button>
+                        <h4>${item.titulo}</h4>
+                        <p class="sub">${item.temporadas || 0} temporadas | ${item.total_episodios || 0} episodios</p>
+                        <div class="servidores-lista">
+                            <span class="sub" style="margin-right:8px;">Temporadas:</span>
+                `;
+                const numTemp = item.temporadas || 1;
+                for (let t = 1; t <= numTemp; t++) {
+                    html += `<button class="servidor-btn" onclick="verEpisodios(${item.id}, ${t})">T${t}</button>`;
+                }
+                html += `</div><div id="episodiosContainer"></div></div>`;
+                document.getElementById('contentContainer').innerHTML = html;
+                document.getElementById('stats').innerHTML = `📺 ${item.titulo}`;
+            }
+        }
+
+        async function verEpisodios(serieId, temporada) {
+            const data = await obtenerEpisodios(serieId, temporada);
+            if (!data || !data.episodios) return;
+            
+            let html = `<div class="mt-3"><h6 style="color:#fff;font-weight:600;">${data.titulo} - T${temporada}</h6>`;
+            data.episodios.forEach(ep => {
+                let servidoresHtml = '';
+                if (ep.servidores && ep.servidores.length > 0) {
+                    ep.servidores.forEach(serv => {
+                        servidoresHtml += `<button class="servidor-btn" style="font-size:0.6em;padding:4px 10px;" onclick="reproducirDesdeServidor({server:'${serv.server}', url:'${serv.url}'}, '${data.titulo} - T${temporada}E${ep.numero}')">${serv.server}</button>`;
+                    });
+                } else {
+                    servidoresHtml = `<span class="sub">Sin servidores</span>`;
+                }
+                
+                html += `
+                    <div class="episodio-item">
+                        <span class="num">${ep.numero}</span>
+                        <span class="ep-titulo">${ep.titulo || 'Episodio '+ep.numero}</span>
+                        <span class="servidores-lista" style="flex-wrap:wrap;gap:4px;">${servidoresHtml}</span>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            
+            document.getElementById('episodiosContainer').innerHTML = html;
+        }
+
+        // ==================== REPRODUCIR DESDE SERVIDOR ====================
+        async function reproducirDesdeServidor(servidor, titulo) {
+            const loadingMsg = document.getElementById('loadingMessage');
+            loadingMsg.style.display = 'block';
+            document.getElementById('currentChannel').innerHTML = `<span class="name">${titulo}</span><span class="status">⏳ Extrayendo stream...</span>`;
+            
+            const m3u8Url = await extraerM3U8DesdeServidor(servidor.url);
+            
+            if (m3u8Url) {
+                const video = document.getElementById('videoPlayer');
+                const iframe = document.getElementById('dmIframe');
+                iframe.style.display = 'none';
+                video.style.display = 'block';
+                
+                if (currentHls) { currentHls.destroy(); currentHls = null; }
+                if (video.src) { video.pause(); video.removeAttribute('src'); video.load(); }
+                
+                if (Hls.isSupported()) {
+                    currentHls = new Hls({ debug: false, enableWorker: true });
+                    currentHls.loadSource(m3u8Url);
+                    currentHls.attachMedia(video);
+                    currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        loadingMsg.style.display = 'none';
+                        document.getElementById('currentChannel').innerHTML = `<span class="name">${titulo}</span><span class="status"><span class="live">● EN VIVO</span> · ${servidor.server}</span>`;
+                        video.play().catch(e => console.error(e));
+                    });
+                    currentHls.on(Hls.Events.ERROR, () => {
+                        loadingMsg.style.display = 'none';
+                        document.getElementById('currentChannel').innerHTML = `<span class="name">${titulo}</span><span class="status">❌ Error de stream</span>`;
+                    });
+                } else {
+                    video.src = m3u8Url;
+                    video.addEventListener('loadedmetadata', () => {
+                        loadingMsg.style.display = 'none';
+                        document.getElementById('currentChannel').innerHTML = `<span class="name">${titulo}</span><span class="status"><span class="live">● REPRODUCIENDO</span></span>`;
+                        video.play();
+                    }, { once: true });
+                }
+            } else {
+                loadingMsg.style.display = 'none';
+                document.getElementById('currentChannel').innerHTML = `<span class="name">${titulo}</span><span class="status">❌ No se pudo obtener el stream</span>`;
+            }
+        }
+
+        // ==================== BUSQUEDA TMDB ====================
+        async function buscarTMDB(query, tipo) {
+            if (!query.trim()) return [];
+            let endpoint = '';
+            if (tipo === 'peliculas') endpoint = 'search/movie';
+            else if (tipo === 'series') endpoint = 'search/tv';
+            else if (tipo === 'anime') {
+                const url = `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&with_genres=16`;
+                return buscarGenerico(url);
+            }
+            const url = `${TMDB_BASE_URL}/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&language=es`;
+            return buscarGenerico(url);
+        }
+
+        async function buscarTrending(tipo) {
+            let endpoint = '';
+            if (tipo === 'peliculas') endpoint = 'trending/movie/week';
+            else if (tipo === 'series') endpoint = 'trending/tv/week';
+            else if (tipo === 'anime') endpoint = 'discover/tv?with_genres=16&sort_by=popularity.desc';
+            const url = `${TMDB_BASE_URL}/${endpoint}?api_key=${TMDB_API_KEY}&language=es`;
+            return buscarGenerico(url);
+        }
+
+        async function buscarGenerico(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                return data.results || [];
+            } catch (error) {
+                console.error('Error buscando en TMDB:', error);
+                return [];
+            }
+        }
+
+        // ==================== CARGAR SECCIÓN ====================
+        async function cargarSeccion(seccion) {
+            seccionActual = seccion;
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.section === seccion);
+            });
+            
+            const searchInput = document.getElementById('searchInput');
+            const filterContainer = document.getElementById('filterContainer');
+            
+            if (seccion === 'tv') {
+                filterContainer.style.display = 'flex';
+                searchInput.placeholder = '🔍 Buscar canal...';
+                searchInput.value = '';
+                renderTV(canalesData);
+                return;
+            } else {
+                filterContainer.style.display = 'none';
+                searchInput.placeholder = seccion === 'peliculas' ? '🔍 Buscar película...' : seccion === 'series' ? '🔍 Buscar serie...' : '🔍 Buscar anime...';
+                searchInput.value = '';
+            }
+            
+            document.getElementById('contentContainer').innerHTML = `<div class="initial-load"><div class="spinner"></div><span>Cargando ${seccion}...</span></div>`;
+            
+            // Primero intentar con la API de SpayCine
+            if (seccion === 'peliculas') {
+                const peliculas = await obtenerPeliculas();
+                if (peliculas && peliculas.length > 0) {
+                    renderContenido(peliculas, seccion);
+                    return;
+                }
+            } else if (seccion === 'series' || seccion === 'anime') {
+                const series = await obtenerSeries();
+                if (series && series.length > 0) {
+                    renderContenido(series, seccion);
+                    return;
+                }
+            }
+            
+            // Fallback a TMDB
+            const resultados = await buscarTrending(seccion);
+            renderContenido(resultados, seccion);
+        }
+
+        // ==================== FILTROS TV ====================
+        function setupFilters() {
+            const filters = document.querySelectorAll('.filter-btn');
+            filters.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filters.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    categoriaActual = this.dataset.filter;
+                    aplicarFiltrosTV();
+                });
+            });
+        }
+
+        function aplicarFiltrosTV() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             document.querySelectorAll('.channel-item').forEach(item => {
                 const nombre = item.dataset.nombre || '';
-                const isVisible = !searchTerm || nombre.includes(searchTerm);
-                item.classList.toggle('hidden', !isVisible);
+                const categoria = item.dataset.categoria || 'entretenimiento';
+                const matchSearch = nombre.includes(searchTerm);
+                const matchCategoria = categoriaActual === 'all' || categoria === categoriaActual;
+                item.classList.toggle('hidden', !(matchSearch && matchCategoria));
             });
             
             document.querySelectorAll('.country-group').forEach(group => {
@@ -605,14 +1087,31 @@
                 group.style.display = visibleItems.length > 0 ? '' : 'none';
             });
             
-            actualizarStats();
+            const totalVisibles = document.querySelectorAll('.channel-item:not(.hidden)').length;
+            document.getElementById('stats').innerHTML = `📊 ${totalVisibles} canales visibles`;
         }
 
+        // ==================== BÚSQUEDA ====================
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', function() {
                 clearTimeout(timeoutBusqueda);
-                timeoutBusqueda = setTimeout(aplicarBusqueda, 150);
+                timeoutBusqueda = setTimeout(() => {
+                    if (seccionActual === 'tv') {
+                        aplicarFiltrosTV();
+                    } else {
+                        const query = this.value.trim();
+                        if (query) {
+                            buscarTMDB(query, seccionActual).then(results => {
+                                renderContenido(results, seccionActual);
+                            });
+                        } else {
+                            buscarTrending(seccionActual).then(results => {
+                                renderContenido(results, seccionActual);
+                            });
+                        }
+                    }
+                }, 300);
             });
         }
 
@@ -623,37 +1122,20 @@
             const iframe = document.getElementById('dmIframe');
             const currentChannel = document.getElementById('currentChannel');
             
-            // Limpiar estado anterior
-            if (currentHls) {
-                currentHls.destroy();
-                currentHls = null;
-            }
-            if (video.src) {
-                video.pause();
-                video.removeAttribute('src');
-                video.load();
-            }
-            if (iframe) {
-                iframe.src = '';
-                iframe.style.display = 'none';
-            }
+            if (currentHls) { currentHls.destroy(); currentHls = null; }
+            if (video.src) { video.pause(); video.removeAttribute('src'); video.load(); }
+            if (iframe) { iframe.src = ''; iframe.style.display = 'none'; }
             
             video.style.display = 'block';
             loadingMsg.style.display = 'block';
-            currentChannel.innerHTML = `
-                <span class="name">${channelName}</span>
-                <span class="status">⏳ Conectando...</span>
-            `;
+            currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status">⏳ Conectando...</span>`;
             
-            // Resaltar activo
             document.querySelectorAll('.channel-item').forEach(item => {
                 item.classList.remove('active');
-                if (item.dataset.nombreOriginal === channelName) {
-                    item.classList.add('active');
-                }
+                if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
             });
             
-            // Detectar Dailymotion
+            // Dailymotion
             const dmMatch = url.match(/\/video\/([a-z0-9]+)/i);
             if (dmMatch || tipo === 'dailymotion') {
                 const videoId = dmMatch ? dmMatch[1] : null;
@@ -662,10 +1144,22 @@
                     video.style.display = 'none';
                     iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
                     loadingMsg.style.display = 'none';
-                    currentChannel.innerHTML = `
-                        <span class="name">${channelName}</span>
-                        <span class="status"><span class="live">● EN VIVO</span> · Dailymotion</span>
-                    `;
+                    currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status"><span class="live">● EN VIVO</span> · Dailymotion</span>`;
+                    return;
+                }
+            }
+            
+            // YouTube
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let videoId = '';
+                if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+                else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+                if (videoId) {
+                    iframe.style.display = 'block';
+                    video.style.display = 'none';
+                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    loadingMsg.style.display = 'none';
+                    currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status"><span class="live">● REPRODUCIENDO</span> · YouTube</span>`;
                     return;
                 }
             }
@@ -678,42 +1172,27 @@
                     currentHls.attachMedia(video);
                     currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                         loadingMsg.style.display = 'none';
-                        currentChannel.innerHTML = `
-                            <span class="name">${channelName}</span>
-                            <span class="status"><span class="live">● EN VIVO</span> · HLS</span>
-                        `;
+                        currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status"><span class="live">● EN VIVO</span> · HLS</span>`;
                         video.play().catch(e => console.error('Error:', e));
                     });
                     currentHls.on(Hls.Events.ERROR, () => {
                         loadingMsg.style.display = 'none';
-                        currentChannel.innerHTML = `
-                            <span class="name">${channelName}</span>
-                            <span class="status">❌ Error de stream</span>
-                        `;
+                        currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status">❌ Error de stream</span>`;
                     });
                 } else {
                     video.src = url;
                     video.addEventListener('loadedmetadata', () => {
                         loadingMsg.style.display = 'none';
-                        currentChannel.innerHTML = `
-                            <span class="name">${channelName}</span>
-                            <span class="status"><span class="live">● EN VIVO</span></span>
-                        `;
+                        currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status"><span class="live">● EN VIVO</span></span>`;
                         video.play();
                     }, { once: true });
                 }
             } else if (url.startsWith('http')) {
                 loadingMsg.style.display = 'none';
-                currentChannel.innerHTML = `
-                    <span class="name">${channelName}</span>
-                    <span class="status">🔗 <a href="${url}" target="_blank" style="color:#e50914;">Abrir en nueva pestaña</a></span>
-                `;
+                currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status">🔗 <a href="${url}" target="_blank" style="color:#e50914;">Abrir en nueva pestaña</a></span>`;
             } else {
                 loadingMsg.style.display = 'none';
-                currentChannel.innerHTML = `
-                    <span class="name">${channelName}</span>
-                    <span class="status">❌ Formato no soportado</span>
-                `;
+                currentChannel.innerHTML = `<span class="name">${channelName}</span><span class="status">❌ Formato no soportado</span>`;
             }
         }
 
@@ -745,18 +1224,27 @@
             });
         }
 
+        // ==================== NAVEGACIÓN ====================
+        function setupNavigation() {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    cargarSeccion(this.dataset.section);
+                });
+            });
+        }
+
         // ==================== INICIALIZAR ====================
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🎬 Iniciando SpayCine TV...');
+            console.log('🎬 Iniciando SpayCine...');
             
-            // Cargar canales
-            const canales = await cargarTodosLosCanales();
-            canalesData = canales;
-            renderChannels(canales);
+            canalesData = await cargarTodosLosCanales();
+            renderTV(canalesData);
+            setupNavigation();
             setupSearch();
+            setupFilters();
             setupCustomUrl();
             
-            console.log(`✅ ${canales.length} canales cargados`);
+            console.log(`✅ ${canalesData.length} canales cargados`);
         });
     </script>
 </body>
