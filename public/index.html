@@ -173,19 +173,33 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         // ==================== CONFIGURACIÓN ====================
-        const PAISES = [
-            { codigo: 'bo', nombre: 'Bolivia', emoji: '🇧🇴' },
-            { codigo: 'ar', nombre: 'Argentina', emoji: '🇦🇷' },
-            { codigo: 'br', nombre: 'Brasil', emoji: '🇧🇷' },
-            { codigo: 'cl', nombre: 'Chile', emoji: '🇨🇱' },
-            { codigo: 'co', nombre: 'Colombia', emoji: '🇨🇴' },
-            { codigo: 'mx', nombre: 'México', emoji: '🇲🇽' },
-            { codigo: 'pe', nombre: 'Perú', emoji: '🇵🇪' },
-            { codigo: 'ec', nombre: 'Ecuador', emoji: '🇪🇨' },
-            { codigo: 'py', nombre: 'Paraguay', emoji: '🇵🇾' },
-            { codigo: 'uy', nombre: 'Uruguay', emoji: '🇺🇾' },
-            { codigo: 've', nombre: 'Venezuela', emoji: '🇻🇪' }
-        ];
+       const PAISES = [
+    // Sudamérica
+    { codigo: 'bo', nombre: 'Bolivia', emoji: '🇧🇴' },
+    { codigo: 'ar', nombre: 'Argentina', emoji: '🇦🇷' },
+    { codigo: 'br', nombre: 'Brasil', emoji: '🇧🇷' },
+    { codigo: 'cl', nombre: 'Chile', emoji: '🇨🇱' },
+    { codigo: 'co', nombre: 'Colombia', emoji: '🇨🇴' },
+    { codigo: 'ec', nombre: 'Ecuador', emoji: '🇪🇨' },
+    { codigo: 'py', nombre: 'Paraguay', emoji: '🇵🇾' },
+    { codigo: 'pe', nombre: 'Perú', emoji: '🇵🇪' },
+    { codigo: 'uy', nombre: 'Uruguay', emoji: '🇺🇾' },
+    { codigo: 've', nombre: 'Venezuela', emoji: '🇻🇪' },
+    // Centroamérica
+    { codigo: 'cr', nombre: 'Costa Rica', emoji: '🇨🇷' },
+    { codigo: 'sv', nombre: 'El Salvador', emoji: '🇸🇻' },
+    { codigo: 'gt', nombre: 'Guatemala', emoji: '🇬🇹' },
+    { codigo: 'hn', nombre: 'Honduras', emoji: '🇭🇳' },
+    { codigo: 'ni', nombre: 'Nicaragua', emoji: '🇳🇮' },
+    { codigo: 'pa', nombre: 'Panamá', emoji: '🇵🇦' },
+    // Caribe
+    { codigo: 'do', nombre: 'República Dominicana', emoji: '🇩🇴' },
+    { codigo: 'pr', nombre: 'Puerto Rico', emoji: '🇵🇷' },
+    // Otros países hispanos
+    { codigo: 'es', nombre: 'España', emoji: '🇪🇸' },
+    { codigo: 'mx', nombre: 'México', emoji: '🇲🇽' },
+    { codigo: 'us', nombre: 'EE.UU. (hispano)', emoji: '🇺🇸' }
+];
 
         // ==================== MIS CANALES DE DAILYMOTION ====================
         const misCanalesDailymotion = [
@@ -261,42 +275,63 @@
         }
 
         // ==================== DETECTAR CATEGORÍA ====================
-        function detectarCategoria(nombre, grupo) {
-            const texto = (nombre + ' ' + grupo).toLowerCase();
-            
-            const palabrasClave = {
-                'noticias': ['noticia', 'news', 'informe', 'actualidad', 'cnn', 'bbc', 'telefe noticias', 'el trece', 'tvn', 'canal 13', 'red uno', 'unitel', 'atb', 'telesur'],
-                'deportes': ['deporte', 'sport', 'fútbol', 'futbol', 'gol', 'espn', 'tyc', 'fox sports', 'goal', 'racing', 'boca', 'river', 'liga'],
-                'entretenimiento': ['entretenimiento', 'series', 'películas', 'pelicula', 'cine', 'telefe', 'el trece', 'entreten', 'show', 'telenovela'],
-                'musica': ['música', 'musica', 'music', 'mtv', 'viva', 'radio', 'sound'],
-                'cultural': ['cultural', 'educativo', 'educación', 'documental', 'history', 'discovery', 'cultura']
-            };
-            
-            for (const [categoria, palabras] of Object.entries(palabrasClave)) {
-                for (const palabra of palabras) {
-                    if (texto.includes(palabra)) {
-                        return categoria;
-                    }
-                }
+      function detectarCategoria(nombre, grupo) {
+    const texto = (nombre + ' ' + grupo).toLowerCase();
+    
+    const palabrasClave = {
+        'noticias': ['noticia', 'news', 'informe', 'actualidad', 'cnn', 'bbc', 'telefe noticias', 'el trece', 'tvn', 'canal 13', 'red uno', 'unitel', 'atb', 'telesur'],
+        'deportes': [
+            'deporte', 'sport', 'fútbol', 'futbol', 'gol', 'espn', 'tyc', 'fox sports', 'goal', 
+            'racing', 'boca', 'river', 'liga', 'champions', 'uefa', 'libertadores', 'sudamericana',
+            'nfl', 'nba', 'mlb', 'tennis', 'tenis', 'motogp', 'formula', 'f1', 'automovilismo',
+            'boxeo', 'ufc', 'wwe', 'lucha', 'baseball', 'beisbol', 'basketball', 'baloncesto',
+            'voleibol', 'waterpolo', 'hockey', 'rugby', 'ciclismo', 'natación', 'atletismo',
+            'deportes', 'sports', 'dazn', 'goat', 'win'
+        ],
+        'entretenimiento': ['entretenimiento', 'series', 'películas', 'pelicula', 'cine', 'telefe', 'el trece', 'entreten', 'show', 'telenovela'],
+        'musica': ['música', 'musica', 'music', 'mtv', 'viva', 'radio', 'sound'],
+        'cultural': ['cultural', 'educativo', 'educación', 'documental', 'history', 'discovery', 'cultura']
+    };
+    
+    for (const [categoria, palabras] of Object.entries(palabrasClave)) {
+        for (const palabra of palabras) {
+            if (texto.includes(palabra)) {
+                return categoria;
             }
-            return 'entretenimiento'; // categoría por defecto
         }
+    }
+    return 'entretenimiento';
+}
 
         // ==================== CARGAR TODOS LOS CANALES ====================
-        async function cargarTodosLosCanales() {
-            let todosLosCanales = [...misCanalesDailymotion];
-            
-            console.log('📡 Cargando canales desde iptv-org...');
-            
-            for (const pais of PAISES) {
-                const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
-                console.log(`${pais.emoji} ${pais.nombre}: ${canales.length} canales`);
-                todosLosCanales = todosLosCanales.concat(canales);
-            }
-            
-            console.log(`✅ Total canales: ${todosLosCanales.length}`);
-            return todosLosCanales;
-        }
+       async function cargarTodosLosCanales() {
+    let todosLosCanales = [...misCanalesDailymotion];
+    
+    console.log('📡 Cargando canales desde iptv-org...');
+    
+    // Cargar países
+    for (const pais of PAISES) {
+        const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
+        console.log(`${pais.emoji} ${pais.nombre}: ${canales.length} canales`);
+        todosLosCanales = todosLosCanales.concat(canales);
+    }
+    
+    // ====== CANALES DEPORTIVOS ADICIONALES ======
+    console.log('🏆 Cargando canales deportivos...');
+    
+    // Deportes en español
+    const deportesES = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
+    console.log(`⚽ Deportes (español): ${deportesES.length} canales`);
+    todosLosCanales = todosLosCanales.concat(deportesES);
+    
+    // Deportes internacionales
+    const deportesINT = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u?lang=es', 'Deportes Internacional');
+    console.log(`⚽ Deportes (internacional): ${deportesINT.length} canales`);
+    todosLosCanales = todosLosCanales.concat(deportesINT);
+    
+    console.log(`✅ Total canales: ${todosLosCanales.length}`);
+    return todosLosCanales;
+}
 
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels(canales) {
