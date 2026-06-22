@@ -510,14 +510,17 @@
     <!-- ================================================================
     MODAL DEL REPRODUCTOR
     ================================================================ -->
+        <!-- ================================================================
+    MODAL DEL REPRODUCTOR (VERSIÓN SIMPLIFICADA)
+    ================================================================ -->
     <div id="playerModal" class="player-modal-overlay">
         <div class="player-modal">
-            <!-- Cabecera -->
+            <!-- Cabecera (ahora con más espacio para el EPG) -->
             <div class="player-modal-header">
                 <div class="title" id="modalTitle">
-                    <span>📺</span>
                     <span id="modalChannelName">Canal</span>
                     <span class="live" id="modalLiveStatus">● EN VIVO</span>
+                    <span class="epg-info" id="modalEpgInfo">Programa actual</span> <!-- Espacio para EPG -->
                 </div>
                 <button class="close-btn" id="modalCloseBtn">
                     <i class="fas fa-times"></i>
@@ -533,13 +536,7 @@
                     <span>Cargando stream...</span>
                 </div>
             </div>
-
-            <!-- Info inferior -->
-            <div class="player-modal-info">
-                <span class="channel-name" id="modalInfoName">Sin canal seleccionado</span>
-                <span class="channel-status" id="modalInfoStatus">Selecciona un canal para comenzar</span>
-                <input class="url-input" id="modalUrlInput" placeholder="🔗 Pega URL M3U8 o ID...">
-            </div>
+            <!-- La barra inferior ha sido eliminada -->
         </div>
     </div>
 
@@ -805,9 +802,9 @@
             // Actualizar info del modal
             document.getElementById('modalChannelName').textContent = channelName;
             document.getElementById('modalLiveStatus').textContent = '● CONECTANDO';
-            document.getElementById('modalInfoName').textContent = channelName;
-            document.getElementById('modalInfoStatus').textContent = '⏳ Cargando stream...';
-            document.getElementById('modalUrlInput').value = url;
+            //document.getElementById('modalInfoName').textContent = channelName;
+            //document.getElementById('modalInfoStatus').textContent = '⏳ Cargando stream...';
+            //document.getElementById('modalUrlInput').value = url;
             modalChannelName = channelName;
             
             // Mostrar modal
