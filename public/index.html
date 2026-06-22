@@ -3,239 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SpayCine - Canales TV, Películas, Series y Anime</title>
+    <title>SpayCine TV - Canales en vivo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ===== RESET Y BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0e27; color: #fff; overflow: hidden; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+        /* ===== SIDEBAR ===== */
         .sidebar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0f1328;
             height: 100vh;
             overflow-y: auto;
-            padding: 15px;
+            padding: 20px 16px;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            flex-direction: column;
         }
-        .sidebar::-webkit-scrollbar { width: 6px; }
-        .sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
-        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
         
+        /* ===== LOGO ===== */
+        .logo {
+            font-size: 1.4em;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo span { color: #e50914; }
+        .logo i { font-size: 1.2em; color: #e50914; }
+
+        /* ===== NAVEGACIÓN ===== */
         .nav-tabs-custom {
             display: flex;
-            gap: 6px;
-            margin-bottom: 12px;
+            gap: 8px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
         .nav-tab {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.06);
             border: none;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.75em;
+            color: rgba(255,255,255,0.6);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.8em;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             flex: 1;
             text-align: center;
             min-width: 60px;
+            letter-spacing: 0.3px;
         }
-        .nav-tab:hover { background: rgba(255,255,255,0.25); }
-        .nav-tab.active { background: #ffd700; color: #000; font-weight: bold; }
-        
-        .country-group { margin-bottom: 20px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; }
-        .country-title { color: #ffd700; font-size: 1.1em; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #ffd700; }
-        
+        .nav-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .nav-tab.active { 
+            background: #e50914; 
+            color: #fff; 
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        /* ===== BÚSQUEDA ===== */
+        #searchInput {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 30px;
+            padding: 10px 18px;
+            font-size: 0.85em;
+            width: 100%;
+            color: #fff;
+            transition: all 0.3s;
+            margin-bottom: 14px;
+        }
+        #searchInput::placeholder { color: rgba(255,255,255,0.35); }
+        #searchInput:focus { 
+            outline: none; 
+            border-color: #e50914;
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15);
+        }
+
+        /* ===== PAÍSES ===== */
+        .country-group {
+            margin-bottom: 18px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 12px 14px;
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: all 0.3s;
+        }
+        .country-group:hover { background: rgba(255,255,255,0.06); }
+        .country-title {
+            font-size: 1em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid rgba(229, 9, 20, 0.3);
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.2px;
+        }
+        .country-title::before {
+            content: "📺";
+            font-size: 0.9em;
+        }
+
+        /* ===== CANALES (tarjetas estilo Netflix) ===== */
         .channel-item {
             display: flex;
             align-items: center;
-            padding: 6px 8px;
-            margin: 4px 0;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 6px 0;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            gap: 8px;
+            transition: all 0.25s ease;
+            gap: 12px;
+            border: 1px solid transparent;
         }
-        .channel-item:hover { background: rgba(255,255,255,0.2); transform: translateX(3px); }
-        .channel-item.active { background: rgba(76, 175, 80, 0.3); border-left: 4px solid #4CAF50; }
+        .channel-item:hover {
+            background: rgba(255,255,255,0.09);
+            transform: translateX(4px);
+            border-color: rgba(255,255,255,0.08);
+        }
+        .channel-item.active {
+            background: rgba(229, 9, 20, 0.15);
+            border-color: rgba(229, 9, 20, 0.3);
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.05);
+        }
         .channel-item.hidden { display: none; }
-        
+
         .channel-logo {
-            width: 35px;
-            height: 35px;
-            background: #667eea;
-            border-radius: 6px;
+            width: 38px;
+            height: 38px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             flex-shrink: 0;
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
         }
-        .channel-logo img { width: 100%; height: 100%; object-fit: cover; }
-        .channel-name { flex: 1; font-size: 0.75em; font-weight: 500; line-height: 1.2; word-break: break-word; }
-        .btn-play {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 3px 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            font-size: 0.65em;
-        }
-        .btn-play:hover { background: #45a049; transform: scale(1.05); }
-        
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 10px;
-            padding: 5px 0;
-            max-height: calc(100vh - 280px);
-            overflow-y: auto;
-        }
-        .movie-grid::-webkit-scrollbar { width: 4px; }
-        .movie-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
-        
-        .movie-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        .movie-card:hover { transform: scale(1.03); background: rgba(255,255,255,0.15); }
-        .movie-card img {
+        .channel-logo img {
             width: 100%;
-            height: 170px;
+            height: 100%;
             object-fit: cover;
         }
-        .movie-card .title {
-            font-size: 0.7em;
-            padding: 6px 4px;
+        .channel-logo .fallback {
+            font-size: 16px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .channel-name {
+            flex: 1;
+            font-size: 0.8em;
             font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            line-height: 1.2;
+            color: rgba(255,255,255,0.85);
+            letter-spacing: -0.1px;
         }
-        .movie-card .year {
-            font-size: 0.6em;
-            color: #aaa;
-            padding-bottom: 4px;
+
+        .btn-play {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 5px 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 0.7em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.3px;
         }
-        
-        .player-area { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
-        .player-container { width: 100%; height: 100%; position: relative; background: #000; }
-        #videoPlayer { width: 100%; height: 100%; background: #000; }
-        #dmIframe { width: 100%; height: 100%; border: none; display: none; }
+        .btn-play:hover {
+            background: #e50914;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+        .btn-play i { font-size: 0.7em; }
+
+        /* ===== ÁREA DEL REPRODUCTOR ===== */
+        .player-area {
+            height: 100vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .player-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+        }
+        #videoPlayer {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        #dmIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+        }
+
+        /* ===== INFORMACIÓN DEL CANAL ACTUAL ===== */
         .current-channel {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 0.8em;
-            z-index: 10;
-            border-left: 4px solid #4CAF50;
-            pointer-events: none;
-        }
-        #searchInput {
-            background: rgba(255,255,255,0.95);
-            border: none;
-            margin-bottom: 10px;
-            border-radius: 25px;
-            padding: 8px 14px;
+            bottom: 60px;
+            left: 30px;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
             font-size: 0.85em;
-            width: 100%;
+            z-index: 10;
+            border-left: 3px solid #e50914;
+            pointer-events: none;
+            max-width: 70%;
+            transition: all 0.3s;
         }
-        #searchInput:focus { outline: none; box-shadow: 0 0 0 3px rgba(255,215,0,0.5); }
+        .current-channel .name {
+            font-weight: 700;
+            font-size: 1.1em;
+            display: block;
+        }
+        .current-channel .status {
+            font-size: 0.75em;
+            color: rgba(255,255,255,0.5);
+        }
+        .current-channel .status .live {
+            color: #e50914;
+            font-weight: 600;
+        }
+
+        /* ===== LOADING ===== */
         .loading-message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 20px 35px;
+            border-radius: 12px;
             z-index: 20;
             display: none;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.06);
         }
-        @media (max-width: 768px) {
-            .sidebar { height: 40vh; padding: 10px; }
-            .player-area { height: 60vh; }
-            .channel-logo { width: 28px; height: 28px; font-size: 11px; }
-            .channel-name { font-size: 0.65em; }
-            .btn-play { padding: 2px 6px; font-size: 0.55em; }
-            .movie-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; max-height: calc(100vh - 300px); }
-            .movie-card img { height: 120px; }
-            .movie-card .title { font-size: 0.6em; }
-            .nav-tab { font-size: 0.65em; padding: 4px 8px; }
+        .loading-message .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #e50914;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
         }
-        .stats { text-align: center; margin-top: 8px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; font-size: 0.7em; }
-        .custom-url-section { margin-top: 10px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 10px; }
-        .custom-url-section input { background: rgba(255,255,255,0.95); border: none; border-radius: 20px; padding: 5px 10px; width: 100%; margin-bottom: 4px; font-size: 0.75em; }
-        .custom-url-section button { background: #ff9800; width: 100%; padding: 4px; font-size: 0.75em; }
-        .error-message { background: rgba(220,53,69,0.9); color: white; padding: 15px; border-radius: 10px; text-align: center; }
-        .servidores-lista { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-        .servidor-btn {
-            background: rgba(255,255,255,0.15);
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== ESTADÍSTICAS ===== */
+        .stats {
+            text-align: center;
+            margin-top: 12px;
+            padding: 8px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            font-size: 0.7em;
+            color: rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        /* ===== URL PERSONALIZADA ===== */
+        .custom-url-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .custom-url-section input {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 30px;
+            padding: 8px 14px;
+            width: 100%;
+            margin-bottom: 6px;
+            font-size: 0.75em;
+            color: #fff;
+        }
+        .custom-url-section input::placeholder { color: rgba(255,255,255,0.3); }
+        .custom-url-section input:focus {
+            outline: none;
+            border-color: #e50914;
+        }
+        .custom-url-section button {
+            background: rgba(255,255,255,0.08);
             border: none;
             color: #fff;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.65em;
+            width: 100%;
+            padding: 6px;
+            border-radius: 30px;
+            font-size: 0.75em;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
-        .servidor-btn:hover { background: #ffd700; color: #000; }
-        .detalle-contenido { padding: 10px; }
-        .detalle-contenido h4 { color: #ffd700; margin-bottom: 8px; }
-        .episodio-item {
+        .custom-url-section button:hover {
+            background: #e50914;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar { height: 45vh; padding: 14px 12px; }
+            .player-area { height: 55vh; }
+            .channel-logo { width: 32px; height: 32px; font-size: 12px; }
+            .channel-name { font-size: 0.7em; }
+            .btn-play { padding: 4px 10px; font-size: 0.6em; }
+            .nav-tab { font-size: 0.65em; padding: 6px 12px; }
+            .logo { font-size: 1.1em; }
+            .current-channel { bottom: 30px; left: 15px; padding: 8px 14px; font-size: 0.75em; max-width: 85%; }
+            .current-channel .name { font-size: 0.95em; }
+        }
+
+        /* ===== LOADING INICIAL ===== */
+        .initial-load {
             display: flex;
             align-items: center;
-            padding: 6px 8px;
-            margin: 4px 0;
-            background: rgba(255,255,255,0.05);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+            gap: 12px;
+            color: rgba(255,255,255,0.3);
         }
-        .episodio-item:hover { background: rgba(255,255,255,0.15); }
-        .episodio-item .num { width: 30px; font-weight: bold; color: #ffd700; }
+        .initial-load .spinner {
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top-color: #e50914;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid p-0">
         <div class="row g-0">
+            <!-- ===== SIDEBAR ===== -->
             <div class="col-md-4 col-lg-3 sidebar">
-                <h3 class="text-center mb-2" style="font-size:1.1em;">🎬 SpayCine</h3>
-                
+                <!-- Logo -->
+                <div class="logo">
+                    <i class="fas fa-play-circle"></i>
+                    Spay<span>Cine</span>
+                </div>
+
+                <!-- Navegación -->
                 <div class="nav-tabs-custom">
                     <button class="nav-tab active" data-section="tv">📺 TV</button>
-                    <button class="nav-tab" data-section="peliculas">🎥 Películas</button>
-                    <button class="nav-tab" data-section="series">📺 Series</button>
                 </div>
-                
-                <input type="text" id="searchInput" placeholder="🔍 Buscar...">
-                <div id="contentContainer">
-                    <div id="channelsList"><div class="text-center p-3"><div class="spinner-border text-light"></div><p class="mt-2">Cargando canales...</p></div></div>
+
+                <!-- Búsqueda -->
+                <input type="text" id="searchInput" placeholder="🔍 Buscar canal...">
+
+                <!-- Lista de canales -->
+                <div id="channelsList">
+                    <div class="initial-load">
+                        <div class="spinner"></div>
+                        <span>Cargando canales...</span>
+                    </div>
                 </div>
-                <div class="stats" id="stats"></div>
+
+                <!-- Estadísticas -->
+                <div class="stats" id="stats">📊 Cargando...</div>
+
+                <!-- URL Personalizada -->
                 <div class="custom-url-section">
-                    <input type="text" id="customUrl" placeholder="🔗 URL M3U8 o ID (ej: x84eirw)">
-                    <button id="playCustom" class="btn btn-warning">▶ Probar URL</button>
+                    <input type="text" id="customUrl" placeholder="🔗 URL M3U8 o ID Dailymotion">
+                    <button id="playCustom">▶ Probar URL</button>
                 </div>
             </div>
+
+            <!-- ===== REPRODUCTOR ===== -->
             <div class="col-md-8 col-lg-9 player-area">
                 <div class="player-container">
                     <video id="videoPlayer" controls preload="auto" style="display: block;"></video>
                     <iframe id="dmIframe" allow="autoplay; fullscreen"></iframe>
-                    <div id="currentChannel" class="current-channel">⚡ No hay contenido seleccionado</div>
-                    <div id="loadingMessage" class="loading-message">📡 Cargando...</div>
+                    
+                    <div id="currentChannel" class="current-channel">
+                        <span class="name">⚡ Sin selección</span>
+                        <span class="status">Selecciona un canal para comenzar</span>
+                    </div>
+                    
+                    <div id="loadingMessage" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>Cargando stream...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -244,169 +434,24 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         // ==================== CONFIGURACIÓN ====================
-        const API_BASE = 'https://spaycine.xyz/api';
         const PROXY_URL = 'https://iptv-spay.onrender.com/proxy?url=';
-        
+
         // ==================== VARIABLES GLOBALES ====================
         let currentHls = null;
         let canalesData = [];
-        let seccionActual = 'tv';
         let timeoutBusqueda = null;
-        let contenidoActual = null;
-        
+        let canalesFiltrados = [];
+
         // ==================== MIS CANALES DE DAILYMOTION ====================
         const misCanalesDailymotion = [
-            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
-            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" }
+            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion" },
+            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion" },
+            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion" },
+            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion" },
+            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion" },
+            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion" },
+            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion" }
         ];
-
-        // ==================== FUNCIONES DE API ====================
-        async function obtenerPeliculas() {
-            try {
-                const response = await fetch(`${API_BASE}/listar_contenido.php?tipo=pelicula`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return await response.json();
-            } catch (error) {
-                console.error('Error cargando películas:', error);
-                return [];
-            }
-        }
-
-        async function obtenerSeries() {
-            try {
-                const response = await fetch(`${API_BASE}/listar_contenido.php?tipo=serie`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return await response.json();
-            } catch (error) {
-                console.error('Error cargando series:', error);
-                return [];
-            }
-        }
-
-        async function obtenerEpisodios(serieId, temporada) {
-            try {
-                const response = await fetch(`${API_BASE}/episodios.php?id=${serieId}&t=${temporada}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                return await response.json();
-            } catch (error) {
-                console.error('Error cargando episodios:', error);
-                return null;
-            }
-        }
-
-        // ==================== EXTRAER M3U8 DESDE URL DEL SERVIDOR ====================
-        async function extraerM3U8DesdeServidor(urlServidor) {
-            try {
-                console.log('🔍 Extrayendo M3U8 desde:', urlServidor);
-                
-                // Usar proxy para evitar CORS
-                const proxyUrl = `${PROXY_URL}${encodeURIComponent(urlServidor)}`;
-                const response = await fetch(proxyUrl);
-                const html = await response.text();
-                
-                // Buscar .m3u8 en el HTML (múltiples patrones)
-                const patrones = [
-                    /https?:\/\/[^\s"']+\.m3u8[^\s"']*/i,
-                    /"file":"([^"]+\.m3u8[^"]*)"/i,
-                    /'file':'([^']+\.m3u8[^']*)'/i,
-                    /src=["']([^"']+\.m3u8[^"']*)["']/i,
-                    /url=["']([^"']+\.m3u8[^"']*)["']/i,
-                    /source=["']([^"']+\.m3u8[^"']*)["']/i,
-                    /video=["']([^"']+\.m3u8[^"']*)["']/i
-                ];
-                
-                for (const patron of patrones) {
-                    const match = html.match(patron);
-                    if (match) {
-                        const url = match[1] || match[0];
-                        if (url && url.includes('.m3u8')) {
-                            console.log('✅ M3U8 encontrado:', url);
-                            return url;
-                        }
-                    }
-                }
-                
-                // Buscar en el JSON dentro del HTML
-                try {
-                    const jsonMatch = html.match(/\{[^{]*"file"[^{]*"([^"]+\.m3u8[^"]*)"[^}]*\}/i);
-                    if (jsonMatch) {
-                        const jsonData = JSON.parse('{' + jsonMatch[0] + '}');
-                        if (jsonData.file && jsonData.file.includes('.m3u8')) {
-                            console.log('✅ M3U8 encontrado en JSON:', jsonData.file);
-                            return jsonData.file;
-                        }
-                    }
-                } catch (e) {}
-                
-                // Buscar en el contenido de scripts
-                const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
-                let scriptMatch;
-                while ((scriptMatch = scriptRegex.exec(html)) !== null) {
-                    const scriptContent = scriptMatch[1];
-                    const urlMatch = scriptContent.match(/https?:\/\/[^\s"']+\.m3u8[^\s"']*/i);
-                    if (urlMatch) {
-                        console.log('✅ M3U8 encontrado en script:', urlMatch[0]);
-                        return urlMatch[0];
-                    }
-                }
-                
-                console.log('⚠️ No se encontró M3U8 en la página');
-                return null;
-            } catch (error) {
-                console.error('Error extrayendo M3U8:', error);
-                return null;
-            }
-        }
-
-        // ==================== REPRODUCIR DESDE SERVIDOR ====================
-        async function reproducirDesdeServidor(servidor, titulo) {
-            const loadingMsg = document.getElementById('loadingMessage');
-            loadingMsg.style.display = 'block';
-            document.getElementById('currentChannel').innerHTML = `🎬 ${titulo}<br><small>Extrayendo stream...</small>`;
-            
-            const m3u8Url = await extraerM3U8DesdeServidor(servidor.url);
-            
-            if (m3u8Url) {
-                // Reproducir el M3U8
-                const video = document.getElementById('videoPlayer');
-                const iframe = document.getElementById('dmIframe');
-                iframe.style.display = 'none';
-                video.style.display = 'block';
-                
-                if (currentHls) { currentHls.destroy(); currentHls = null; }
-                if (video.src) { video.pause(); video.removeAttribute('src'); video.load(); }
-                
-                if (Hls.isSupported()) {
-                    currentHls = new Hls({ debug: false, enableWorker: true });
-                    currentHls.loadSource(m3u8Url);
-                    currentHls.attachMedia(video);
-                    currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        loadingMsg.style.display = 'none';
-                        document.getElementById('currentChannel').innerHTML = `🎬 ${titulo}<br><small>🔴 REPRODUCIENDO (${servidor.server})</small>`;
-                        video.play().catch(e => console.error(e));
-                    });
-                    currentHls.on(Hls.Events.ERROR, () => {
-                        loadingMsg.style.display = 'none';
-                        document.getElementById('currentChannel').innerHTML = `🎬 ${titulo}<br><small>❌ Error de stream</small>`;
-                    });
-                } else {
-                    video.src = m3u8Url;
-                    video.addEventListener('loadedmetadata', () => {
-                        loadingMsg.style.display = 'none';
-                        document.getElementById('currentChannel').innerHTML = `🎬 ${titulo}<br><small>🔴 REPRODUCIENDO</small>`;
-                        video.play();
-                    }, { once: true });
-                }
-            } else {
-                loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `🎬 ${titulo}<br><small>❌ No se pudo obtener el stream</small>`;
-            }
-        }
 
         // ==================== CARGAR LISTA M3U ====================
         async function cargarListaM3U(url, paisOrigen) {
@@ -435,8 +480,6 @@
                     const logo = logoMatch ? logoMatch[1] : '';
                     const idMatch = line.match(/tvg-id="([^"]*)"/);
                     const id = idMatch ? idMatch[1] : '';
-                    const groupMatch = line.match(/group-title="([^"]*)"/);
-                    const grupo = groupMatch ? groupMatch[1] : '';
                     
                     currentChannel = {
                         id: id,
@@ -444,9 +487,7 @@
                         pais: paisOrigen,
                         logo: logo,
                         url: '',
-                        tipo: 'm3u8',
-                        categoria: 'entretenimiento',
-                        grupo: grupo
+                        tipo: 'm3u8'
                     };
                 } else if (line && !line.startsWith('#') && currentChannel) {
                     currentChannel.url = line;
@@ -462,7 +503,6 @@
         // ==================== CARGAR TODOS LOS CANALES ====================
         async function cargarTodosLosCanales() {
             let todosLosCanales = [...misCanalesDailymotion];
-            console.log('📡 Cargando canales desde iptv-org...');
             
             const paises = ['bo', 'ar', 'br', 'cl', 'co', 'ec', 'py', 'pe', 'uy', 've', 'cr', 'sv', 'gt', 'hn', 'ni', 'pa', 'do', 'pr', 'es', 'mx'];
             const nombres = {
@@ -476,7 +516,6 @@
             for (const codigo of paises) {
                 try {
                     const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${codigo}.m3u`, nombres[codigo]);
-                    console.log(`✅ ${nombres[codigo]}: ${canales.length} canales`);
                     todosLosCanales = todosLosCanales.concat(canales);
                 } catch (error) {
                     console.error(`Error cargando ${codigo}:`, error);
@@ -485,18 +524,18 @@
             
             try {
                 const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
-                console.log(`⚽ Deportes: ${deportes.length} canales`);
                 todosLosCanales = todosLosCanales.concat(deportes);
             } catch (error) {
                 console.error('Error cargando deportes:', error);
             }
             
-            console.log(`✅ Total canales: ${todosLosCanales.length}`);
             return todosLosCanales;
         }
 
-        // ==================== RENDERIZAR TV ====================
-        function renderTV(canales) {
+        // ==================== RENDERIZAR CANALES (Estilo Netflix) ====================
+        function renderChannels(canales) {
+            canalesFiltrados = canales;
+            
             const porPais = {};
             canales.forEach(canal => {
                 if (!porPais[canal.pais]) porPais[canal.pais] = [];
@@ -505,290 +544,176 @@
             
             const paisesOrdenados = Object.keys(porPais).sort();
             let html = '';
+            
             for (const pais of paisesOrdenados) {
-                html += `<div class="country-group" data-pais="${pais}"><div class="country-title">${pais}</div>`;
+                html += `<div class="country-group" data-pais="${pais}">
+                    <div class="country-title">${pais}</div>`;
+                
                 porPais[pais].forEach(canal => {
                     const logoHtml = canal.logo ? 
-                        `<img src="${canal.logo}" alt="${canal.nombre}" onerror="this.parentElement.innerHTML='${canal.nombre.charAt(0)}'">` : 
-                        `<span>${canal.nombre.charAt(0)}</span>`;
+                        `<img src="${canal.logo}" alt="${canal.nombre}" onerror="this.outerHTML='<span class=\\'fallback\\'>${canal.nombre.charAt(0)}</span>'">` : 
+                        `<span class="fallback">${canal.nombre.charAt(0)}</span>`;
+                    
+                    const tipo = canal.tipo || 'm3u8';
+                    const nombreSanitizado = canal.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    const urlSanitizada = canal.url.replace(/'/g, "\\'");
+                    
                     html += `
-                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${canal.url}" data-nombre-original="${canal.nombre}" data-tipo="${canal.tipo}">
+                        <div class="channel-item" data-nombre="${canal.nombre.toLowerCase()}" data-url="${urlSanitizada}" data-nombre-original="${nombreSanitizado}" data-tipo="${tipo}">
                             <div class="channel-logo">${logoHtml}</div>
-                            <span class="channel-name">${canal.nombre.substring(0, 40)}</span>
-                            <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${canal.url.replace(/'/g, "\\'")}', '${canal.nombre.replace(/'/g, "\\'")}', '${canal.tipo}')">▶</button>
+                            <span class="channel-name">${canal.nombre}</span>
+                            <button class="btn-play" onclick="event.stopPropagation(); loadChannel('${urlSanitizada}', '${nombreSanitizado}', '${tipo}')">
+                                <i class="fas fa-play"></i> Ver
+                            </button>
                         </div>
                     `;
                 });
                 html += `</div>`;
             }
             
-            document.getElementById('contentContainer').innerHTML = html;
-            document.getElementById('stats').innerHTML = `📊 ${canales.length} canales | ${paisesOrdenados.length} países`;
+            document.getElementById('channelsList').innerHTML = html;
+            actualizarStats();
             
             document.querySelectorAll('.channel-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    loadChannel(item.dataset.url, item.dataset.nombreOriginal, item.dataset.tipo);
+                item.addEventListener('click', function() {
+                    loadChannel(this.dataset.url, this.dataset.nombreOriginal, this.dataset.tipo);
                 });
             });
             
-            aplicarBusquedaTV();
+            aplicarBusqueda();
         }
 
-        // ==================== RENDERIZAR PELÍCULAS ====================
-        function renderPeliculas(items) {
-            let html = `<div class="movie-grid">`;
-            items.forEach(item => {
-                const poster = item.poster_url || 'https://via.placeholder.com/200x300/667eea/ffffff?text=Sin+imagen';
-                const title = item.titulo || 'Sin título';
-                const year = item.year || '';
-                html += `
-                    <div class="movie-card" onclick="verDetallePelicula(${item.id})">
-                        <img src="${poster}" alt="${title}" onerror="this.src='https://via.placeholder.com/200x300/667eea/ffffff?text=${encodeURIComponent(title)}'">
-                        <div class="title">${title}</div>
-                        <div class="year">${year}</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            document.getElementById('contentContainer').innerHTML = html;
-            document.getElementById('stats').innerHTML = `📊 ${items.length} películas`;
-        }
-
-        // ==================== RENDERIZAR SERIES ====================
-        function renderSeries(items) {
-            let html = `<div class="movie-grid">`;
-            items.forEach(item => {
-                const poster = item.poster_url || 'https://via.placeholder.com/200x300/667eea/ffffff?text=Sin+imagen';
-                const title = item.titulo || 'Sin título';
-                const temp = item.temporadas || '';
-                html += `
-                    <div class="movie-card" onclick="verDetalleSerie(${item.id})">
-                        <img src="${poster}" alt="${title}" onerror="this.src='https://via.placeholder.com/200x300/667eea/ffffff?text=${encodeURIComponent(title)}'">
-                        <div class="title">${title}</div>
-                        <div class="year">${temp} temporadas</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            document.getElementById('contentContainer').innerHTML = html;
-            document.getElementById('stats').innerHTML = `📊 ${items.length} series`;
-        }
-
-        // ==================== DETALLE DE PELÍCULA ====================
-        async function verDetallePelicula(id) {
-            const peliculas = await obtenerPeliculas();
-            const pelicula = peliculas.find(p => p.id === id);
-            if (!pelicula) return;
-            
-            contenidoActual = pelicula;
-            let html = `
-                <div class="detalle-contenido">
-                    <button onclick="cargarSeccion('peliculas')" class="btn btn-sm btn-secondary mb-2">← Volver</button>
-                    <h4>${pelicula.titulo} (${pelicula.year || ''})</h4>
-                    <div class="servidores-lista">
-                        <span class="text-muted">Servidores:</span>
-            `;
-            
-            if (pelicula.servidores && pelicula.servidores.length > 0) {
-                pelicula.servidores.forEach((serv, index) => {
-                    html += `<button class="servidor-btn" onclick="reproducirDesdeServidor({server:'${serv.server}', url:'${serv.url}'}, '${pelicula.titulo}')">▶ ${serv.server}</button>`;
-                });
-            } else {
-                html += `<span class="text-muted">Sin servidores disponibles</span>`;
-            }
-            
-            html += `</div></div>`;
-            document.getElementById('contentContainer').innerHTML = html;
-            document.getElementById('stats').innerHTML = `🎬 Detalle de película`;
-        }
-
-        // ==================== DETALLE DE SERIE ====================
-        async function verDetalleSerie(id) {
-            const series = await obtenerSeries();
-            const serie = series.find(s => s.id === id);
-            if (!serie) return;
-            
-            contenidoActual = serie;
-            let html = `
-                <div class="detalle-contenido">
-                    <button onclick="cargarSeccion('series')" class="btn btn-sm btn-secondary mb-2">← Volver</button>
-                    <h4>${serie.titulo}</h4>
-                    <p class="small">${serie.temporadas || 0} temporadas | ${serie.total_episodios || 0} episodios</p>
-                    <div class="servidores-lista">
-                        <span class="text-muted">Temporadas:</span>
-            `;
-            
-            // Generar botones para temporadas disponibles (1 a temporadas)
-            const numTemp = serie.temporadas || 1;
-            for (let t = 1; t <= numTemp; t++) {
-                html += `<button class="servidor-btn" onclick="verEpisodios(${serie.id}, ${t})">T${t}</button>`;
-            }
-            
-            html += `</div><div id="episodiosContainer"></div></div>`;
-            document.getElementById('contentContainer').innerHTML = html;
-            document.getElementById('stats').innerHTML = `📺 Detalle de serie`;
-        }
-
-        // ==================== VER EPISODIOS ====================
-        async function verEpisodios(serieId, temporada) {
-            const data = await obtenerEpisodios(serieId, temporada);
-            if (!data || !data.episodios) return;
-            
-            let html = `<div class="mt-3"><h6>${data.titulo} - Temporada ${temporada}</h6>`;
-            data.episodios.forEach(ep => {
-                let servidoresHtml = '';
-                if (ep.servidores && ep.servidores.length > 0) {
-                    ep.servidores.forEach(serv => {
-                        servidoresHtml += `<button class="servidor-btn" onclick="reproducirDesdeServidor({server:'${serv.server}', url:'${serv.url}'}, '${data.titulo} - T${temporada}E${ep.numero}')">${serv.server}</button>`;
-                    });
-                } else {
-                    servidoresHtml = `<span class="text-muted">Sin servidores</span>`;
-                }
-                
-                html += `
-                    <div class="episodio-item">
-                        <span class="num">${ep.numero}</span>
-                        <span style="flex:1;">${ep.titulo || 'Episodio '+ep.numero}</span>
-                        <span class="servidores-lista" style="flex-wrap:wrap;">${servidoresHtml}</span>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            
-            document.getElementById('episodiosContainer').innerHTML = html;
-        }
-
-        // ==================== CARGAR SECCIÓN ====================
-        async function cargarSeccion(seccion) {
-            seccionActual = seccion;
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.section === seccion);
-            });
-            
-            const searchInput = document.getElementById('searchInput');
-            searchInput.placeholder = seccion === 'tv' ? '🔍 Buscar canal...' : '🔍 Buscar...';
-            searchInput.value = '';
-            
-            if (seccion === 'tv') {
-                renderTV(canalesData);
-                return;
-            }
-            
-            document.getElementById('contentContainer').innerHTML = `<div class="text-center p-3"><div class="spinner-border text-light"></div><p class="mt-2">Cargando ${seccion}...</p></div>`;
-            
-            if (seccion === 'peliculas') {
-                const peliculas = await obtenerPeliculas();
-                renderPeliculas(peliculas);
-            } else if (seccion === 'series') {
-                const series = await obtenerSeries();
-                renderSeries(series);
-            }
+        // ==================== ACTUALIZAR ESTADÍSTICAS ====================
+        function actualizarStats() {
+            const total = document.querySelectorAll('.channel-item:not(.hidden)').length;
+            const totalGeneral = document.querySelectorAll('.channel-item').length;
+            document.getElementById('stats').innerHTML = `📊 ${total} canales disponibles`;
         }
 
         // ==================== BUSCAR ====================
-        function aplicarBusquedaTV() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        function aplicarBusqueda() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
             document.querySelectorAll('.channel-item').forEach(item => {
-                const nombre = item.dataset.nombre;
-                item.classList.toggle('hidden', !nombre.includes(searchTerm));
+                const nombre = item.dataset.nombre || '';
+                const isVisible = !searchTerm || nombre.includes(searchTerm);
+                item.classList.toggle('hidden', !isVisible);
             });
             
             document.querySelectorAll('.country-group').forEach(group => {
-                const visible = group.querySelectorAll('.channel-item:not(.hidden)').length > 0;
-                group.style.display = visible ? '' : 'none';
+                const visibleItems = group.querySelectorAll('.channel-item:not(.hidden)');
+                group.style.display = visibleItems.length > 0 ? '' : 'none';
             });
             
-            const total = document.querySelectorAll('.channel-item:not(.hidden)').length;
-            document.getElementById('stats').innerHTML = `📊 ${total} canales visibles`;
+            actualizarStats();
         }
 
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', function() {
                 clearTimeout(timeoutBusqueda);
-                timeoutBusqueda = setTimeout(() => {
-                    if (seccionActual === 'tv') {
-                        aplicarBusquedaTV();
-                    }
-                }, 300);
+                timeoutBusqueda = setTimeout(aplicarBusqueda, 150);
             });
         }
 
-        // ==================== REPRODUCIR CANAL TV ====================
-        async function loadChannel(url, channelName, tipo = 'm3u8') {
+        // ==================== REPRODUCIR CANAL ====================
+        function loadChannel(url, channelName, tipo = 'm3u8') {
             const loadingMsg = document.getElementById('loadingMessage');
             const video = document.getElementById('videoPlayer');
             const iframe = document.getElementById('dmIframe');
+            const currentChannel = document.getElementById('currentChannel');
             
-            if (currentHls) { currentHls.destroy(); currentHls = null; }
-            if (video.src) { video.pause(); video.removeAttribute('src'); video.load(); }
-            if (iframe) { iframe.src = ''; iframe.style.display = 'none'; }
+            // Limpiar estado anterior
+            if (currentHls) {
+                currentHls.destroy();
+                currentHls = null;
+            }
+            if (video.src) {
+                video.pause();
+                video.removeAttribute('src');
+                video.load();
+            }
+            if (iframe) {
+                iframe.src = '';
+                iframe.style.display = 'none';
+            }
             
             video.style.display = 'block';
             loadingMsg.style.display = 'block';
-            document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>Cargando...</small>`;
+            currentChannel.innerHTML = `
+                <span class="name">${channelName}</span>
+                <span class="status">⏳ Conectando...</span>
+            `;
             
+            // Resaltar activo
             document.querySelectorAll('.channel-item').forEach(item => {
                 item.classList.remove('active');
-                if (item.dataset.nombreOriginal === channelName) item.classList.add('active');
+                if (item.dataset.nombreOriginal === channelName) {
+                    item.classList.add('active');
+                }
             });
             
-            const dailymotionId = url.match(/\/video\/([a-z0-9]+)/i);
-            if (dailymotionId || tipo === 'dailymotion') {
-                const videoId = dailymotionId ? dailymotionId[1] : null;
+            // Detectar Dailymotion
+            const dmMatch = url.match(/\/video\/([a-z0-9]+)/i);
+            if (dmMatch || tipo === 'dailymotion') {
+                const videoId = dmMatch ? dmMatch[1] : null;
                 if (videoId) {
                     iframe.style.display = 'block';
                     video.style.display = 'none';
                     iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
                     loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 REPRODUCIENDO (Dailymotion)</small>`;
+                    currentChannel.innerHTML = `
+                        <span class="name">${channelName}</span>
+                        <span class="status"><span class="live">● EN VIVO</span> · Dailymotion</span>
+                    `;
                     return;
                 }
             }
             
+            // M3U8
             if (url.includes('.m3u8')) {
-                reproducirStream(url, channelName, loadingMsg);
+                if (Hls.isSupported()) {
+                    currentHls = new Hls({ debug: false, enableWorker: true });
+                    currentHls.loadSource(url);
+                    currentHls.attachMedia(video);
+                    currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        loadingMsg.style.display = 'none';
+                        currentChannel.innerHTML = `
+                            <span class="name">${channelName}</span>
+                            <span class="status"><span class="live">● EN VIVO</span> · HLS</span>
+                        `;
+                        video.play().catch(e => console.error('Error:', e));
+                    });
+                    currentHls.on(Hls.Events.ERROR, () => {
+                        loadingMsg.style.display = 'none';
+                        currentChannel.innerHTML = `
+                            <span class="name">${channelName}</span>
+                            <span class="status">❌ Error de stream</span>
+                        `;
+                    });
+                } else {
+                    video.src = url;
+                    video.addEventListener('loadedmetadata', () => {
+                        loadingMsg.style.display = 'none';
+                        currentChannel.innerHTML = `
+                            <span class="name">${channelName}</span>
+                            <span class="status"><span class="live">● EN VIVO</span></span>
+                        `;
+                        video.play();
+                    }, { once: true });
+                }
             } else if (url.startsWith('http')) {
                 loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `
-                    📺 ${channelName}<br>
-                    <small>⚠️ No es un stream directo.<br>
-                    <a href="${url}" target="_blank" style="color: #ffd700;">▶ Abrir en nueva pestaña</a></small>
+                currentChannel.innerHTML = `
+                    <span class="name">${channelName}</span>
+                    <span class="status">🔗 <a href="${url}" target="_blank" style="color:#e50914;">Abrir en nueva pestaña</a></span>
                 `;
             } else {
                 loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Formato no soportado</small>`;
-            }
-        }
-
-        function reproducirStream(streamUrl, channelName, loadingMsg) {
-            const video = document.getElementById('videoPlayer');
-            if (currentHls) { currentHls.destroy(); currentHls = null; }
-            if (video.src) { video.pause(); video.removeAttribute('src'); video.load(); }
-            
-            if (Hls.isSupported()) {
-                currentHls = new Hls({ debug: false, enableWorker: true });
-                currentHls.loadSource(streamUrl);
-                currentHls.attachMedia(video);
-                currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play().catch(e => console.error(e));
-                });
-                currentHls.on(Hls.Events.ERROR, () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = streamUrl;
-                video.addEventListener('loadedmetadata', () => {
-                    loadingMsg.style.display = 'none';
-                    document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
-                    video.play();
-                }, { once: true });
-            } else {
-                loadingMsg.style.display = 'none';
-                document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ No se puede reproducir</small>`;
+                currentChannel.innerHTML = `
+                    <span class="name">${channelName}</span>
+                    <span class="status">❌ Formato no soportado</span>
+                `;
             }
         }
 
@@ -806,27 +731,32 @@
                     loadChannel(input, "URL Personalizada", "m3u8");
                 }
             };
-        }
-
-        // ==================== NAVEGACIÓN ====================
-        function setupNavigation() {
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    cargarSeccion(this.dataset.section);
-                });
+            
+            customUrl.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const input = customUrl.value.trim();
+                    if (!input) return;
+                    if (input.match(/^x[a-z0-9]+$/i)) {
+                        loadChannel(`https://www.dailymotion.com/video/${input}`, "URL Personalizada", "dailymotion");
+                    } else {
+                        loadChannel(input, "URL Personalizada", "m3u8");
+                    }
+                }
             });
         }
 
         // ==================== INICIALIZAR ====================
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 Iniciando SpayCine...');
+            console.log('🎬 Iniciando SpayCine TV...');
             
-            canalesData = await cargarTodosLosCanales();
-            renderTV(canalesData);
-            
-            setupNavigation();
+            // Cargar canales
+            const canales = await cargarTodosLosCanales();
+            canalesData = canales;
+            renderChannels(canales);
             setupSearch();
             setupCustomUrl();
+            
+            console.log(`✅ ${canales.length} canales cargados`);
         });
     </script>
 </body>
