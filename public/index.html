@@ -88,9 +88,9 @@
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.04);
             color: rgba(255,255,255,0.4);
-            padding: 4px 14px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.7em;
+            font-size: 0.75em;
             cursor: pointer;
             transition: all 0.25s ease;
             font-weight: 500;
@@ -104,37 +104,31 @@
 
         /* ===== PAÍSES ===== */
         .country-section {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .country-section .country-title {
-            font-size: 0.85em;
+            font-size: 0.75em;
             font-weight: 700;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 8px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-        .country-section .country-title .emoji { font-size: 1em; }
-
         .country-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4px;
         }
-
         .country-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 0.8em;
-            color: rgba(255,255,255,0.6);
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.5);
             border: 1px solid transparent;
         }
         .country-item:hover {
@@ -146,10 +140,9 @@
             color: #fff;
             border-color: rgba(229, 9, 20, 0.1);
         }
-        .country-item .flag { font-size: 1em; }
         .country-item .channels-count {
             font-size: 0.6em;
-            color: rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.15);
             margin-left: auto;
         }
 
@@ -250,14 +243,15 @@
             background: rgba(255,255,255,0.04);
             border: none;
             color: rgba(255,255,255,0.3);
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.1em;
         }
         .channel-card .play-btn:hover {
             background: #e50914;
@@ -266,17 +260,50 @@
         }
         .channel-card.hidden { display: none; }
 
+        /* ===== FOCUS PARA TV ===== */
+        .focus-active {
+            outline: 3px solid #e50914 !important;
+            outline-offset: 4px !important;
+            box-shadow: 0 0 40px rgba(229, 9, 20, 0.3) !important;
+            transform: scale(1.04) !important;
+            z-index: 10 !important;
+            transition: all 0.15s ease !important;
+        }
+        .channel-card.focus-active {
+            background: rgba(229, 9, 20, 0.12) !important;
+            border-color: #e50914 !important;
+        }
+        .filter-btn.focus-active {
+            background: #e50914 !important;
+            color: #fff !important;
+            transform: scale(1.1) !important;
+        }
+        .country-item.focus-active {
+            background: rgba(229, 9, 20, 0.12) !important;
+            border-color: rgba(229, 9, 20, 0.2) !important;
+        }
+        #searchInput.focus-active,
+        #customUrl.focus-active {
+            border-color: #e50914 !important;
+            box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2) !important;
+        }
+        #playCustom.focus-active {
+            background: #e50914 !important;
+            border-color: #e50914 !important;
+        }
+        .modal-loading.focus-active { outline: none !important; transform: none !important; }
+
         /* ===== ESTADÍSTICAS ===== */
         .stats {
             text-align: center;
-            margin-top: 20px;
-            padding: 10px;
-            font-size: 0.7em;
+            margin-top: 12px;
+            padding: 8px;
+            font-size: 0.65em;
             color: rgba(255,255,255,0.15);
         }
 
         /* ================================================================
-           MODAL DEL REPRODUCTOR
+           MODAL DEL REPRODUCTOR (VERSIÓN TV)
         ================================================================ */
         .player-modal-overlay {
             position: fixed;
@@ -284,8 +311,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 9999;
             display: none;
             align-items: center;
@@ -295,15 +321,10 @@
         .player-modal-overlay.active { display: flex; }
 
         .player-modal {
-            width: 92%;
-            max-width: 1100px;
-            background: linear-gradient(145deg, #1a1a2e, #0f1328);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.04);
-            animation: slideUp 0.4s ease;
-            max-height: 90vh;
+            width: 100%;
+            height: 100vh;
+            max-height: 100vh;
+            background: #000;
             display: flex;
             flex-direction: column;
         }
@@ -313,23 +334,24 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px 24px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.8);
             border-bottom: 1px solid rgba(255,255,255,0.04);
             flex-shrink: 0;
+            z-index: 10;
         }
         .player-modal-header .title {
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.2em;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             color: #fff;
         }
         .player-modal-header .title .live {
             color: #e50914;
-            font-size: 0.65em;
+            font-size: 0.7em;
             background: rgba(229,9,20,0.15);
-            padding: 2px 12px;
+            padding: 4px 16px;
             border-radius: 20px;
             font-weight: 600;
         }
@@ -337,10 +359,10 @@
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.06);
             color: #fff;
-            width: 38px;
-            height: 38px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            font-size: 1.1em;
+            font-size: 1.4em;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -351,24 +373,28 @@
             background: #e50914;
             transform: rotate(90deg);
         }
+        .player-modal-header .close-btn.focus-active {
+            background: #e50914 !important;
+            transform: rotate(90deg) !important;
+        }
 
         .player-modal-body {
             flex: 1;
             background: #000;
             position: relative;
-            min-height: 55vh;
-            max-height: 70vh;
+            min-height: 70vh;
+            max-height: 100vh;
         }
         .player-modal-body video {
             width: 100%;
             height: 100%;
-            max-height: 70vh;
+            max-height: 100vh;
             background: #000;
         }
         .player-modal-body iframe {
             width: 100%;
             height: 100%;
-            max-height: 70vh;
+            max-height: 100vh;
             border: none;
             display: none;
         }
@@ -381,25 +407,23 @@
             display: none;
             text-align: center;
             color: #fff;
-            background: rgba(0,0,0,0.6);
-            padding: 30px 40px;
-            border-radius: 16px;
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.7);
+            padding: 40px 60px;
+            border-radius: 20px;
         }
         .modal-loading .spinner {
-            width: 44px;
-            height: 44px;
+            width: 50px;
+            height: 50px;
             border: 3px solid rgba(255,255,255,0.06);
             border-top-color: #e50914;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
+            margin: 0 auto 14px;
         }
         .modal-loading.active { display: block; }
 
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
@@ -412,8 +436,8 @@
             .main-content { height: 55vh; padding: 16px; }
             .channels-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
             .country-grid { grid-template-columns: 1fr 1fr 1fr; }
-            .player-modal { width: 98%; max-height: 95vh; border-radius: 14px; }
-            .player-modal-body { min-height: 35vh; max-height: 55vh; }
+            .player-modal-header .title { font-size: 1em; }
+            .player-modal-header .close-btn { width: 40px; height: 40px; font-size: 1.2em; }
         }
         @media (max-width: 480px) {
             .sidebar { padding: 12px 10px; height: 40vh; }
@@ -424,23 +448,25 @@
             .channel-card .info .name { font-size: 0.7em; }
             .country-grid { grid-template-columns: 1fr 1fr; }
         }
+
+        /* ===== TV: Ocultar scroll en sidebar ===== */
+        @media (min-width: 769px) {
+            .sidebar { scrollbar-width: thin; }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
 
         <!-- ===== SIDEBAR ===== -->
-        <div class="sidebar">
-            <!-- Logo -->
+        <div class="sidebar" id="sidebar">
             <div class="logo">
                 <i class="fas fa-play-circle"></i>
                 Spay<span>Cine</span>
             </div>
 
-            <!-- Búsqueda -->
             <input type="text" id="searchInput" placeholder="🔍 Buscar canal...">
 
-            <!-- Filtros -->
             <div class="filters" id="filterContainer">
                 <button class="filter-btn active" data-filter="all">🌐 Todos</button>
                 <button class="filter-btn" data-filter="noticias">📰 Noticias</button>
@@ -450,12 +476,8 @@
                 <button class="filter-btn" data-filter="cultural">🎭 Cultural</button>
             </div>
 
-            <!-- Países -->
-            <div id="countriesContainer">
-                <!-- Se llena con JS -->
-            </div>
+            <div id="countriesContainer"></div>
 
-            <!-- URL Personalizada -->
             <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,0.04);">
                 <div style="display:flex;gap:6px;">
                     <input type="text" id="customUrl" placeholder="🔗 URL o ID" style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:30px;padding:8px 14px;font-size:0.75em;color:#fff;">
@@ -466,7 +488,7 @@
         </div>
 
         <!-- ===== CONTENIDO PRINCIPAL ===== -->
-        <div class="main-content">
+        <div class="main-content" id="mainContent">
             <div class="main-header">
                 <h1 id="sectionTitle">🌐 Todos los canales</h1>
                 <span class="live-badge">● EN VIVO</span>
@@ -510,6 +532,7 @@
         let categoriaActual = 'all';
         let paisActual = null;
         let timeoutBusqueda = null;
+        let focusables = [];
 
         // ==================== CANALES DAILYMOTION ====================
         const misCanalesDailymotion = [
@@ -637,11 +660,10 @@
                 const count = counts[p.nombre] || 0;
                 html += `
                     <div class="country-section">
-                        <div class="country-title"><span class="emoji">${p.emoji}</span> ${p.nombre}</div>
+                        <div class="country-title">${p.emoji} ${p.nombre}</div>
                         <div class="country-grid">
-                            <div class="country-item" data-pais="${p.nombre}">
-                                <span class="flag">${p.emoji}</span>
-                                <span>${p.nombre}</span>
+                            <div class="country-item" data-pais="${p.nombre}" tabindex="0">
+                                <span>${p.emoji} ${p.nombre}</span>
                                 <span class="channels-count">${count}</span>
                             </div>
                         </div>
@@ -658,6 +680,7 @@
                     this.classList.add('active');
                     filtrarPorPais(pais);
                     document.getElementById('sectionTitle').textContent = `📺 ${pais}`;
+                    actualizarFocusables();
                 });
             });
         }
@@ -673,7 +696,7 @@
             canales.forEach(c => {
                 const logoHtml = c.logo ? `<img src="${c.logo}" onerror="this.outerHTML='<span class=\\'fallback\\'>${c.nombre.charAt(0)}</span>'">` : `<span class="fallback">${c.nombre.charAt(0)}</span>`;
                 html += `
-                    <div class="channel-card" data-pais="${c.pais}" data-categoria="${c.categoria}" data-url="${c.url.replace(/'/g, "\\'")}" data-nombre="${c.nombre.replace(/'/g, "\\'")}" data-tipo="${c.tipo}">
+                    <div class="channel-card" data-pais="${c.pais}" data-categoria="${c.categoria}" data-url="${c.url.replace(/'/g, "\\'")}" data-nombre="${c.nombre.replace(/'/g, "\\'")}" data-tipo="${c.tipo}" tabindex="0">
                         <div class="logo">${logoHtml}</div>
                         <div class="info">
                             <div class="name">${c.nombre}</div>
@@ -693,6 +716,7 @@
                     abrirModal(url, nombre, tipo);
                 });
             });
+            actualizarFocusables();
         }
 
         // ==================== FILTROS ====================
@@ -705,6 +729,7 @@
                 if (match) visible++;
             });
             document.getElementById('stats').textContent = `📊 ${visible} canales en ${pais}`;
+            actualizarFocusables();
         }
 
         function setupFilters() {
@@ -714,6 +739,7 @@
                     this.classList.add('active');
                     categoriaActual = this.dataset.filter;
                     aplicarFiltrosGlobales();
+                    actualizarFocusables();
                 });
             });
         }
@@ -734,15 +760,143 @@
             });
             document.getElementById('stats').textContent = `📊 ${visible} canales visibles`;
             document.getElementById('sectionTitle').textContent = paisActual ? `📺 ${paisActual}` : '🌐 Todos los canales';
+            actualizarFocusables();
         }
 
         // ==================== BUSQUEDA ====================
         function setupSearch() {
             document.getElementById('searchInput').addEventListener('input', function() {
                 clearTimeout(timeoutBusqueda);
-                timeoutBusqueda = setTimeout(aplicarFiltrosGlobales, 150);
+                timeoutBusqueda = setTimeout(() => {
+                    aplicarFiltrosGlobales();
+                    actualizarFocusables();
+                }, 150);
             });
         }
+
+        // ==================== NAVEGACIÓN CON CONTROL REMOTO ====================
+        function actualizarFocusables() {
+            const selectores = [
+                '.filter-btn:not(.hidden)',
+                '.country-item:not(.hidden)',
+                '#searchInput',
+                '#customUrl',
+                '#playCustom',
+                '.channel-card:not(.hidden)',
+                '.play-btn'
+            ];
+            const elementos = document.querySelectorAll(selectores.join(', '));
+            focusables = Array.from(elementos).filter(el => el.offsetParent !== null);
+            
+            // Si no hay elemento enfocado, enfocar el primero
+            const hasFocus = focusables.some(el => el.classList.contains('focus-active'));
+            if (!hasFocus && focusables.length > 0) {
+                focusables[0].classList.add('focus-active');
+                focusables[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }
+        }
+
+        function navegar(direccion) {
+            const visibles = focusables.filter(el => 
+                el.offsetParent !== null && 
+                !el.classList.contains('hidden') &&
+                (el.id !== 'playerModal') &&
+                (el.closest('#playerModal') === null)
+            );
+            
+            if (visibles.length === 0) return;
+            
+            const currentIndex = visibles.findIndex(el => el.classList.contains('focus-active'));
+            let newIndex = currentIndex;
+            
+            const cols = 2; // Número de columnas en el grid
+            let step = 1;
+            
+            switch(direccion) {
+                case 'abajo': step = cols; break;
+                case 'arriba': step = -cols; break;
+                case 'derecha': step = 1; break;
+                case 'izquierda': step = -1; break;
+                default: return;
+            }
+            
+            newIndex = Math.max(0, Math.min(currentIndex + step, visibles.length - 1));
+            
+            // Si se sale del rango, envolver
+            if (direccion === 'abajo' && newIndex === currentIndex) newIndex = 0;
+            if (direccion === 'arriba' && newIndex === currentIndex) newIndex = visibles.length - 1;
+            
+            visibles.forEach(el => el.classList.remove('focus-active'));
+            if (visibles[newIndex]) {
+                visibles[newIndex].classList.add('focus-active');
+                visibles[newIndex].scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            const key = e.key;
+            const modalActive = document.getElementById('playerModal').classList.contains('active');
+            
+            // Si el modal está activo, manejar teclas específicas para el modal
+            if (modalActive) {
+                switch(key) {
+                    case 'Escape':
+                    case 'Backspace':
+                        e.preventDefault();
+                        cerrarModal();
+                        return;
+                    case 'ArrowUp':
+                    case 'ArrowDown':
+                    case 'ArrowLeft':
+                    case 'ArrowRight':
+                        // Navegación dentro del modal
+                        e.preventDefault();
+                        const modalFocusables = document.querySelectorAll('#modalCloseBtn, #modalVideo, .modal-loading');
+                        const mVisibles = Array.from(modalFocusables).filter(el => el.offsetParent !== null);
+                        if (mVisibles.length === 0) return;
+                        const mCurrent = mVisibles.findIndex(el => el.classList.contains('focus-active'));
+                        let mNew = mCurrent;
+                        if (key === 'ArrowRight' || key === 'ArrowDown') mNew = Math.min(mCurrent + 1, mVisibles.length - 1);
+                        if (key === 'ArrowLeft' || key === 'ArrowUp') mNew = Math.max(mCurrent - 1, 0);
+                        mVisibles.forEach(el => el.classList.remove('focus-active'));
+                        if (mVisibles[mNew]) mVisibles[mNew].classList.add('focus-active');
+                        return;
+                    case 'Enter':
+                        const activeModal = document.querySelector('#playerModal .focus-active');
+                        if (activeModal) activeModal.click();
+                        return;
+                }
+                return;
+            }
+            
+            // Navegación principal (sidebar + grid)
+            switch(key) {
+                case 'ArrowUp':
+                case 'ArrowDown':
+                case 'ArrowLeft':
+                case 'ArrowRight':
+                    e.preventDefault();
+                    navegar(key.replace('Arrow', '').toLowerCase());
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    const active = document.querySelector('.focus-active');
+                    if (active) active.click();
+                    break;
+                case 'Escape':
+                case 'Backspace':
+                    e.preventDefault();
+                    // Si hay un país seleccionado, limpiar filtro
+                    if (paisActual) {
+                        paisActual = null;
+                        document.querySelectorAll('.country-item').forEach(i => i.classList.remove('active'));
+                        aplicarFiltrosGlobales();
+                        document.getElementById('sectionTitle').textContent = '🌐 Todos los canales';
+                        actualizarFocusables();
+                    }
+                    break;
+            }
+        });
 
         // ==================== MODAL ====================
         function abrirModal(url, channelName, tipo = 'm3u8') {
@@ -759,6 +913,12 @@
             document.getElementById('modalChannelName').textContent = channelName;
             document.getElementById('modalLiveStatus').textContent = '● CONECTANDO';
             modal.classList.add('active');
+            // Enfocar el botón de cerrar para control remoto
+            setTimeout(() => {
+                const closeBtn = document.getElementById('modalCloseBtn');
+                document.querySelectorAll('.focus-active').forEach(el => el.classList.remove('focus-active'));
+                closeBtn.classList.add('focus-active');
+            }, 100);
             cargarStreamEnModal(url, channelName, tipo);
         }
 
@@ -770,6 +930,8 @@
             if (video.src) { video.pause(); video.removeAttribute('src'); video.load(); }
             if (iframe.src) { iframe.src = ''; iframe.style.display = 'none'; }
             modal.classList.remove('active');
+            // Restaurar foco al sidebar
+            setTimeout(actualizarFocusables, 100);
         }
 
         function cargarStreamEnModal(url, channelName, tipo = 'm3u8') {
@@ -786,6 +948,8 @@
                     iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
                     loading.classList.remove('active');
                     liveStatus.textContent = '● EN VIVO';
+                    document.querySelector('.player-modal-header .focus-active')?.classList.remove('focus-active');
+                    document.getElementById('modalCloseBtn').classList.add('focus-active');
                     return;
                 }
             }
@@ -799,6 +963,8 @@
                     iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
                     loading.classList.remove('active');
                     liveStatus.textContent = '● REPRODUCIENDO';
+                    document.querySelector('.player-modal-header .focus-active')?.classList.remove('focus-active');
+                    document.getElementById('modalCloseBtn').classList.add('focus-active');
                     return;
                 }
             }
@@ -813,6 +979,8 @@
                         loading.classList.remove('active');
                         liveStatus.textContent = '● EN VIVO';
                         video.play().catch(e => console.error(e));
+                        document.querySelector('.player-modal-header .focus-active')?.classList.remove('focus-active');
+                        document.getElementById('modalCloseBtn').classList.add('focus-active');
                     });
                     currentHls.on(Hls.Events.ERROR, () => {
                         loading.classList.remove('active');
@@ -824,6 +992,8 @@
                         loading.classList.remove('active');
                         liveStatus.textContent = '● EN VIVO';
                         video.play();
+                        document.querySelector('.player-modal-header .focus-active')?.classList.remove('focus-active');
+                        document.getElementById('modalCloseBtn').classList.add('focus-active');
                     }, { once: true });
                 }
             } else if (url.startsWith('http')) {
@@ -851,13 +1021,22 @@
                     abrirModal(input, "URL Personalizada", "m3u8");
                 }
             };
+            document.getElementById('customUrl').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('playCustom').click();
+                }
+            });
         }
 
         // ==================== EVENTOS DEL MODAL ====================
         function setupModalEvents() {
             document.getElementById('modalCloseBtn').onclick = cerrarModal;
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
-            document.getElementById('playerModal').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModal(); });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') cerrarModal();
+            });
+            document.getElementById('playerModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) cerrarModal();
+            });
         }
 
         // ==================== INICIALIZAR ====================
@@ -872,6 +1051,9 @@
             setupModalEvents();
             document.getElementById('stats').textContent = `📊 ${canalesData.length} canales cargados`;
             console.log(`✅ ${canalesData.length} canales cargados`);
+            
+            // Inicializar foco
+            setTimeout(actualizarFocusables, 300);
         });
     </script>
 </body>
