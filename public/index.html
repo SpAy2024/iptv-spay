@@ -423,7 +423,8 @@
                     document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>🔴 EN VIVO</small>`;
                     video.play().catch(e => console.error(e));
                 });
-                currentHls.on(Hls.Events.ERROR, () => {
+                currentHls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error('Error HLS:', data);
                     loadingMsg.style.display = 'none';
                     document.getElementById('currentChannel').innerHTML = `📺 ${channelName}<br><small>❌ Error de stream</small>`;
                 });

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 function build() {
-    console.log('🚀 Generando playlists desde canales.json...\n');
+    console.log('🚀 Generando playlists M3U desde canales.json...\n');
     
     const canalesPath = path.join(__dirname, '../data/canales.json');
     
@@ -22,16 +22,21 @@ function build() {
     for (const canal of canales) {
         if (canal.dailymotion_id) {
             urlsFinales[canal.id] = `https://www.dailymotion.com/embed/video/${canal.dailymotion_id}`;
-            console.log(`✅ ${canal.nombre} → Dailymotion (ID: ${canal.dailymotion_id})`);
+            console.log(`✅ ${canal.nombre} → Dailymotion embed`);
+        } else if (canal.web_url && canal.web_url.includes('.m3u8')) {
+            urlsFinales[canal.id] = canal.web_url;
+            console.log(`📺 ${canal.nombre} → M3U8 directo`);
         } else {
             urlsFinales[canal.id] = canal.web_url;
-            console.log(`📺 ${canal.nombre} → ${canal.web_url.substring(0, 60)}...`);
+            console.log(`🌐 ${canal.nombre} → Web URL`);
         }
     }
     
+    // Crear carpeta public si no existe
     const publicDir = path.join(__dirname, '../public');
     if (!fs.existsSync(publicDir)) {
         fs.mkdirSync(publicDir, { recursive: true });
+        console.log('📁 Carpeta public creada');
     }
     
     // Agrupar por país
@@ -47,7 +52,8 @@ function build() {
     for (const [pais, canalesDelPais] of Object.entries(porPais)) {
         let contenido = '#EXTM3U\n';
         contenido += `# Playlist - ${pais}\n`;
-        contenido += `# Generado: ${new Date().toISOString()}\n\n`;
+        contenido += `# Generado: ${new Date().toISOString()}\n`;
+        contenido += `# Total canales: ${canalesDelPais.length}\n\n`;
         
         for (const canal of canalesDelPais) {
             const streamUrl = urlsFinales[canal.id];
@@ -56,8 +62,9 @@ function build() {
         }
         
         const filename = `${pais.toLowerCase()}.m3u`;
-        fs.writeFileSync(path.join(publicDir, filename), contenido);
-        console.log(`✅ ${filename} (${canalesDelPais.length} canales)`);
+        const filepath = path.join(publicDir, filename);
+        fs.writeFileSync(filepath, contenido, 'utf8');
+        console.log(`✅ ${filename} (${canalesDelPais.length} canales) - ${filepath}`);
     }
     
     // Archivo completo
@@ -74,10 +81,12 @@ function build() {
         }
     }
     
-    fs.writeFileSync(path.join(publicDir, 'playlist.m3u'), completo);
-    console.log('✅ playlist.m3u');
+    const completoPath = path.join(publicDir, 'playlist.m3u');
+    fs.writeFileSync(completoPath, completo, 'utf8');
+    console.log('✅ playlist.m3u (completo)');
     
     console.log('\n🎉 ¡Playlists generadas exitosamente!');
+    console.log(`📂 Archivos generados en: ${publicDir}`);
 }
 
 build();

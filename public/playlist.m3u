@@ -1,24 +1,26 @@
 #EXTM3U
 # Playlist completa - Todos los países
-# Generado: 2026-04-23T10:02:25.456Z
+# Generado: 2026-06-21T19:21:44.304Z
 
 
 # ===== BOLIVIA =====
-#EXTINF:-1 tvg-id="ATB.bo" tvg-name="ATB" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/ATB_logo.svg/200px-ATB_logo.svg.png" group-title="Bolivia",ATB
-https://www.dailymotion.com/embed/video/x84eirw
-#EXTINF:-1 tvg-id="RedUno.bo" tvg-name="Red Uno" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Red_Uno_de_Bolivia_logo.png/200px-Red_Uno_de_Bolivia_logo.png" group-title="Bolivia",Red Uno
-https://cdnh1.mediotiempo.co/reduno/live/reduno/index.m3u8
-#EXTINF:-1 tvg-id="Unitel.bo" tvg-name="Unitel" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Unitel_logo.svg/200px-Unitel_logo.svg.png" group-title="Bolivia",Unitel
-https://cdnh1.mediotiempo.co/unitel/live/unitel/index.m3u8
+#EXTINF:-1 tvg-id="RedUnoLPZ.bo" tvg-name="RED UNO LPZ HD" tvg-logo="https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg" group-title="Bolivia",RED UNO LPZ HD
+https://www.dailymotion.com/video/xa0fwio
+#EXTINF:-1 tvg-id="RedUnoCBBA.bo" tvg-name="RED UNO CBBA HD" tvg-logo="https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg" group-title="Bolivia",RED UNO CBBA HD
+https://www.dailymotion.com/video/xa0qka8
+#EXTINF:-1 tvg-id="RedUnoSCZ.bo" tvg-name="RED UNO SCZ HD" tvg-logo="https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg" group-title="Bolivia",RED UNO SCZ HD
+https://www.dailymotion.com/video/x9n2qyk
+#EXTINF:-1 tvg-id="Unitel.bo" tvg-name="UNITEL BOLIVIA HD" tvg-logo="https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg" group-title="Bolivia",UNITEL BOLIVIA HD
+https://www.dailymotion.com/video/x7wzxiw
+#EXTINF:-1 tvg-id="POVUnitel.bo" tvg-name="POV UNITEL HD" tvg-logo="https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg" group-title="Bolivia",POV UNITEL HD
+https://www.dailymotion.com/video/x8eimg9
+#EXTINF:-1 tvg-id="ATB.bo" tvg-name="ATB BOLIVIA HD" tvg-logo="https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg" group-title="Bolivia",ATB BOLIVIA HD
+https://www.dailymotion.com/video/x84eirw
+#EXTINF:-1 tvg-id="Telesur.bo" tvg-name="TELESUR HD" tvg-logo="https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg" group-title="Bolivia",TELESUR HD
+https://www.dailymotion.com/video/x82ug5r
 
-# ===== BRAZIL =====
-#EXTINF:-1 tvg-id="TVGlobo.br" tvg-name="TV Globo" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/TV_Globo_logo_2021.png/200px-TV_Globo_logo_2021.png" group-title="Brazil",TV Globo
-https://globo-live-hls.akamaized.net/globo/globo/2021/playlist.m3u8
-#EXTINF:-1 tvg-id="RecordTV.br" tvg-name="Record TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/RecordTV_logo_2016.png/200px-RecordTV_logo_2016.png" group-title="Brazil",Record TV
-https://recordtv.r7.com/ao-vivo.m3u8
-
-# ===== ARGENTINA =====
-#EXTINF:-1 tvg-id="Telefe.ar" tvg-name="Telefe" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Telefe_logo_2019.svg/200px-Telefe_logo_2019.svg.png" group-title="Argentina",Telefe
-https://edge01.cdn.eltrecetv.com.ar/eltrece/eltrece.m3u8
-#EXTINF:-1 tvg-id="TVPublica.ar" tvg-name="TV Pública" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/TV_Publica_logo.png/200px-TV_Publica_logo.png" group-title="Argentina",TV Pública
-https://tdf.vod.rcp.net.ar/tdf/tdf.m3u8
+# ===== INTERNACIONAL =====
+#EXTINF:-1 tvg-id="CGTN.es" tvg-name="CGTN ES HD" tvg-logo="https://i.ibb.co/TWhHxHC/CGTN-HD.jpg" group-title="Internacional",CGTN ES HD
+https://espanol-livews.cgtn.com/hls/LSveOGBaBw41Ea7ukkVAUdKQ220802LSTexu6xAuFH8VZNBLE1ZNEa220802cd/playlist.m3u8
+#EXTINF:-1 tvg-id="AnimeStation01.hd" tvg-name="ANIME STATION 01 HD" tvg-logo="https://i.postimg.cc/Vk1L3YMK/a-ST01.jpg" group-title="Internacional",ANIME STATION 01 HD
+https://live20.bozztv.com/akamaissh101/ssh101/livestreamingtv/chunks.m3u8
