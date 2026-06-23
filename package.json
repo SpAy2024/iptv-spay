@@ -1,0 +1,28 @@
+{
+  "name": "mi-iptv-player",
+  "version": "1.0.0",
+  "description": "Reproductor IPTV con generación automática de playlists",
+  "main": "generator/build-playlist.js",
+  "scripts": {
+    "build": "node generator/build-playlist.js",
+    "start": "npx serve public"
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  },
+  "keywords": [
+    "iptv",
+    "m3u8",
+    "player"
+  ],
+  "author": "SpayCine",
+  "license": "MIT",
+  "dependencies": {
+<<<<<<< Updated upstream
+    "cors": "^2.8.6",
+=======
+>>>>>>> Stashed changes
+    "express": "^5.2.1",
+    "http-proxy-middleware": "^3.0.5"
+  }
+}

@@ -1,0 +1,46 @@
+name: Actualizar Playlists IPTV
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 📦 Instalar dependencias
+        run: npm install
+      
+      - name: 🚀 Generar playlists M3U
+        run: node generator/build-playlist.js
+      
+      - name: 📤 Subir archivos generados al repositorio
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add public/*.m3u public/*.html 2>/dev/null || true
+          git diff --quiet && git diff --staged --quiet || git commit -m "Actualización automática de playlists [skip ci]"
+          git push
+      
+      - name: 📤 Subir artifact para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'public'
+      
+      - name: 🌐 Desplegar en GitHub Pages
+        uses: actions/deploy-pages@v4

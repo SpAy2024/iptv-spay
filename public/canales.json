@@ -1,0 +1,84 @@
+{
+  "canales": [
+    {
+      "id": "RedUnoLPZ.bo",
+      "nombre": "RED UNO LPZ HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg",
+      "web_url": "https://www.dailymotion.com/video/xa0fwio",
+      "es_dailymotion": true,
+      "activo": true
+    },
+    {
+      "id": "RedUnoCBBA.bo",
+      "nombre": "RED UNO CBBA HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg",
+      "web_url": "https://www.dailymotion.com/video/xa0qka8",
+      "es_dailymotion": true,
+      "activo": true
+    },
+    {
+      "id": "RedUnoSCZ.bo",
+      "nombre": "RED UNO SCZ HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg",
+      "web_url": "https://www.dailymotion.com/video/x9n2qyk",
+      "es_dailymotion": true,
+      "activo": true
+    },
+    {
+      "id": "Unitel.bo",
+      "nombre": "UNITEL BOLIVIA HD",
+      "pais": "Bolivia",
+      "logo": "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg",
+      "web_url": "https://www.dailymotion.com/video/x7wzxiw",
+      "es_dailymotion": true,
+      "activo": true
+    },
+    {
+      "id": "POVUnitel.bo",
+      "nombre": "POV UNITEL HD",
+      "pais": "Bolivia",
+      "logo": "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg",
+      "web_url": "https://www.dailymotion.com/video/x8eimg9",
+      "es_dailymotion": true,
+      "activo": true
+    },
+    {
+      "id": "ATB.bo",
+      "nombre": "ATB BOLIVIA HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg",
+      "web_url": "https://www.dailymotion.com/video/x84eirw",
+      "es_dailymotion": true,
+      "activo": true
+    },
+    {
+      "id": "Telesur.bo",
+      "nombre": "TELESUR HD",
+      "pais": "Bolivia",
+      "logo": "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg",
+      "web_url": "https://www.dailymotion.com/video/x82ug5r",
+      "es_dailymotion": true,
+      "activo": true
+    },
+   {
+    "id": "CGTN.es",
+    "nombre": "CGTN ES HD",
+    "pais": "Internacional",
+    "logo": "https://i.ibb.co/TWhHxHC/CGTN-HD.jpg",
+    "web_url": "https://espanol-livews.cgtn.com/hls/LSveOGBaBw41Ea7ukkVAUdKQ220802LSTexu6xAuFH8VZNBLE1ZNEa220802cd/playlist.m3u8",
+    "activo": true
+},
+{
+    "id": "AnimeStation01.hd",
+    "nombre": "ANIME STATION 01 HD",
+    "pais": "Internacional",
+    "logo": "https://i.postimg.cc/Vk1L3YMK/a-ST01.jpg",
+    "web_url": "https://live20.bozztv.com/akamaissh101/ssh101/livestreamingtv/chunks.m3u8",
+    "activo": true
+}
+
+  ]
+}
