@@ -1082,37 +1082,35 @@
         }
 
         function toggleFullscreen() {
-            const modalBody = document.getElementById('modalBody');
-            const btn = document.getElementById('modalFullscreenBtn');
-            const icon = btn.querySelector('i');
-            
-            isFullscreen = !isFullscreen;
-            
-            if (isFullscreen) {
-                modalBody.style.position = 'fixed';
-                modalBody.style.top = '0';
-                modalBody.style.left = '0';
-                modalBody.style.width = '100%';
-                modalBody.style.height = '100%';
-                modalBody.style.zIndex = '99999';
-                modalBody.style.background = '#000';
-                icon.className = 'fas fa-compress';
-                btn.title = 'Salir de pantalla completa';
-                // Ocultar header al hacer fullscreen
-                document.querySelector('.player-modal-header').style.display = 'none';
-            } else {
-                modalBody.style.position = '';
-                modalBody.style.top = '';
-                modalBody.style.left = '';
-                modalBody.style.width = '';
-                modalBody.style.height = '';
-                modalBody.style.zIndex = '';
-                modalBody.style.background = '';
-                icon.className = 'fas fa-expand';
-                btn.title = 'Pantalla completa';
-                document.querySelector('.player-modal-header').style.display = 'flex';
-            }
+    const modalBody = document.getElementById('modalBody');
+    const btn = document.getElementById('modalFullscreenBtn');
+    const icon = btn.querySelector('i');
+    
+    if (!document.fullscreenElement) {
+        // Entrar en pantalla completa
+        if (modalBody.requestFullscreen) {
+            modalBody.requestFullscreen().catch(err => {
+                console.error('Error al entrar en pantalla completa:', err);
+            });
+        } else if (modalBody.webkitRequestFullscreen) {
+            modalBody.webkitRequestFullscreen();
+        } else if (modalBody.msRequestFullscreen) {
+            modalBody.msRequestFullscreen();
         }
+    } else {
+        // Salir de pantalla completa
+        if (document.exitFullscreen) {
+            document.exitFullscreen().catch(err => {
+                console.error('Error al salir de pantalla completa:', err);
+            });
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+}
+
 
         function cargarStreamEnModal(url, channelName, tipo = 'm3u8') {
             const video = document.getElementById('modalVideo');
@@ -1252,6 +1250,33 @@
             
             setTimeout(actualizarFocusables, 300);
         });
+
+     // Detectar cambios en el estado de pantalla completa
+document.addEventListener('fullscreenchange', function() {
+    const btn = document.getElementById('modalFullscreenBtn');
+    const icon = btn?.querySelector('i');
+    const header = document.querySelector('.player-modal-header');
+    
+    if (!document.fullscreenElement) {
+        if (icon) {
+            icon.className = 'fas fa-expand';
+        }
+        if (header) {
+            header.style.display = 'flex';
+        }
+        isFullscreen = false;
+    } else {
+        if (icon) {
+            icon.className = 'fas fa-compress';
+        }
+        if (header) {
+            header.style.display = 'none';
+        }
+        isFullscreen = true;
+    }
+});
+
+
     </script>
 </body>
 </html>
