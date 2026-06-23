@@ -1081,37 +1081,78 @@
             setTimeout(actualizarFocusables, 100);
         }
 
+        // ===== FUNCIÓN TOGGLE FULLSCREEN CORREGIDA =====
         function toggleFullscreen() {
-    const modalBody = document.getElementById('modalBody');
-    const btn = document.getElementById('modalFullscreenBtn');
-    const icon = btn.querySelector('i');
-    
-    if (!document.fullscreenElement) {
-        // Entrar en pantalla completa
-        if (modalBody.requestFullscreen) {
-            modalBody.requestFullscreen().catch(err => {
-                console.error('Error al entrar en pantalla completa:', err);
-            });
-        } else if (modalBody.webkitRequestFullscreen) {
-            modalBody.webkitRequestFullscreen();
-        } else if (modalBody.msRequestFullscreen) {
-            modalBody.msRequestFullscreen();
+            const modalBody = document.getElementById('modalBody');
+            const btn = document.getElementById('modalFullscreenBtn');
+            const icon = btn.querySelector('i');
+            const header = document.querySelector('.player-modal-header');
+            
+            if (!document.fullscreenElement) {
+                // Entrar en pantalla completa
+                if (modalBody.requestFullscreen) {
+                    modalBody.requestFullscreen().catch(err => {
+                        console.error('Error al entrar en pantalla completa:', err);
+                    });
+                } else if (modalBody.webkitRequestFullscreen) {
+                    modalBody.webkitRequestFullscreen();
+                } else if (modalBody.msRequestFullscreen) {
+                    modalBody.msRequestFullscreen();
+                }
+                // Cambiar icono
+                icon.className = 'fas fa-compress';
+                btn.title = 'Salir de pantalla completa';
+                // Ocultar header
+                if (header) header.style.display = 'none';
+                isFullscreen = true;
+            } else {
+                // Salir de pantalla completa
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(err => {
+                        console.error('Error al salir de pantalla completa:', err);
+                    });
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                // Cambiar icono
+                icon.className = 'fas fa-expand';
+                btn.title = 'Pantalla completa';
+                // Mostrar header
+                if (header) header.style.display = 'flex';
+                isFullscreen = false;
+            }
         }
-    } else {
-        // Salir de pantalla completa
-        if (document.exitFullscreen) {
-            document.exitFullscreen().catch(err => {
-                console.error('Error al salir de pantalla completa:', err);
-            });
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-    }
-}
 
+        // ===== LISTENER PARA DETECTAR CAMBIOS EN FULLSCREEN =====
+        document.addEventListener('fullscreenchange', function() {
+            const btn = document.getElementById('modalFullscreenBtn');
+            const icon = btn?.querySelector('i');
+            const header = document.querySelector('.player-modal-header');
+            
+            if (!document.fullscreenElement) {
+                // Se salió de pantalla completa
+                if (icon) {
+                    icon.className = 'fas fa-expand';
+                }
+                if (header) {
+                    header.style.display = 'flex';
+                }
+                isFullscreen = false;
+            } else {
+                // Entró en pantalla completa
+                if (icon) {
+                    icon.className = 'fas fa-compress';
+                }
+                if (header) {
+                    header.style.display = 'none';
+                }
+                isFullscreen = true;
+            }
+        });
 
+        // ===== FUNCIÓN CARGAR STREAM EN MODAL =====
         function cargarStreamEnModal(url, channelName, tipo = 'm3u8') {
             const video = document.getElementById('modalVideo');
             const iframe = document.getElementById('modalIframe');
@@ -1250,33 +1291,6 @@
             
             setTimeout(actualizarFocusables, 300);
         });
-
-     // Detectar cambios en el estado de pantalla completa
-document.addEventListener('fullscreenchange', function() {
-    const btn = document.getElementById('modalFullscreenBtn');
-    const icon = btn?.querySelector('i');
-    const header = document.querySelector('.player-modal-header');
-    
-    if (!document.fullscreenElement) {
-        if (icon) {
-            icon.className = 'fas fa-expand';
-        }
-        if (header) {
-            header.style.display = 'flex';
-        }
-        isFullscreen = false;
-    } else {
-        if (icon) {
-            icon.className = 'fas fa-compress';
-        }
-        if (header) {
-            header.style.display = 'none';
-        }
-        isFullscreen = true;
-    }
-});
-
-
     </script>
 </body>
 </html>
