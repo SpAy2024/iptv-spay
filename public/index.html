@@ -59,7 +59,7 @@
             font-weight: 500;
         }
 
-        /* ===== REPRODUCTOR (ocupa espacio central) ===== */
+        /* ===== REPRODUCTOR ===== */
         .player-wrapper {
             flex: 1;
             background: #000;
@@ -78,7 +78,6 @@
         }
         .player-wrapper iframe { display: none; }
 
-        /* Overlay de información en el reproductor */
         .player-overlay-info {
             position: absolute;
             bottom: 16px;
@@ -103,7 +102,6 @@
         }
         .player-overlay-info.active { display: block; }
 
-        /* Loading del reproductor */
         .modal-loading {
             position: absolute;
             top: 50%;
@@ -130,7 +128,7 @@
         .modal-loading.active { display: block; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== PAÍSES (chips horizontales) ===== */
+        /* ===== PAÍSES ===== */
         .countries-bar {
             padding: 10px 16px;
             background: #0f1328;
@@ -201,8 +199,7 @@
             background: rgba(229, 9, 20, 0.12);
             border-color: rgba(229, 9, 20, 0.2);
         }
-       
-     .channel-item .logo {
+       .channel-item .logo {
     width: 40px;
     height: 40px;
     background: rgba(255,255,255,0.04);
@@ -227,8 +224,6 @@
     font-weight: 700;
     color: rgba(255,255,255,0.2);
 }
-
-
         .channel-item .info {
             flex: 1;
             min-width: 0;
@@ -268,7 +263,7 @@
         }
         .channel-item.hidden { display: none; }
 
-        /* ===== BOTÓN FLOTANTE DE BÚSQUEDA ===== */
+        /* ===== BOTÓN FLOTANTE ===== */
         .fab-search {
             position: fixed;
             bottom: 24px;
@@ -290,7 +285,7 @@
         }
         .fab-search:active { transform: scale(0.9); }
 
-        /* ===== MODAL DE BÚSQUEDA ===== */
+        /* ===== MODAL BÚSQUEDA ===== */
         .search-modal {
             position: fixed;
             top: 0;
@@ -340,7 +335,6 @@
             overflow-y: auto;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (min-width: 481px) {
             .app-container { max-width: 600px; }
         }
@@ -361,7 +355,7 @@
 <body>
     <div class="app-container">
 
-        <!-- ===== HEADER CON LOGO ===== -->
+        <!-- ===== HEADER ===== -->
         <header class="app-header">
             <div class="logo">
                 <i class="fas fa-play-circle"></i>
@@ -386,30 +380,24 @@
             </div>
         </div>
 
-        <!-- ===== PAÍSES (CHIPS) ===== -->
-        <div class="countries-bar" id="countriesBar">
-            <!-- Se llena con JS -->
-        </div>
+        <!-- ===== PAÍSES ===== -->
+        <div class="countries-bar" id="countriesBar"></div>
 
         <!-- ===== LISTA DE CANALES ===== -->
-        <div class="channels-list" id="channelsList">
-            <!-- Se llena con JS -->
-        </div>
+        <div class="channels-list" id="channelsList"></div>
 
-        <!-- ===== BOTÓN FLOTANTE DE BÚSQUEDA ===== -->
+        <!-- ===== BOTÓN FLOTANTE ===== -->
         <button class="fab-search" id="fabSearch">
             <i class="fas fa-search"></i>
         </button>
 
-        <!-- ===== MODAL DE BÚSQUEDA ===== -->
+        <!-- ===== MODAL BÚSQUEDA ===== -->
         <div class="search-modal" id="searchModal">
             <div class="search-header">
                 <input type="text" id="searchInput" placeholder="🔍 Buscar canal...">
                 <button class="close-search" id="closeSearch"><i class="fas fa-times"></i></button>
             </div>
-            <div class="search-results" id="searchResults">
-                <!-- Se llena con JS -->
-            </div>
+            <div class="search-results" id="searchResults"></div>
         </div>
 
     </div>
@@ -425,30 +413,29 @@
         let currentChannelLogo = '';
         let isFullscreen = false;
 
-        // ==================== CANALES DAILYMOTION ====================
-       // ==================== CANALES DAILYMOTION + DEPORTES ====================
-const misCanalesDailymotion = [
-    // ===== CANALES DE BOLIVIA (Dailymotion) =====
-    { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
-    { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" },
+        // ==================== CANALES ====================
+        const misCanalesDailymotion = [
+            // ===== BOLIVIA (Dailymotion) =====
+            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
+            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" },
 
-    // ===== CANALES DE DEPORTES (M3U8 directos) =====
-    { nombre: "TYC Sports", pais: "Argentina", logo: "https://i.imgur.com/tyc-sports.png", url: "https://edge01.cdn.tycsports.com/live/tycsports/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "ESPN Deportes", pais: "EE.UU.", logo: "https://i.imgur.com/espn-deportes.png", url: "https://espn-deportes.live.cdn.espn.com/live/espn-deportes/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "Fox Sports Argentina", pais: "Argentina", logo: "https://i.imgur.com/fox-sports-ar.png", url: "https://fox-sports-argentina.live.cdn.foxsports.com/live/fox-sports-ar/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "Gol TV", pais: "España", logo: "https://i.imgur.com/gol-tv.png", url: "https://goltv.live.cdn.goltv.tv/live/goltv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "ESPN 2", pais: "Latinoamérica", logo: "https://i.imgur.com/espn2.png", url: "https://espn2.live.cdn.espn.com/live/espn2/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "Sport TV", pais: "Portugal", logo: "https://i.imgur.com/sport-tv.png", url: "https://sport-tv.live.cdn.sporttv.pt/live/sporttv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "Eurosport", pais: "Internacional", logo: "https://i.imgur.com/eurosport.png", url: "https://eurosport.live.cdn.eurosport.com/live/eurosport/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "Canal Fútbol", pais: "Latinoamérica", logo: "https://i.imgur.com/canal-futbol.png", url: "https://canal-futbol.live.cdn.canalfutbol.tv/live/canalfutbol/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "NFL Network", pais: "EE.UU.", logo: "https://i.imgur.com/nfl-network.png", url: "https://nfl-network.live.cdn.nfl.com/live/nfl-network/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-    { nombre: "NBA TV", pais: "EE.UU.", logo: "https://i.imgur.com/nba-tv.png", url: "https://nba-tv.live.cdn.nba.com/live/nba-tv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" }
-];
+            // ===== DEPORTES =====
+            { nombre: "TYC Sports", pais: "Argentina", logo: "https://i.imgur.com/tyc-sports.png", url: "https://tycsports.com/live/tycsports/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "ESPN Deportes", pais: "EE.UU.", logo: "https://i.imgur.com/espn-deportes.png", url: "https://espn-deportes.live.cdn.espn.com/live/espn-deportes/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "Fox Sports Argentina", pais: "Argentina", logo: "https://i.imgur.com/fox-sports-ar.png", url: "https://fox-sports-argentina.live.cdn.foxsports.com/live/fox-sports-ar/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "Gol TV", pais: "España", logo: "https://i.imgur.com/gol-tv.png", url: "https://goltv.live.cdn.goltv.tv/live/goltv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "ESPN 2", pais: "Latinoamérica", logo: "https://i.imgur.com/espn2.png", url: "https://espn2.live.cdn.espn.com/live/espn2/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "Sport TV", pais: "Portugal", logo: "https://i.imgur.com/sport-tv.png", url: "https://sport-tv.live.cdn.sporttv.pt/live/sporttv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "Eurosport", pais: "Internacional", logo: "https://i.imgur.com/eurosport.png", url: "https://eurosport.live.cdn.eurosport.com/live/eurosport/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "Canal Fútbol", pais: "Latinoamérica", logo: "https://i.imgur.com/canal-futbol.png", url: "https://canal-futbol.live.cdn.canalfutbol.tv/live/canalfutbol/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "NFL Network", pais: "EE.UU.", logo: "https://i.imgur.com/nfl-network.png", url: "https://nfl-network.live.cdn.nfl.com/live/nfl-network/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
+            { nombre: "NBA TV", pais: "EE.UU.", logo: "https://i.imgur.com/nba-tv.png", url: "https://nba-tv.live.cdn.nba.com/live/nba-tv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" }
+        ];
 
         const PAISES = [
             { codigo: 'bo', nombre: 'Bolivia', emoji: '🇧🇴' },
@@ -522,28 +509,22 @@ const misCanalesDailymotion = [
             return canales;
         }
 
-       function detectarCategoria(nombre, grupo) {
-    const texto = (nombre + ' ' + grupo).toLowerCase();
-    const claves = {
-        'noticias': ['noticia', 'news', 'informe', 'actualidad', 'cnn', 'bbc', 'telefe noticias', 'el trece', 'tvn', 'canal 13', 'red uno', 'unitel', 'atb', 'telesur'],
-        'deportes': [
-            'deporte', 'sport', 'fútbol', 'futbol', 'gol', 'espn', 'tyc', 'fox sports', 'goal', 
-            'racing', 'boca', 'river', 'liga', 'champions', 'uefa', 'libertadores', 'sudamericana',
-            'nfl', 'nba', 'mlb', 'tennis', 'tenis', 'motogp', 'formula', 'f1', 'automovilismo',
-            'boxeo', 'ufc', 'wwe', 'lucha', 'baseball', 'beisbol', 'basketball', 'baloncesto',
-            'deportes', 'sports', 'dazn', 'eurosport', 'gol tv', 'canal fútbol', 'nfl', 'nba tv'
-        ],
-        'entretenimiento': ['entretenimiento', 'series', 'películas', 'pelicula', 'cine', 'telefe', 'el trece', 'entreten', 'show', 'telenovela'],
-        'musica': ['música', 'musica', 'music', 'mtv', 'viva', 'radio'],
-        'cultural': ['cultural', 'educativo', 'educación', 'documental', 'history', 'discovery']
-    };
-    for (const [categoria, palabras] of Object.entries(claves)) {
-        for (const palabra of palabras) {
-            if (texto.includes(palabra)) return categoria;
+        function detectarCategoria(nombre, grupo) {
+            const texto = (nombre + ' ' + grupo).toLowerCase();
+            const claves = {
+                'noticias': ['noticia', 'news', 'informe', 'actualidad', 'cnn', 'bbc', 'telefe noticias', 'el trece', 'tvn', 'canal 13', 'red uno', 'unitel', 'atb', 'telesur'],
+                'deportes': ['deporte', 'sport', 'fútbol', 'futbol', 'gol', 'espn', 'tyc', 'fox sports', 'goal', 'racing', 'boca', 'river', 'liga', 'champions', 'uefa', 'libertadores', 'sudamericana', 'nfl', 'nba', 'mlb', 'tennis', 'tenis', 'motogp', 'formula', 'f1'],
+                'entretenimiento': ['entretenimiento', 'series', 'películas', 'pelicula', 'cine', 'telefe', 'el trece', 'entreten', 'show', 'telenovela'],
+                'musica': ['música', 'musica', 'music', 'mtv', 'viva', 'radio'],
+                'cultural': ['cultural', 'educativo', 'educación', 'documental', 'history', 'discovery']
+            };
+            for (const [categoria, palabras] of Object.entries(claves)) {
+                for (const palabra of palabras) {
+                    if (texto.includes(palabra)) return categoria;
+                }
+            }
+            return 'entretenimiento';
         }
-    }
-    return 'entretenimiento';
-}
 
         // ==================== CARGAR TODOS LOS CANALES ====================
         async function cargarTodosLosCanales() {
@@ -562,38 +543,36 @@ const misCanalesDailymotion = [
         }
 
         // ==================== RENDERIZAR PAÍSES ====================
-       function renderCountries(canales) {
-    const bar = document.getElementById('countriesBar');
-    const counts = {};
-    canales.forEach(c => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
-    
-    // Contar canales de deportes
-    const deportesCount = canales.filter(c => c.categoria === 'deportes').length;
-    
-    let html = `<span class="country-chip active" data-pais="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
-    
-    // Agregar chip de deportes
-    if (deportesCount > 0) {
-        html += `<span class="country-chip" data-pais="Deportes">⚽ Deportes <span class="count">${deportesCount}</span></span>`;
-    }
-    
-    for (const p of PAISES) {
-        const count = counts[p.nombre] || 0;
-        if (count > 0) {
-            html += `<span class="country-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
-        }
-    }
-    bar.innerHTML = html;
+        function renderCountries(canales) {
+            const bar = document.getElementById('countriesBar');
+            const counts = {};
+            canales.forEach(c => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
+            
+            const deportesCount = canales.filter(c => c.categoria === 'deportes').length;
+            
+            let html = `<span class="country-chip active" data-pais="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
+            
+            if (deportesCount > 0) {
+                html += `<span class="country-chip" data-pais="Deportes">⚽ Deportes <span class="count">${deportesCount}</span></span>`;
+            }
+            
+            for (const p of PAISES) {
+                const count = counts[p.nombre] || 0;
+                if (count > 0) {
+                    html += `<span class="country-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
+                }
+            }
+            bar.innerHTML = html;
 
-    bar.querySelectorAll('.country-chip').forEach(el => {
-        el.addEventListener('click', function() {
-            bar.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            paisActual = this.dataset.pais;
-            filtrarCanales();
-        });
-    });
-}
+            bar.querySelectorAll('.country-chip').forEach(el => {
+                el.addEventListener('click', function() {
+                    bar.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    paisActual = this.dataset.pais;
+                    filtrarCanales();
+                });
+            });
+        }
 
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels(canales) {
@@ -606,7 +585,7 @@ const misCanalesDailymotion = [
             canales.forEach(c => {
                 const logoHtml = c.logo ? `<img src="${c.logo}" onerror="this.outerHTML='<span class=\\'fallback\\'>${c.nombre.charAt(0)}</span>'">` : `<span class="fallback">${c.nombre.charAt(0)}</span>`;
                 html += `
-                    <div class="channel-item" data-pais="${c.pais}" data-url="${c.url.replace(/'/g, "\\'")}" data-nombre="${c.nombre.replace(/'/g, "\\'")}" data-tipo="${c.tipo}" data-logo="${c.logo || ''}">
+                    <div class="channel-item" data-pais="${c.pais}" data-url="${c.url.replace(/'/g, "\\'")}" data-nombre="${c.nombre.replace(/'/g, "\\'")}" data-tipo="${c.tipo}" data-logo="${c.logo || ''}" data-categoria="${c.categoria}">
                         <div class="logo">${logoHtml}</div>
                         <div class="info">
                             <div class="name">${c.nombre}</div>
@@ -632,28 +611,28 @@ const misCanalesDailymotion = [
         }
 
         // ==================== FILTRAR CANALES ====================
-      function filtrarCanales() {
-    const items = document.querySelectorAll('.channel-item');
-    let visible = 0;
-    items.forEach(item => {
-        let match = false;
-        if (paisActual === 'Todos') {
-            match = true;
-        } else if (paisActual === 'Deportes') {
-            match = item.dataset.categoria === 'deportes';
-        } else {
-            match = item.dataset.pais === paisActual;
+        function filtrarCanales() {
+            const items = document.querySelectorAll('.channel-item');
+            let visible = 0;
+            items.forEach(item => {
+                let match = false;
+                if (paisActual === 'Todos') {
+                    match = true;
+                } else if (paisActual === 'Deportes') {
+                    match = item.dataset.categoria === 'deportes';
+                } else {
+                    match = item.dataset.pais === paisActual;
+                }
+                item.classList.toggle('hidden', !match);
+                if (match) visible++;
+            });
+            document.querySelectorAll('.country-chip').forEach(chip => {
+                if (chip.classList.contains('active')) {
+                    const count = chip.querySelector('.count');
+                    if (count) count.textContent = visible;
+                }
+            });
         }
-        item.classList.toggle('hidden', !match);
-        if (match) visible++;
-    });
-    document.querySelectorAll('.country-chip').forEach(chip => {
-        if (chip.classList.contains('active')) {
-            const count = chip.querySelector('.count');
-            if (count) count.textContent = visible;
-        }
-    });
-}
 
         // ==================== REPRODUCIR CANAL ====================
         function reproducirCanal(url, channelName, tipo = 'm3u8', logo = '') {
@@ -674,10 +653,8 @@ const misCanalesDailymotion = [
             currentChannelName = channelName;
             currentChannelLogo = logo;
             
-            // Actualizar overlay
             document.getElementById('overlayChannelName').textContent = channelName;
             
-            // Cargar stream
             cargarStream(url, channelName, tipo);
         }
 
@@ -766,7 +743,6 @@ const misCanalesDailymotion = [
             fab.onclick = () => {
                 modal.classList.add('active');
                 input.focus();
-                // Mostrar todos los canales en la búsqueda
                 const items = document.querySelectorAll('.channel-item');
                 let html = '';
                 items.forEach(item => {
@@ -775,7 +751,6 @@ const misCanalesDailymotion = [
                     }
                 });
                 results.innerHTML = html || '<div style="text-align:center;padding:30px;color:rgba(255,255,255,0.2);">No hay canales</div>';
-                // Reasignar eventos
                 results.querySelectorAll('.channel-item').forEach(el => {
                     el.addEventListener('click', function() {
                         const url = this.dataset.url;
@@ -806,7 +781,7 @@ const misCanalesDailymotion = [
 
         // ==================== INICIALIZAR ====================
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🎬 Iniciando SpayCine TV Móvil...');
+            console.log('🎬 Iniciando SpayCine TV...');
             canalesData = await cargarTodosLosCanales();
             renderCountries(canalesData);
             renderChannels(canalesData);
