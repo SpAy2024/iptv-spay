@@ -414,28 +414,20 @@
         let isFullscreen = false;
 
         // ==================== CANALES ====================
-        const misCanalesDailymotion = [
-            // ===== BOLIVIA (Dailymotion) =====
-            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
-            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
-            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" },
+       // ==================== CANALES ====================
+const misCanalesDailymotion = [
+    // ===== BOLIVIA (Dailymotion) =====
+    { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
+    { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
+    { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
+    { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
+    { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
+    { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
+    { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" }
 
-            // ===== DEPORTES =====
-            { nombre: "TYC Sports", pais: "Argentina", logo: "https://i.imgur.com/tyc-sports.png", url: "https://tycsports.com/live/tycsports/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "ESPN Deportes", pais: "EE.UU.", logo: "https://i.imgur.com/espn-deportes.png", url: "https://espn-deportes.live.cdn.espn.com/live/espn-deportes/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "Fox Sports Argentina", pais: "Argentina", logo: "https://i.imgur.com/fox-sports-ar.png", url: "https://fox-sports-argentina.live.cdn.foxsports.com/live/fox-sports-ar/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "Gol TV", pais: "España", logo: "https://i.imgur.com/gol-tv.png", url: "https://goltv.live.cdn.goltv.tv/live/goltv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "ESPN 2", pais: "Latinoamérica", logo: "https://i.imgur.com/espn2.png", url: "https://espn2.live.cdn.espn.com/live/espn2/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "Sport TV", pais: "Portugal", logo: "https://i.imgur.com/sport-tv.png", url: "https://sport-tv.live.cdn.sporttv.pt/live/sporttv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "Eurosport", pais: "Internacional", logo: "https://i.imgur.com/eurosport.png", url: "https://eurosport.live.cdn.eurosport.com/live/eurosport/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "Canal Fútbol", pais: "Latinoamérica", logo: "https://i.imgur.com/canal-futbol.png", url: "https://canal-futbol.live.cdn.canalfutbol.tv/live/canalfutbol/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "NFL Network", pais: "EE.UU.", logo: "https://i.imgur.com/nfl-network.png", url: "https://nfl-network.live.cdn.nfl.com/live/nfl-network/playlist.m3u8", tipo: "m3u8", categoria: "deportes" },
-            { nombre: "NBA TV", pais: "EE.UU.", logo: "https://i.imgur.com/nba-tv.png", url: "https://nba-tv.live.cdn.nba.com/live/nba-tv/playlist.m3u8", tipo: "m3u8", categoria: "deportes" }
-        ];
+    // ===== LOS CANALES DE DEPORTES MANUALES HAN SIDO ELIMINADOS =====
+    // Ahora solo se cargarán desde iptv-org y la lista de Kewsito
+];
 
         const PAISES = [
             { codigo: 'bo', nombre: 'Bolivia', emoji: '🇧🇴' },
@@ -534,10 +526,11 @@
         }
 
         // ==================== CARGAR TODOS LOS CANALES ====================
-       async function cargarTodosLosCanales() {
+      async function cargarTodosLosCanales() {
     let todos = [...misCanalesDailymotion];
-    console.log('📡 Cargando canales desde iptv-org...');
+    console.log('📡 Cargando canales...');
     
+    // ===== PAÍSES (iptv-org) =====
     for (const pais of PAISES) {
         try {
             const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
@@ -546,15 +539,27 @@
         } catch (e) {}
     }
     
-    // ===== CARGAR DEPORTES =====
+    // ===== DEPORTES (iptv-org) =====
     try {
         const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
         console.log(`⚽ Deportes (iptv-org): ${deportes.length} canales`);
-        // ===== FORZAR CATEGORÍA "deportes" =====
         deportes.forEach(c => c.categoria = 'deportes');
         todos = todos.concat(deportes);
     } catch (e) {
-        console.error('Error cargando deportes:', e);
+        console.error('Error cargando deportes iptv-org:', e);
+    }
+    
+    // ===== DEPORTES ARGENTINA (Kewsito) =====
+    try {
+        const deportesArg = await cargarListaM3U('https://raw.githubusercontent.com/Kewsito/lista-deportes-argentina/refs/heads/main/lista.m3u8', 'Argentina');
+        console.log(`⚽ Deportes Argentina (Kewsito): ${deportesArg.length} canales`);
+        deportesArg.forEach(c => {
+            c.categoria = 'deportes';
+            c.pais = 'Argentina';
+        });
+        todos = todos.concat(deportesArg);
+    } catch (e) {
+        console.error('Error cargando deportes Argentina:', e);
     }
     
     console.log(`✅ Total canales: ${todos.length}`);
