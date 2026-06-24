@@ -472,42 +472,49 @@
             }
         }
 
-        function parsearM3U(content, paisOrigen) {
-            const lines = content.split('\n');
-            const canales = [];
-            let currentChannel = null;
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line.startsWith('#EXTINF')) {
-                    const lastComma = line.lastIndexOf(',');
-                    const nombre = lastComma !== -1 ? line.substring(lastComma + 1).trim() : 'Canal sin nombre';
-                    const logoMatch = line.match(/tvg-logo="([^"]*)"/);
-                    const logo = logoMatch ? logoMatch[1] : '';
-                    const idMatch = line.match(/tvg-id="([^"]*)"/);
-                    const id = idMatch ? idMatch[1] : '';
-                    const groupMatch = line.match(/group-title="([^"]*)"/);
-                    const grupo = groupMatch ? groupMatch[1] : '';
-                    let categoria = detectarCategoria(nombre, grupo);
-                    currentChannel = {
-                        id: id,
-                        nombre: nombre,
-                        pais: paisOrigen,
-                        logo: logo,
-                        url: '',
-                        tipo: 'm3u8',
-                        categoria: categoria,
-                        grupo: grupo
-                    };
-                } else if (line && !line.startsWith('#') && currentChannel) {
-                    currentChannel.url = line;
-                    if (currentChannel.url.startsWith('http')) {
-                        canales.push(currentChannel);
-                    }
-                    currentChannel = null;
-                }
+       function parsearM3U(content, paisOrigen) {
+    const lines = content.split('\n');
+    const canales = [];
+    let currentChannel = null;
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line.startsWith('#EXTINF')) {
+            const lastComma = line.lastIndexOf(',');
+            const nombre = lastComma !== -1 ? line.substring(lastComma + 1).trim() : 'Canal sin nombre';
+            const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+            const logo = logoMatch ? logoMatch[1] : '';
+            const idMatch = line.match(/tvg-id="([^"]*)"/);
+            const id = idMatch ? idMatch[1] : '';
+            const groupMatch = line.match(/group-title="([^"]*)"/);
+            const grupo = groupMatch ? groupMatch[1] : '';
+            
+            let categoria = detectarCategoria(nombre, grupo);
+            
+            // ===== FORZAR DEPORTES SI EL GRUPO CONTIENE "sport" =====
+            if (grupo && (grupo.toLowerCase().includes('sport') || grupo.toLowerCase().includes('deporte'))) {
+                categoria = 'deportes';
             }
-            return canales;
+            
+            currentChannel = {
+                id: id,
+                nombre: nombre,
+                pais: paisOrigen,
+                logo: logo,
+                url: '',
+                tipo: 'm3u8',
+                categoria: categoria,
+                grupo: grupo
+            };
+        } else if (line && !line.startsWith('#') && currentChannel) {
+            currentChannel.url = line;
+            if (currentChannel.url.startsWith('http')) {
+                canales.push(currentChannel);
+            }
+            currentChannel = null;
         }
+    }
+    return canales;
+}
 
         function detectarCategoria(nombre, grupo) {
             const texto = (nombre + ' ' + grupo).toLowerCase();
@@ -527,52 +534,67 @@
         }
 
         // ==================== CARGAR TODOS LOS CANALES ====================
-        async function cargarTodosLosCanales() {
-            let todos = [...misCanalesDailymotion];
-            for (const pais of PAISES) {
-                try {
-                    const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
-                    todos = todos.concat(canales);
-                } catch (e) {}
-            }
-            try {
-                const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
-                todos = todos.concat(deportes);
-            } catch (e) {}
-            return todos;
-        }
+       async function cargarTodosLosCanales() {
+    let todos = [...misCanalesDailymotion];
+    console.log('📡 Cargando canales desde iptv-org...');
+    
+    for (const pais of PAISES) {
+        try {
+            const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
+            console.log(`${pais.emoji} ${pais.nombre}: ${canales.length} canales`);
+            todos = todos.concat(canales);
+        } catch (e) {}
+    }
+    
+    // ===== CARGAR DEPORTES =====
+    try {
+        const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
+        console.log(`⚽ Deportes (iptv-org): ${deportes.length} canales`);
+        // ===== FORZAR CATEGORÍA "deportes" =====
+        deportes.forEach(c => c.categoria = 'deportes');
+        todos = todos.concat(deportes);
+    } catch (e) {
+        console.error('Error cargando deportes:', e);
+    }
+    
+    console.log(`✅ Total canales: ${todos.length}`);
+    return todos;
+}
 
         // ==================== RENDERIZAR PAÍSES ====================
-        function renderCountries(canales) {
-            const bar = document.getElementById('countriesBar');
-            const counts = {};
-            canales.forEach(c => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
-            
-            const deportesCount = canales.filter(c => c.categoria === 'deportes').length;
-            
-            let html = `<span class="country-chip active" data-pais="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
-            
-            if (deportesCount > 0) {
-                html += `<span class="country-chip" data-pais="Deportes">⚽ Deportes <span class="count">${deportesCount}</span></span>`;
-            }
-            
-            for (const p of PAISES) {
-                const count = counts[p.nombre] || 0;
-                if (count > 0) {
-                    html += `<span class="country-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
-                }
-            }
-            bar.innerHTML = html;
-
-            bar.querySelectorAll('.country-chip').forEach(el => {
-                el.addEventListener('click', function() {
-                    bar.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    paisActual = this.dataset.pais;
-                    filtrarCanales();
-                });
-            });
+       function renderCountries(canales) {
+    const bar = document.getElementById('countriesBar');
+    const counts = {};
+    canales.forEach(c => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
+    
+    // ===== CONTAR DEPORTES =====
+    const deportesCount = canales.filter(c => c.categoria === 'deportes').length;
+    console.log('⚽ Total canales con categoría "deportes":', deportesCount);
+    console.log('🔍 Ejemplo de canales deportivos:', canales.filter(c => c.categoria === 'deportes').slice(0, 3));
+    
+    let html = `<span class="country-chip active" data-pais="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
+    
+    if (deportesCount > 0) {
+        html += `<span class="country-chip" data-pais="Deportes">⚽ Deportes <span class="count">${deportesCount}</span></span>`;
+    }
+    
+    for (const p of PAISES) {
+        const count = counts[p.nombre] || 0;
+        if (count > 0) {
+            html += `<span class="country-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
         }
+    }
+    bar.innerHTML = html;
+
+    bar.querySelectorAll('.country-chip').forEach(el => {
+        el.addEventListener('click', function() {
+            bar.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            paisActual = this.dataset.pais;
+            filtrarCanales();
+        });
+    });
+}
 
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels(canales) {
