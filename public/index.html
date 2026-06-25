@@ -734,7 +734,7 @@ function parsearM3U(content, paisOrigen) {
         }
 
         ///////////////////////////////////////////////
-function cargarStream(url, channelName, tipo = 'm3u8') {
+        function cargarStream(url, channelName, tipo = 'm3u8') {
     const video = document.getElementById('videoPlayer');
     const iframe = document.getElementById('iframePlayer');
     const loading = document.getElementById('modalLoading');
@@ -771,42 +771,19 @@ function cargarStream(url, channelName, tipo = 'm3u8') {
     if (url.includes('.m3u8') || url.includes('m3u8')) {
         video.style.display = 'block';
         iframe.style.display = 'none';
-        
-        // Intentar primero con proxy
-        const proxyUrl = `https://iptv-spay.onrender.com/proxy?url=${encodeURIComponent(url)}`;
-        
         if (Hls.isSupported()) {
-            currentHls = new Hls({ 
-                debug: false, 
-                enableWorker: true,
-                xhrSetup: function(xhr, xhrUrl) {
-                    xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-                    xhr.setRequestHeader('Referer', 'https://spaycine.xyz/');
-                    xhr.setRequestHeader('Origin', 'https://spaycine.xyz');
-                    xhr.withCredentials = false;
-                }
-            });
-            currentHls.loadSource(proxyUrl);
+            currentHls = new Hls({ debug: false, enableWorker: true });
+            currentHls.loadSource(url);
             currentHls.attachMedia(video);
             currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                 loading.classList.remove('active');
                 overlayName.textContent = channelName;
                 overlay.classList.add('active');
-                video.play().catch(e => {
-                    console.error('Error con proxy, intentando directo:', e);
-                    video.src = url;
-                    video.play().catch(e2 => console.error('Error directo:', e2));
-                });
+                video.play().catch(e => console.error(e));
             });
-            currentHls.on(Hls.Events.ERROR, (event, data) => {
-                console.error('Error HLS:', data);
+            currentHls.on(Hls.Events.ERROR, () => {
                 loading.classList.remove('active');
                 overlay.classList.remove('active');
-                // Si falla el proxy, intentar directo
-                if (data.fatal) {
-                    video.src = url;
-                    video.play().catch(e => console.error('Error directo:', e));
-                }
             });
         } else {
             video.src = url;
