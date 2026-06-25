@@ -464,7 +464,9 @@ const misCanalesDailymotion = [
             }
         }
 
-       function parsearM3U(content, paisOrigen) {
+    
+///////////////////////////////
+function parsearM3U(content, paisOrigen) {
     const lines = content.split('\n');
     const canales = [];
     let currentChannel = null;
@@ -482,7 +484,6 @@ const misCanalesDailymotion = [
             
             let categoria = detectarCategoria(nombre, grupo);
             
-            // ===== FORZAR DEPORTES SI EL GRUPO CONTIENE "sport" =====
             if (grupo && (grupo.toLowerCase().includes('sport') || grupo.toLowerCase().includes('deporte'))) {
                 categoria = 'deportes';
             }
@@ -495,7 +496,7 @@ const misCanalesDailymotion = [
                 url: '',
                 tipo: 'm3u8',
                 categoria: categoria,
-                grupo: grupo
+                grupo: grupo  // ← Guardar el grupo para usarlo después
             };
         } else if (line && !line.startsWith('#') && currentChannel) {
             currentChannel.url = line;
@@ -508,6 +509,10 @@ const misCanalesDailymotion = [
     return canales;
 }
 
+
+
+
+//////////////////////////
         function detectarCategoria(nombre, grupo) {
             const texto = (nombre + ' ' + grupo).toLowerCase();
             const claves = {
@@ -526,7 +531,7 @@ const misCanalesDailymotion = [
         }
 
         // ==================== CARGAR TODOS LOS CANALES ====================
-      async function cargarTodosLosCanales() {
+    async function cargarTodosLosCanales() {
     let todos = [...misCanalesDailymotion];
     console.log('📡 Cargando canales...');
     
@@ -560,6 +565,49 @@ const misCanalesDailymotion = [
         todos = todos.concat(deportesArg);
     } catch (e) {
         console.error('Error cargando deportes Argentina:', e);
+    }
+    
+    // ===== MIS CANALES TV (SpAy2024) =====
+    try {
+        const misCanales = await cargarListaM3U('https://raw.githubusercontent.com/SpAy2024/MisCanalesTV/refs/heads/main/mis_canales_tv.m3u', 'Internacional');
+        console.log(`📺 Mis Canales TV: ${misCanales.length} canales`);
+        // Asignar categoría según el nombre del canal
+        misCanales.forEach(c => {
+            // Detectar categoría automáticamente
+            const nombreLower = c.nombre.toLowerCase();
+            if (nombreLower.includes('deporte') || nombreLower.includes('sport') || nombreLower.includes('espn') || nombreLower.includes('fox') || nombreLower.includes('tyc')) {
+                c.categoria = 'deportes';
+            } else if (nombreLower.includes('noticia') || nombreLower.includes('news') || nombreLower.includes('cnn') || nombreLower.includes('bbc')) {
+                c.categoria = 'noticias';
+            } else if (nombreLower.includes('cine') || nombreLower.includes('movie') || nombreLower.includes('film') || nombreLower.includes('series') || nombreLower.includes('hbo')) {
+                c.categoria = 'entretenimiento';
+            } else if (nombreLower.includes('musica') || nombreLower.includes('music') || nombreLower.includes('mtv')) {
+                c.categoria = 'musica';
+            } else if (nombreLower.includes('discovery') || nombreLower.includes('history') || nombreLower.includes('documental') || nombreLower.includes('national geographic')) {
+                c.categoria = 'cultural';
+            } else {
+                c.categoria = 'entretenimiento';
+            }
+            // Asignar país según grupo o nombre
+            if (c.grupo) {
+                const grupoLower = c.grupo.toLowerCase();
+                if (grupoLower.includes('argentina') || grupoLower.includes('ar')) c.pais = 'Argentina';
+                else if (grupoLower.includes('bolivia') || grupoLower.includes('bo')) c.pais = 'Bolivia';
+                else if (grupoLower.includes('brasil') || grupoLower.includes('br')) c.pais = 'Brasil';
+                else if (grupoLower.includes('chile') || grupoLower.includes('cl')) c.pais = 'Chile';
+                else if (grupoLower.includes('colombia') || grupoLower.includes('co')) c.pais = 'Colombia';
+                else if (grupoLower.includes('peru') || grupoLower.includes('pe')) c.pais = 'Perú';
+                else if (grupoLower.includes('mexico') || grupoLower.includes('mx')) c.pais = 'México';
+                else if (grupoLower.includes('espana') || grupoLower.includes('es')) c.pais = 'España';
+                else if (grupoLower.includes('eeuu') || grupoLower.includes('usa')) c.pais = 'EE.UU.';
+                else c.pais = 'Internacional';
+            } else {
+                c.pais = 'Internacional';
+            }
+        });
+        todos = todos.concat(misCanales);
+    } catch (e) {
+        console.error('Error cargando Mis Canales TV:', e);
     }
     
     console.log(`✅ Total canales: ${todos.length}`);
