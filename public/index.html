@@ -464,9 +464,7 @@ const misCanalesDailymotion = [
             }
         }
 
-    
-///////////////////////////////
-function parsearM3U(content, paisOrigen) {
+       function parsearM3U(content, paisOrigen) {
     const lines = content.split('\n');
     const canales = [];
     let currentChannel = null;
@@ -484,6 +482,7 @@ function parsearM3U(content, paisOrigen) {
             
             let categoria = detectarCategoria(nombre, grupo);
             
+            // ===== FORZAR DEPORTES SI EL GRUPO CONTIENE "sport" =====
             if (grupo && (grupo.toLowerCase().includes('sport') || grupo.toLowerCase().includes('deporte'))) {
                 categoria = 'deportes';
             }
@@ -496,7 +495,7 @@ function parsearM3U(content, paisOrigen) {
                 url: '',
                 tipo: 'm3u8',
                 categoria: categoria,
-                grupo: grupo  // ← Guardar el grupo para usarlo después
+                grupo: grupo
             };
         } else if (line && !line.startsWith('#') && currentChannel) {
             currentChannel.url = line;
@@ -509,10 +508,6 @@ function parsearM3U(content, paisOrigen) {
     return canales;
 }
 
-
-
-
-//////////////////////////
         function detectarCategoria(nombre, grupo) {
             const texto = (nombre + ' ' + grupo).toLowerCase();
             const claves = {
@@ -531,7 +526,7 @@ function parsearM3U(content, paisOrigen) {
         }
 
         // ==================== CARGAR TODOS LOS CANALES ====================
-    async function cargarTodosLosCanales() {
+      async function cargarTodosLosCanales() {
     let todos = [...misCanalesDailymotion];
     console.log('📡 Cargando canales...');
     
@@ -565,49 +560,6 @@ function parsearM3U(content, paisOrigen) {
         todos = todos.concat(deportesArg);
     } catch (e) {
         console.error('Error cargando deportes Argentina:', e);
-    }
-    
-    // ===== MIS CANALES TV (SpAy2024) =====
-    try {
-        const misCanales = await cargarListaM3U('https://raw.githubusercontent.com/SpAy2024/MisCanalesTV/refs/heads/main/mis_canales_tv.m3u', 'Internacional');
-        console.log(`📺 Mis Canales TV: ${misCanales.length} canales`);
-        // Asignar categoría según el nombre del canal
-        misCanales.forEach(c => {
-            // Detectar categoría automáticamente
-            const nombreLower = c.nombre.toLowerCase();
-            if (nombreLower.includes('deporte') || nombreLower.includes('sport') || nombreLower.includes('espn') || nombreLower.includes('fox') || nombreLower.includes('tyc')) {
-                c.categoria = 'deportes';
-            } else if (nombreLower.includes('noticia') || nombreLower.includes('news') || nombreLower.includes('cnn') || nombreLower.includes('bbc')) {
-                c.categoria = 'noticias';
-            } else if (nombreLower.includes('cine') || nombreLower.includes('movie') || nombreLower.includes('film') || nombreLower.includes('series') || nombreLower.includes('hbo')) {
-                c.categoria = 'entretenimiento';
-            } else if (nombreLower.includes('musica') || nombreLower.includes('music') || nombreLower.includes('mtv')) {
-                c.categoria = 'musica';
-            } else if (nombreLower.includes('discovery') || nombreLower.includes('history') || nombreLower.includes('documental') || nombreLower.includes('national geographic')) {
-                c.categoria = 'cultural';
-            } else {
-                c.categoria = 'entretenimiento';
-            }
-            // Asignar país según grupo o nombre
-            if (c.grupo) {
-                const grupoLower = c.grupo.toLowerCase();
-                if (grupoLower.includes('argentina') || grupoLower.includes('ar')) c.pais = 'Argentina';
-                else if (grupoLower.includes('bolivia') || grupoLower.includes('bo')) c.pais = 'Bolivia';
-                else if (grupoLower.includes('brasil') || grupoLower.includes('br')) c.pais = 'Brasil';
-                else if (grupoLower.includes('chile') || grupoLower.includes('cl')) c.pais = 'Chile';
-                else if (grupoLower.includes('colombia') || grupoLower.includes('co')) c.pais = 'Colombia';
-                else if (grupoLower.includes('peru') || grupoLower.includes('pe')) c.pais = 'Perú';
-                else if (grupoLower.includes('mexico') || grupoLower.includes('mx')) c.pais = 'México';
-                else if (grupoLower.includes('espana') || grupoLower.includes('es')) c.pais = 'España';
-                else if (grupoLower.includes('eeuu') || grupoLower.includes('usa')) c.pais = 'EE.UU.';
-                else c.pais = 'Internacional';
-            } else {
-                c.pais = 'Internacional';
-            }
-        });
-        todos = todos.concat(misCanales);
-    } catch (e) {
-        console.error('Error cargando Mis Canales TV:', e);
     }
     
     console.log(`✅ Total canales: ${todos.length}`);
@@ -733,83 +685,80 @@ function parsearM3U(content, paisOrigen) {
             cargarStream(url, channelName, tipo);
         }
 
-        ///////////////////////////////////////////////
         function cargarStream(url, channelName, tipo = 'm3u8') {
-    const video = document.getElementById('videoPlayer');
-    const iframe = document.getElementById('iframePlayer');
-    const loading = document.getElementById('modalLoading');
-    const overlay = document.getElementById('playerOverlayInfo');
-    const overlayName = document.getElementById('overlayChannelName');
-    
-    const dmMatch = url.match(/\/video\/([a-z0-9]+)/i);
-    if (dmMatch || tipo === 'dailymotion') {
-        const videoId = dmMatch ? dmMatch[1] : null;
-        if (videoId) {
-            video.style.display = 'none';
-            iframe.style.display = 'block';
-            iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
-            loading.classList.remove('active');
-            overlayName.textContent = channelName;
-            overlay.classList.add('active');
-            return;
-        }
-    }
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        let videoId = '';
-        if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-        else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-        if (videoId) {
-            video.style.display = 'none';
-            iframe.style.display = 'block';
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            loading.classList.remove('active');
-            overlayName.textContent = channelName;
-            overlay.classList.add('active');
-            return;
-        }
-    }
-    if (url.includes('.m3u8') || url.includes('m3u8')) {
-        video.style.display = 'block';
-        iframe.style.display = 'none';
-        if (Hls.isSupported()) {
-            currentHls = new Hls({ debug: false, enableWorker: true });
-            currentHls.loadSource(url);
-            currentHls.attachMedia(video);
-            currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                loading.classList.remove('active');
-                overlayName.textContent = channelName;
-                overlay.classList.add('active');
-                video.play().catch(e => console.error(e));
-            });
-            currentHls.on(Hls.Events.ERROR, () => {
+            const video = document.getElementById('videoPlayer');
+            const iframe = document.getElementById('iframePlayer');
+            const loading = document.getElementById('modalLoading');
+            const overlay = document.getElementById('playerOverlayInfo');
+            const overlayName = document.getElementById('overlayChannelName');
+            
+            const dmMatch = url.match(/\/video\/([a-z0-9]+)/i);
+            if (dmMatch || tipo === 'dailymotion') {
+                const videoId = dmMatch ? dmMatch[1] : null;
+                if (videoId) {
+                    video.style.display = 'none';
+                    iframe.style.display = 'block';
+                    iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
+                    loading.classList.remove('active');
+                    overlayName.textContent = channelName;
+                    overlay.classList.add('active');
+                    return;
+                }
+            }
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let videoId = '';
+                if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+                else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+                if (videoId) {
+                    video.style.display = 'none';
+                    iframe.style.display = 'block';
+                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    loading.classList.remove('active');
+                    overlayName.textContent = channelName;
+                    overlay.classList.add('active');
+                    return;
+                }
+            }
+            if (url.includes('.m3u8')) {
+                video.style.display = 'block';
+                iframe.style.display = 'none';
+                if (Hls.isSupported()) {
+                    currentHls = new Hls({ debug: false, enableWorker: true });
+                    currentHls.loadSource(url);
+                    currentHls.attachMedia(video);
+                    currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        loading.classList.remove('active');
+                        overlayName.textContent = channelName;
+                        overlay.classList.add('active');
+                        video.play().catch(e => console.error(e));
+                    });
+                    currentHls.on(Hls.Events.ERROR, () => {
+                        loading.classList.remove('active');
+                        overlay.classList.remove('active');
+                    });
+                } else {
+                    video.src = url;
+                    video.addEventListener('loadedmetadata', () => {
+                        loading.classList.remove('active');
+                        overlayName.textContent = channelName;
+                        overlay.classList.add('active');
+                        video.play();
+                    }, { once: true });
+                }
+            } else if (url.startsWith('http')) {
                 loading.classList.remove('active');
                 overlay.classList.remove('active');
-            });
-        } else {
-            video.src = url;
-            video.addEventListener('loadedmetadata', () => {
+                video.style.display = 'none';
+                iframe.style.display = 'none';
+                window.open(url, '_blank');
+            } else {
                 loading.classList.remove('active');
-                overlayName.textContent = channelName;
-                overlay.classList.add('active');
-                video.play();
-            }, { once: true });
+                overlay.classList.remove('active');
+                video.style.display = 'none';
+                iframe.style.display = 'none';
+            }
         }
-    } else if (url.startsWith('http')) {
-        loading.classList.remove('active');
-        overlay.classList.remove('active');
-        video.style.display = 'none';
-        iframe.style.display = 'none';
-        window.open(url, '_blank');
-    } else {
-        loading.classList.remove('active');
-        overlay.classList.remove('active');
-        video.style.display = 'none';
-        iframe.style.display = 'none';
-    }
-}
 
-
-      
         // ==================== BÚSQUEDA ====================
         function setupSearch() {
             const fab = document.getElementById('fabSearch');
