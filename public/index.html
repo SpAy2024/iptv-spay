@@ -151,7 +151,7 @@
         .modal-loading.active { display: block; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== CATEGORÍAS (estilo Magma) ===== */
+        /* ===== CATEGORÍAS + PAÍSES ===== */
         .categories-bar {
             padding: 10px 16px;
             background: #0a0e27;
@@ -166,7 +166,7 @@
         .categories-bar .category-chip {
             display: inline-block;
             padding: 5px 14px;
-            margin-right: 6px;
+            margin-right: 4px;
             background: rgba(255,255,255,0.06);
             border-radius: 20px;
             font-size: 0.7em;
@@ -190,8 +190,13 @@
             opacity: 0.4;
             margin-left: 4px;
         }
+        .categories-bar .separator {
+            color: rgba(255,255,255,0.08);
+            padding: 0 4px;
+            font-size: 0.8em;
+        }
 
-        /* ===== LISTA DE CANALES (estilo Magma) ===== */
+        /* ===== LISTA DE CANALES ===== */
         .channels-list {
             flex: 1;
             overflow-y: auto;
@@ -261,11 +266,6 @@
         .channel-item .info .category {
             font-size: 0.6em;
             color: rgba(255,255,255,0.3);
-            margin-top: 1px;
-        }
-        .channel-item .info .epg {
-            font-size: 0.6em;
-            color: rgba(255,255,255,0.2);
             margin-top: 1px;
         }
         .channel-item .play-btn {
@@ -388,7 +388,7 @@
             </div>
         </div>
 
-        <!-- ===== CATEGORÍAS ===== -->
+        <!-- ===== CATEGORÍAS + PAÍSES ===== -->
         <div class="categories-bar" id="categoriesBar">
             <!-- Se llena con JS -->
         </div>
@@ -414,9 +414,9 @@
         let currentHls = null;
         let canalesData = [];
         let categoriaActual = 'Todos';
+        let paisActual = 'Todos';
         let currentChannelName = '';
         let currentChannelLogo = '';
-        let epgData = null;
 
         // ==================== CANALES ====================
         const misCanalesDailymotion = [
@@ -591,16 +591,18 @@
             return todos;
         }
 
-        // ==================== RENDERIZAR CATEGORÍAS ====================
+        // ==================== RENDERIZAR CATEGORÍAS + PAÍSES ====================
         function renderCategories(canales) {
             const bar = document.getElementById('categoriesBar');
             const counts = {};
             canales.forEach(c => {
                 counts[c.categoria] = (counts[c.categoria] || 0) + 1;
+                counts[c.pais] = (counts[c.pais] || 0) + 1;
             });
             
             let html = `<span class="category-chip active" data-categoria="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
             
+            // Categorías
             for (const cat of CATEGORIAS) {
                 if (cat.id === 'Todos') continue;
                 const count = counts[cat.id] || 0;
@@ -608,13 +610,34 @@
                     html += `<span class="category-chip" data-categoria="${cat.id}">${cat.icon} ${cat.id.charAt(0).toUpperCase() + cat.id.slice(1)} <span class="count">${count}</span></span>`;
                 }
             }
+            
+            html += `<span class="separator">|</span>`;
+            
+            // Países
+            for (const p of PAISES) {
+                const count = counts[p.nombre] || 0;
+                if (count > 0) {
+                    html += `<span class="category-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
+                }
+            }
+            
             bar.innerHTML = html;
 
             bar.querySelectorAll('.category-chip').forEach(el => {
                 el.addEventListener('click', function() {
                     bar.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
                     this.classList.add('active');
-                    categoriaActual = this.dataset.categoria;
+                    
+                    // Limpiar filtros
+                    categoriaActual = 'Todos';
+                    paisActual = 'Todos';
+                    
+                    if (this.dataset.pais) {
+                        paisActual = this.dataset.pais;
+                    } else if (this.dataset.categoria) {
+                        categoriaActual = this.dataset.categoria;
+                    }
+                    
                     filtrarCanales();
                 });
             });
@@ -630,14 +653,12 @@
             let html = '';
             canales.forEach(c => {
                 const logoHtml = c.logo ? `<img src="${c.logo}" onerror="this.outerHTML='<span class=\\'fallback\\'>${c.nombre.charAt(0)}</span>'">` : `<span class="fallback">${c.nombre.charAt(0)}</span>`;
-                const programaActual = c.id ? obtenerProgramaActual(c.id) : null;
-                const epgText = programaActual ? ` · ${programaActual.title}` : '';
                 html += `
                     <div class="channel-item" data-pais="${c.pais}" data-url="${c.url.replace(/'/g, "\\'")}" data-nombre="${c.nombre.replace(/'/g, "\\'")}" data-tipo="${c.tipo}" data-logo="${c.logo || ''}" data-categoria="${c.categoria}">
                         <div class="logo">${logoHtml}</div>
                         <div class="info">
                             <div class="name">${c.nombre}</div>
-                            <div class="category">${c.pais}${epgText}</div>
+                            <div class="category">${c.pais} · ${c.categoria}</div>
                         </div>
                         <button class="play-btn" onclick="event.stopPropagation(); reproducirCanal('${c.url.replace(/'/g, "\\'")}', '${c.nombre.replace(/'/g, "\\'")}', '${c.tipo}', '${c.logo || ''}')"><i class="fas fa-play"></i></button>
                     </div>
@@ -663,21 +684,12 @@
             const items = document.querySelectorAll('.channel-item');
             let visible = 0;
             items.forEach(item => {
-                let match = false;
-                if (categoriaActual === 'Todos') {
-                    match = true;
-                } else {
-                    match = item.dataset.categoria === categoriaActual;
-                }
+                let matchCategoria = categoriaActual === 'Todos' || item.dataset.categoria === categoriaActual;
+                let matchPais = paisActual === 'Todos' || item.dataset.pais === paisActual;
+                const match = matchCategoria && matchPais;
                 item.classList.toggle('hidden', !match);
                 if (match) visible++;
             });
-        }
-
-        // ==================== EPG ====================
-        function obtenerProgramaActual(canalId) {
-            // Simulación de EPG (puedes reemplazar con datos reales)
-            return null;
         }
 
         // ==================== REPRODUCIR CANAL ====================
