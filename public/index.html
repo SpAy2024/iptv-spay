@@ -58,6 +58,33 @@
             border-radius: 20px;
             font-weight: 500;
         }
+        .app-header .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-header .header-actions .search-icon {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.6);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        .app-header .header-actions .search-icon:hover {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+        .app-header .header-actions .search-icon:active {
+            background: #e50914;
+            color: #fff;
+        }
 
         /* ===== REPRODUCTOR ===== */
         .player-wrapper {
@@ -199,31 +226,31 @@
             background: rgba(229, 9, 20, 0.12);
             border-color: rgba(229, 9, 20, 0.2);
         }
-       .channel-item .logo {
-    width: 40px;
-    height: 40px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.04);
-    margin-right: 12px;
-    padding: 4px; /* ← AGREGAR: espacio interno */
-}
-.channel-item .logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* ← CAMBIAR: de 'cover' a 'contain' */
-}
-.channel-item .logo .fallback {
-    font-size: 14px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.2);
-}
+        .channel-item .logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.04);
+            margin-right: 12px;
+            padding: 4px;
+        }
+        .channel-item .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .channel-item .logo .fallback {
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.2);
+        }
         .channel-item .info {
             flex: 1;
             min-width: 0;
@@ -262,28 +289,6 @@
             transform: scale(0.9);
         }
         .channel-item.hidden { display: none; }
-
-        /* ===== BOTÓN FLOTANTE ===== */
-        .fab-search {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #e50914;
-            color: #fff;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            font-size: 1.2em;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(229, 9, 20, 0.3);
-            transition: all 0.3s ease;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .fab-search:active { transform: scale(0.9); }
 
         /* ===== MODAL BÚSQUEDA ===== */
         .search-modal {
@@ -348,7 +353,6 @@
             .channel-item { padding: 8px 10px; }
             .channel-item .logo { width: 34px; height: 34px; font-size: 12px; }
             .channel-item .info .name { font-size: 0.8em; }
-            .fab-search { width: 44px; height: 44px; font-size: 1em; bottom: 16px; right: 16px; }
         }
     </style>
 </head>
@@ -361,7 +365,12 @@
                 <i class="fas fa-play-circle"></i>
                 Spay<span>Cine</span>
             </div>
-            <span class="header-badge">● EN VIVO</span>
+            <div class="header-actions">
+                <span class="header-badge">● EN VIVO</span>
+                <button class="search-icon" id="headerSearchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </header>
 
         <!-- ===== REPRODUCTOR ===== -->
@@ -386,11 +395,6 @@
         <!-- ===== LISTA DE CANALES ===== -->
         <div class="channels-list" id="channelsList"></div>
 
-        <!-- ===== BOTÓN FLOTANTE ===== -->
-        <button class="fab-search" id="fabSearch">
-            <i class="fas fa-search"></i>
-        </button>
-
         <!-- ===== MODAL BÚSQUEDA ===== -->
         <div class="search-modal" id="searchModal">
             <div class="search-header">
@@ -414,20 +418,15 @@
         let isFullscreen = false;
 
         // ==================== CANALES ====================
-       // ==================== CANALES ====================
-const misCanalesDailymotion = [
-    // ===== BOLIVIA (Dailymotion) =====
-    { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
-    { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
-    { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" }
-
-    // ===== LOS CANALES DE DEPORTES MANUALES HAN SIDO ELIMINADOS =====
-    // Ahora solo se cargarán desde iptv-org y la lista de Kewsito
-];
+        const misCanalesDailymotion = [
+            { nombre: "RED UNO LPZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/HWQ1JNbV/RED-UNO-LPZ-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0fwio", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "RED UNO CBBA HD", pais: "Bolivia", logo: "https://i.postimg.cc/NM6C0WZy/RED-UNO-CBBA-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/xa0qka8", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "RED UNO SCZ HD", pais: "Bolivia", logo: "https://i.postimg.cc/6QRYHkWk/RED-UNO-SC-VLC-HD-02.jpg", url: "https://www.dailymotion.com/video/x9n2qyk", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "UNITEL BOLIVIA HD", pais: "Bolivia", logo: "https://i.ibb.co/pzVXZcg/UNITEL-BOLIVIA-VLC.jpg", url: "https://www.dailymotion.com/video/x7wzxiw", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
+            { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
+            { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" }
+        ];
 
         const PAISES = [
             { codigo: 'bo', nombre: 'Bolivia', emoji: '🇧🇴' },
@@ -464,49 +463,47 @@ const misCanalesDailymotion = [
             }
         }
 
-       function parsearM3U(content, paisOrigen) {
-    const lines = content.split('\n');
-    const canales = [];
-    let currentChannel = null;
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line.startsWith('#EXTINF')) {
-            const lastComma = line.lastIndexOf(',');
-            const nombre = lastComma !== -1 ? line.substring(lastComma + 1).trim() : 'Canal sin nombre';
-            const logoMatch = line.match(/tvg-logo="([^"]*)"/);
-            const logo = logoMatch ? logoMatch[1] : '';
-            const idMatch = line.match(/tvg-id="([^"]*)"/);
-            const id = idMatch ? idMatch[1] : '';
-            const groupMatch = line.match(/group-title="([^"]*)"/);
-            const grupo = groupMatch ? groupMatch[1] : '';
-            
-            let categoria = detectarCategoria(nombre, grupo);
-            
-            // ===== FORZAR DEPORTES SI EL GRUPO CONTIENE "sport" =====
-            if (grupo && (grupo.toLowerCase().includes('sport') || grupo.toLowerCase().includes('deporte'))) {
-                categoria = 'deportes';
+        function parsearM3U(content, paisOrigen) {
+            const lines = content.split('\n');
+            const canales = [];
+            let currentChannel = null;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('#EXTINF')) {
+                    const lastComma = line.lastIndexOf(',');
+                    const nombre = lastComma !== -1 ? line.substring(lastComma + 1).trim() : 'Canal sin nombre';
+                    const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+                    const logo = logoMatch ? logoMatch[1] : '';
+                    const idMatch = line.match(/tvg-id="([^"]*)"/);
+                    const id = idMatch ? idMatch[1] : '';
+                    const groupMatch = line.match(/group-title="([^"]*)"/);
+                    const grupo = groupMatch ? groupMatch[1] : '';
+                    
+                    let categoria = detectarCategoria(nombre, grupo);
+                    if (grupo && (grupo.toLowerCase().includes('sport') || grupo.toLowerCase().includes('deporte'))) {
+                        categoria = 'deportes';
+                    }
+                    
+                    currentChannel = {
+                        id: id,
+                        nombre: nombre,
+                        pais: paisOrigen,
+                        logo: logo,
+                        url: '',
+                        tipo: 'm3u8',
+                        categoria: categoria,
+                        grupo: grupo
+                    };
+                } else if (line && !line.startsWith('#') && currentChannel) {
+                    currentChannel.url = line;
+                    if (currentChannel.url.startsWith('http')) {
+                        canales.push(currentChannel);
+                    }
+                    currentChannel = null;
+                }
             }
-            
-            currentChannel = {
-                id: id,
-                nombre: nombre,
-                pais: paisOrigen,
-                logo: logo,
-                url: '',
-                tipo: 'm3u8',
-                categoria: categoria,
-                grupo: grupo
-            };
-        } else if (line && !line.startsWith('#') && currentChannel) {
-            currentChannel.url = line;
-            if (currentChannel.url.startsWith('http')) {
-                canales.push(currentChannel);
-            }
-            currentChannel = null;
+            return canales;
         }
-    }
-    return canales;
-}
 
         function detectarCategoria(nombre, grupo) {
             const texto = (nombre + ' ' + grupo).toLowerCase();
@@ -525,122 +522,110 @@ const misCanalesDailymotion = [
             return 'entretenimiento';
         }
 
-      // ==================== CARGAR TODOS LOS CANALES ====================
-async function cargarTodosLosCanales() {
-    let todos = [...misCanalesDailymotion];
-    console.log('📡 Cargando canales...');
-    
-    // ===== PAÍSES (iptv-org) =====
-    for (const pais of PAISES) {
-        try {
-            const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
-            console.log(`${pais.emoji} ${pais.nombre}: ${canales.length} canales`);
-            todos = todos.concat(canales);
-        } catch (e) {}
-    }
-    
-    // ===== DEPORTES (iptv-org) =====
-    try {
-        const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
-        console.log(`⚽ Deportes (iptv-org): ${deportes.length} canales`);
-        deportes.forEach(c => c.categoria = 'deportes');
-        todos = todos.concat(deportes);
-    } catch (e) {
-        console.error('Error cargando deportes iptv-org:', e);
-    }
-    
-    // ===== DEPORTES ARGENTINA (Kewsito) =====
-    try {
-        const deportesArg = await cargarListaM3U('https://raw.githubusercontent.com/Kewsito/lista-deportes-argentina/refs/heads/main/lista.m3u8', 'Argentina');
-        console.log(`⚽ Deportes Argentina (Kewsito): ${deportesArg.length} canales`);
-        deportesArg.forEach(c => {
-            c.categoria = 'deportes';
-            c.pais = 'Argentina';
-        });
-        todos = todos.concat(deportesArg);
-    } catch (e) {
-        console.error('Error cargando deportes Argentina:', e);
-    }
-    
-    // ===== MIS CANALES TV (SpAy2024) =====
-    try {
-        const misCanales = await cargarListaM3U('https://raw.githubusercontent.com/SpAy2024/MisCanalesTV/refs/heads/main/mis_canales_tv.m3u', 'Internacional');
-        console.log(`📺 Mis Canales TV: ${misCanales.length} canales`);
-        misCanales.forEach(c => {
-            // Asignar categoría según el nombre
-            const nombreLower = c.nombre.toLowerCase();
-            if (nombreLower.includes('deporte') || nombreLower.includes('sport') || nombreLower.includes('espn') || nombreLower.includes('fox') || nombreLower.includes('tyc')) {
-                c.categoria = 'deportes';
-            } else if (nombreLower.includes('noticia') || nombreLower.includes('news') || nombreLower.includes('cnn') || nombreLower.includes('bbc')) {
-                c.categoria = 'noticias';
-            } else if (nombreLower.includes('cine') || nombreLower.includes('movie') || nombreLower.includes('film') || nombreLower.includes('series') || nombreLower.includes('hbo')) {
-                c.categoria = 'entretenimiento';
-            } else {
-                c.categoria = 'entretenimiento';
+        // ==================== CARGAR TODOS LOS CANALES ====================
+        async function cargarTodosLosCanales() {
+            let todos = [...misCanalesDailymotion];
+            console.log('📡 Cargando canales...');
+            
+            for (const pais of PAISES) {
+                try {
+                    const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
+                    console.log(`${pais.emoji} ${pais.nombre}: ${canales.length} canales`);
+                    todos = todos.concat(canales);
+                } catch (e) {}
             }
-            // Asignar país según el grupo
-            if (c.grupo) {
-                const grupoLower = c.grupo.toLowerCase();
-                if (grupoLower.includes('argentina')) c.pais = 'Argentina';
-                else if (grupoLower.includes('bolivia')) c.pais = 'Bolivia';
-                else if (grupoLower.includes('brasil')) c.pais = 'Brasil';
-                else if (grupoLower.includes('chile')) c.pais = 'Chile';
-                else if (grupoLower.includes('colombia')) c.pais = 'Colombia';
-                else if (grupoLower.includes('peru')) c.pais = 'Perú';
-                else if (grupoLower.includes('mexico')) c.pais = 'México';
-                else if (grupoLower.includes('espana')) c.pais = 'España';
-                else if (grupoLower.includes('eeuu') || grupoLower.includes('usa')) c.pais = 'EE.UU.';
-                else c.pais = 'Internacional';
-            } else {
-                c.pais = 'Internacional';
+            
+            try {
+                const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
+                console.log(`⚽ Deportes (iptv-org): ${deportes.length} canales`);
+                deportes.forEach(c => c.categoria = 'deportes');
+                todos = todos.concat(deportes);
+            } catch (e) {
+                console.error('Error cargando deportes iptv-org:', e);
             }
-        });
-        todos = todos.concat(misCanales);
-    } catch (e) {
-        console.error('Error cargando Mis Canales TV:', e);
-    }
-    
-    console.log(`✅ Total canales: ${todos.length}`);
-    return todos;
-}
-
-
-
+            
+            try {
+                const deportesArg = await cargarListaM3U('https://raw.githubusercontent.com/Kewsito/lista-deportes-argentina/refs/heads/main/lista.m3u8', 'Argentina');
+                console.log(`⚽ Deportes Argentina (Kewsito): ${deportesArg.length} canales`);
+                deportesArg.forEach(c => {
+                    c.categoria = 'deportes';
+                    c.pais = 'Argentina';
+                });
+                todos = todos.concat(deportesArg);
+            } catch (e) {
+                console.error('Error cargando deportes Argentina:', e);
+            }
+            
+            try {
+                const misCanales = await cargarListaM3U('https://raw.githubusercontent.com/SpAy2024/MisCanalesTV/refs/heads/main/mis_canales_tv.m3u', 'Internacional');
+                console.log(`📺 Mis Canales TV: ${misCanales.length} canales`);
+                misCanales.forEach(c => {
+                    const nombreLower = c.nombre.toLowerCase();
+                    if (nombreLower.includes('deporte') || nombreLower.includes('sport') || nombreLower.includes('espn') || nombreLower.includes('fox') || nombreLower.includes('tyc')) {
+                        c.categoria = 'deportes';
+                    } else if (nombreLower.includes('noticia') || nombreLower.includes('news') || nombreLower.includes('cnn') || nombreLower.includes('bbc')) {
+                        c.categoria = 'noticias';
+                    } else if (nombreLower.includes('cine') || nombreLower.includes('movie') || nombreLower.includes('film') || nombreLower.includes('series') || nombreLower.includes('hbo')) {
+                        c.categoria = 'entretenimiento';
+                    } else {
+                        c.categoria = 'entretenimiento';
+                    }
+                    if (c.grupo) {
+                        const grupoLower = c.grupo.toLowerCase();
+                        if (grupoLower.includes('argentina')) c.pais = 'Argentina';
+                        else if (grupoLower.includes('bolivia')) c.pais = 'Bolivia';
+                        else if (grupoLower.includes('brasil')) c.pais = 'Brasil';
+                        else if (grupoLower.includes('chile')) c.pais = 'Chile';
+                        else if (grupoLower.includes('colombia')) c.pais = 'Colombia';
+                        else if (grupoLower.includes('peru')) c.pais = 'Perú';
+                        else if (grupoLower.includes('mexico')) c.pais = 'México';
+                        else if (grupoLower.includes('espana')) c.pais = 'España';
+                        else if (grupoLower.includes('eeuu') || grupoLower.includes('usa')) c.pais = 'EE.UU.';
+                        else c.pais = 'Internacional';
+                    } else {
+                        c.pais = 'Internacional';
+                    }
+                });
+                todos = todos.concat(misCanales);
+            } catch (e) {
+                console.error('Error cargando Mis Canales TV:', e);
+            }
+            
+            console.log(`✅ Total canales: ${todos.length}`);
+            return todos;
+        }
 
         // ==================== RENDERIZAR PAÍSES ====================
-       function renderCountries(canales) {
-    const bar = document.getElementById('countriesBar');
-    const counts = {};
-    canales.forEach(c => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
-    
-    // ===== CONTAR DEPORTES =====
-    const deportesCount = canales.filter(c => c.categoria === 'deportes').length;
-    console.log('⚽ Total canales con categoría "deportes":', deportesCount);
-    console.log('🔍 Ejemplo de canales deportivos:', canales.filter(c => c.categoria === 'deportes').slice(0, 3));
-    
-    let html = `<span class="country-chip active" data-pais="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
-    
-    if (deportesCount > 0) {
-        html += `<span class="country-chip" data-pais="Deportes">⚽ Deportes <span class="count">${deportesCount}</span></span>`;
-    }
-    
-    for (const p of PAISES) {
-        const count = counts[p.nombre] || 0;
-        if (count > 0) {
-            html += `<span class="country-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
-        }
-    }
-    bar.innerHTML = html;
+        function renderCountries(canales) {
+            const bar = document.getElementById('countriesBar');
+            const counts = {};
+            canales.forEach(c => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
+            
+            const deportesCount = canales.filter(c => c.categoria === 'deportes').length;
+            
+            let html = `<span class="country-chip active" data-pais="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
+            
+            if (deportesCount > 0) {
+                html += `<span class="country-chip" data-pais="Deportes">⚽ Deportes <span class="count">${deportesCount}</span></span>`;
+            }
+            
+            for (const p of PAISES) {
+                const count = counts[p.nombre] || 0;
+                if (count > 0) {
+                    html += `<span class="country-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
+                }
+            }
+            bar.innerHTML = html;
 
-    bar.querySelectorAll('.country-chip').forEach(el => {
-        el.addEventListener('click', function() {
-            bar.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            paisActual = this.dataset.pais;
-            filtrarCanales();
-        });
-    });
-}
+            bar.querySelectorAll('.country-chip').forEach(el => {
+                el.addEventListener('click', function() {
+                    bar.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    paisActual = this.dataset.pais;
+                    filtrarCanales();
+                });
+            });
+        }
 
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels(canales) {
@@ -771,7 +756,8 @@ async function cargarTodosLosCanales() {
                         loading.classList.remove('active');
                         overlayName.textContent = channelName;
                         overlay.classList.add('active');
-                        video.play().catch(e => console.error(e));
+                        // NO reproducir automáticamente
+                        // video.play().catch(e => console.error(e)); // ← COMENTADO
                     });
                     currentHls.on(Hls.Events.ERROR, () => {
                         loading.classList.remove('active');
@@ -783,7 +769,8 @@ async function cargarTodosLosCanales() {
                         loading.classList.remove('active');
                         overlayName.textContent = channelName;
                         overlay.classList.add('active');
-                        video.play();
+                        // NO reproducir automáticamente
+                        // video.play(); // ← COMENTADO
                     }, { once: true });
                 }
             } else if (url.startsWith('http')) {
@@ -802,23 +789,71 @@ async function cargarTodosLosCanales() {
 
         // ==================== BÚSQUEDA ====================
         function setupSearch() {
-            const fab = document.getElementById('fabSearch');
             const modal = document.getElementById('searchModal');
             const closeBtn = document.getElementById('closeSearch');
             const input = document.getElementById('searchInput');
             const results = document.getElementById('searchResults');
+            const headerSearchBtn = document.getElementById('headerSearchBtn');
+            let searchTimeout;
 
-            fab.onclick = () => {
+            function abrirModal() {
                 modal.classList.add('active');
                 input.focus();
-                const items = document.querySelectorAll('.channel-item');
+                mostrarResultados(input.value);
+            }
+
+            function cerrarModal() {
+                modal.classList.remove('active');
+            }
+
+            headerSearchBtn.onclick = (e) => {
+                e.stopPropagation();
+                abrirModal();
+            };
+
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
+                cerrarModal();
+            };
+
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    cerrarModal();
+                }
+            };
+
+            input.oninput = function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    mostrarResultados(this.value);
+                }, 150);
+            };
+
+            function mostrarResultados(termino) {
+                const term = termino.toLowerCase().trim();
+                const items = document.querySelectorAll('.channel-item:not(.hidden)');
                 let html = '';
-                items.forEach(item => {
-                    if (!item.classList.contains('hidden')) {
-                        html += item.outerHTML;
-                    }
-                });
-                results.innerHTML = html || '<div style="text-align:center;padding:30px;color:rgba(255,255,255,0.2);">No hay canales</div>';
+                let count = 0;
+                
+                if (!term) {
+                    items.forEach(item => {
+                        if (!item.classList.contains('hidden')) {
+                            html += item.outerHTML;
+                            count++;
+                        }
+                    });
+                } else {
+                    items.forEach(item => {
+                        const nombre = item.dataset.nombre?.toLowerCase() || '';
+                        if (nombre.includes(term)) {
+                            html += item.outerHTML;
+                            count++;
+                        }
+                    });
+                }
+                
+                results.innerHTML = html || `<div style="text-align:center;padding:30px;color:rgba(255,255,255,0.2);">No se encontraron resultados para "${termino}"</div>`;
+                
                 results.querySelectorAll('.channel-item').forEach(el => {
                     el.addEventListener('click', function() {
                         const url = this.dataset.url;
@@ -826,25 +861,10 @@ async function cargarTodosLosCanales() {
                         const tipo = this.dataset.tipo;
                         const logo = this.dataset.logo;
                         reproducirCanal(url, nombre, tipo, logo);
-                        modal.classList.remove('active');
+                        cerrarModal();
                     });
                 });
-            };
-
-            closeBtn.onclick = () => modal.classList.remove('active');
-            modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
-
-            input.oninput = function() {
-                const term = this.value.toLowerCase();
-                const items = results.querySelectorAll('.channel-item');
-                let visible = 0;
-                items.forEach(item => {
-                    const nombre = item.dataset.nombre?.toLowerCase() || '';
-                    const match = nombre.includes(term);
-                    item.classList.toggle('hidden', !match);
-                    if (match) visible++;
-                });
-            };
+            }
         }
 
         // ==================== INICIALIZAR ====================
