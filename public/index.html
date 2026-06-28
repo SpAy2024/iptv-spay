@@ -23,16 +23,16 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            background: #0f1328;
+            background: #0a0e27;
             max-width: 480px;
             margin: 0 auto;
             position: relative;
         }
 
-        /* ===== HEADER CON LOGO ===== */
+        /* ===== HEADER ===== */
         .app-header {
             padding: 12px 16px;
-            background: #0f1328;
+            background: #0a0e27;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -79,10 +79,6 @@
         }
         .app-header .header-actions .search-icon:hover {
             background: rgba(255,255,255,0.12);
-            color: #fff;
-        }
-        .app-header .header-actions .search-icon:active {
-            background: #e50914;
             color: #fff;
         }
 
@@ -155,10 +151,10 @@
         .modal-loading.active { display: block; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== PAÍSES ===== */
-        .countries-bar {
+        /* ===== CATEGORÍAS (estilo Magma) ===== */
+        .categories-bar {
             padding: 10px 16px;
-            background: #0f1328;
+            background: #0a0e27;
             border-bottom: 1px solid rgba(255,255,255,0.04);
             flex-shrink: 0;
             overflow-x: auto;
@@ -166,80 +162,79 @@
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
-        .countries-bar::-webkit-scrollbar { display: none; }
-        .countries-bar .country-chip {
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .categories-bar .category-chip {
             display: inline-block;
-            padding: 6px 16px;
-            margin-right: 8px;
+            padding: 5px 14px;
+            margin-right: 6px;
             background: rgba(255,255,255,0.06);
             border-radius: 20px;
-            font-size: 0.75em;
+            font-size: 0.7em;
             font-weight: 500;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.5);
             cursor: pointer;
             transition: all 0.25s ease;
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid transparent;
         }
-        .countries-bar .country-chip:hover {
-            background: rgba(255,255,255,0.12);
+        .categories-bar .category-chip:hover {
+            background: rgba(255,255,255,0.1);
             color: #fff;
         }
-        .countries-bar .country-chip.active {
-            background: #e50914;
+        .categories-bar .category-chip.active {
+            background: rgba(255,255,255,0.1);
             color: #fff;
-            border-color: #e50914;
+            border-color: rgba(255,255,255,0.1);
         }
-        .countries-bar .country-chip .count {
-            font-size: 0.7em;
-            opacity: 0.5;
+        .categories-bar .category-chip .count {
+            font-size: 0.6em;
+            opacity: 0.4;
             margin-left: 4px;
         }
 
-        /* ===== LISTA DE CANALES ===== */
+        /* ===== LISTA DE CANALES (estilo Magma) ===== */
         .channels-list {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 16px;
-            background: #0f1328;
+            padding: 8px 16px;
+            background: #0a0e27;
             -webkit-overflow-scrolling: touch;
         }
         .channels-list::-webkit-scrollbar { width: 3px; }
-        .channels-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
-        .channels-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        .channels-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+        .channels-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
         .channel-item {
             display: flex;
             align-items: center;
             padding: 10px 12px;
-            margin-bottom: 6px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
+            margin-bottom: 4px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             border: 1px solid transparent;
         }
         .channel-item:active {
-            background: rgba(255,255,255,0.08);
-            transform: scale(0.98);
+            background: rgba(255,255,255,0.06);
         }
         .channel-item.active {
-            background: rgba(229, 9, 20, 0.12);
-            border-color: rgba(229, 9, 20, 0.2);
+            background: rgba(229, 9, 20, 0.08);
+            border-color: rgba(229, 9, 20, 0.1);
         }
         .channel-item .logo {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: rgba(255,255,255,0.04);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
             flex-shrink: 0;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.04);
             margin-right: 12px;
-            padding: 4px;
+            padding: 2px;
         }
         .channel-item .logo img {
             width: 100%;
@@ -247,7 +242,7 @@
             object-fit: contain;
         }
         .channel-item .logo .fallback {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
             color: rgba(255,255,255,0.2);
         }
@@ -265,28 +260,32 @@
         }
         .channel-item .info .category {
             font-size: 0.6em;
-            color: rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.3);
+            margin-top: 1px;
+        }
+        .channel-item .info .epg {
+            font-size: 0.6em;
+            color: rgba(255,255,255,0.2);
             margin-top: 1px;
         }
         .channel-item .play-btn {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.04);
             border: none;
-            color: rgba(255,255,255,0.3);
-            width: 32px;
-            height: 32px;
+            color: rgba(255,255,255,0.2);
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9em;
+            font-size: 0.8em;
             flex-shrink: 0;
         }
         .channel-item .play-btn:active {
             background: #e50914;
             color: #fff;
-            transform: scale(0.9);
         }
         .channel-item.hidden { display: none; }
 
@@ -346,28 +345,14 @@
         @media (max-width: 480px) {
             .app-header .logo { font-size: 1.2em; }
             .app-header .header-badge { font-size: 0.5em; padding: 2px 8px; }
-            .player-wrapper { min-height: 180px; }
-            .countries-bar { padding: 8px 12px; }
-            .countries-bar .country-chip { padding: 4px 12px; font-size: 0.7em; }
-            .channels-list { padding: 8px 12px; }
+            .player-wrapper { min-height: 150px; }
+            .categories-bar { padding: 8px 12px; }
+            .categories-bar .category-chip { padding: 4px 10px; font-size: 0.65em; }
+            .channels-list { padding: 6px 12px; }
             .channel-item { padding: 8px 10px; }
-            .channel-item .logo { width: 34px; height: 34px; font-size: 12px; }
-            .channel-item .info .name { font-size: 0.8em; }
+            .channel-item .logo { width: 30px; height: 30px; font-size: 10px; }
+            .channel-item .info .name { font-size: 0.75em; }
         }
-
-   /* ===== EVITAR PANTALLA COMPLETA AUTOMÁTICA EN MÓVILES ===== */
-video {
-    /* Evita que el video entre en fullscreen automáticamente */
-    -webkit-user-select: none;
-    user-select: none;
-    /* El usuario puede hacer fullscreen manualmente con el botón del reproductor */
-}
-video::-webkit-media-controls-fullscreen-button {
-    display: block !important;
-}
-
-
-
     </style>
 </head>
 <body>
@@ -403,8 +388,10 @@ video::-webkit-media-controls-fullscreen-button {
             </div>
         </div>
 
-        <!-- ===== PAÍSES ===== -->
-        <div class="countries-bar" id="countriesBar"></div>
+        <!-- ===== CATEGORÍAS ===== -->
+        <div class="categories-bar" id="categoriesBar">
+            <!-- Se llena con JS -->
+        </div>
 
         <!-- ===== LISTA DE CANALES ===== -->
         <div class="channels-list" id="channelsList"></div>
@@ -426,10 +413,10 @@ video::-webkit-media-controls-fullscreen-button {
         const PROXY_URL = 'https://iptv-spay.onrender.com/proxy?url=';
         let currentHls = null;
         let canalesData = [];
-        let paisActual = 'Todos';
+        let categoriaActual = 'Todos';
         let currentChannelName = '';
         let currentChannelLogo = '';
-        let isFullscreen = false;
+        let epgData = null;
 
         // ==================== CANALES ====================
         const misCanalesDailymotion = [
@@ -440,6 +427,15 @@ video::-webkit-media-controls-fullscreen-button {
             { nombre: "POV UNITEL HD", pais: "Bolivia", logo: "https://i.ibb.co/p3B7tSd/bolivia-hd-04.jpg", url: "https://www.dailymotion.com/video/x8eimg9", tipo: "dailymotion", categoria: "entretenimiento" },
             { nombre: "ATB BOLIVIA HD", pais: "Bolivia", logo: "https://i.postimg.cc/Y06y7NgW/ATB-BOLIVIA-HD.jpg", url: "https://www.dailymotion.com/video/x84eirw", tipo: "dailymotion", categoria: "noticias" },
             { nombre: "TELESUR HD", pais: "Bolivia", logo: "https://i.postimg.cc/QxmZpWDL/T-sr-Vlc08.jpg", url: "https://www.dailymotion.com/video/x82ug5r", tipo: "dailymotion", categoria: "noticias" }
+        ];
+
+        const CATEGORIAS = [
+            { id: 'Todos', icon: '🌐' },
+            { id: 'noticias', icon: '📰' },
+            { id: 'deportes', icon: '⚽' },
+            { id: 'entretenimiento', icon: '🎬' },
+            { id: 'musica', icon: '🎵' },
+            { id: 'cultural', icon: '🎭' }
         ];
 
         const PAISES = [
@@ -499,7 +495,7 @@ video::-webkit-media-controls-fullscreen-button {
                     }
                     
                     currentChannel = {
-                        id: id,
+                        id: id || nombre.replace(/\s/g, ''),
                         nombre: nombre,
                         pais: paisOrigen,
                         logo: logo,
@@ -584,21 +580,7 @@ video::-webkit-media-controls-fullscreen-button {
                     } else {
                         c.categoria = 'entretenimiento';
                     }
-                    if (c.grupo) {
-                        const grupoLower = c.grupo.toLowerCase();
-                        if (grupoLower.includes('argentina')) c.pais = 'Argentina';
-                        else if (grupoLower.includes('bolivia')) c.pais = 'Bolivia';
-                        else if (grupoLower.includes('brasil')) c.pais = 'Brasil';
-                        else if (grupoLower.includes('chile')) c.pais = 'Chile';
-                        else if (grupoLower.includes('colombia')) c.pais = 'Colombia';
-                        else if (grupoLower.includes('peru')) c.pais = 'Perú';
-                        else if (grupoLower.includes('mexico')) c.pais = 'México';
-                        else if (grupoLower.includes('espana')) c.pais = 'España';
-                        else if (grupoLower.includes('eeuu') || grupoLower.includes('usa')) c.pais = 'EE.UU.';
-                        else c.pais = 'Internacional';
-                    } else {
-                        c.pais = 'Internacional';
-                    }
+                    c.pais = 'Internacional';
                 });
                 todos = todos.concat(misCanales);
             } catch (e) {
@@ -609,33 +591,30 @@ video::-webkit-media-controls-fullscreen-button {
             return todos;
         }
 
-        // ==================== RENDERIZAR PAÍSES ====================
-        function renderCountries(canales) {
-            const bar = document.getElementById('countriesBar');
+        // ==================== RENDERIZAR CATEGORÍAS ====================
+        function renderCategories(canales) {
+            const bar = document.getElementById('categoriesBar');
             const counts = {};
-            canales.forEach(c => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
+            canales.forEach(c => {
+                counts[c.categoria] = (counts[c.categoria] || 0) + 1;
+            });
             
-            const deportesCount = canales.filter(c => c.categoria === 'deportes').length;
+            let html = `<span class="category-chip active" data-categoria="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
             
-            let html = `<span class="country-chip active" data-pais="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
-            
-            if (deportesCount > 0) {
-                html += `<span class="country-chip" data-pais="Deportes">⚽ Deportes <span class="count">${deportesCount}</span></span>`;
-            }
-            
-            for (const p of PAISES) {
-                const count = counts[p.nombre] || 0;
+            for (const cat of CATEGORIAS) {
+                if (cat.id === 'Todos') continue;
+                const count = counts[cat.id] || 0;
                 if (count > 0) {
-                    html += `<span class="country-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
+                    html += `<span class="category-chip" data-categoria="${cat.id}">${cat.icon} ${cat.id.charAt(0).toUpperCase() + cat.id.slice(1)} <span class="count">${count}</span></span>`;
                 }
             }
             bar.innerHTML = html;
 
-            bar.querySelectorAll('.country-chip').forEach(el => {
+            bar.querySelectorAll('.category-chip').forEach(el => {
                 el.addEventListener('click', function() {
-                    bar.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
+                    bar.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
                     this.classList.add('active');
-                    paisActual = this.dataset.pais;
+                    categoriaActual = this.dataset.categoria;
                     filtrarCanales();
                 });
             });
@@ -651,12 +630,14 @@ video::-webkit-media-controls-fullscreen-button {
             let html = '';
             canales.forEach(c => {
                 const logoHtml = c.logo ? `<img src="${c.logo}" onerror="this.outerHTML='<span class=\\'fallback\\'>${c.nombre.charAt(0)}</span>'">` : `<span class="fallback">${c.nombre.charAt(0)}</span>`;
+                const programaActual = c.id ? obtenerProgramaActual(c.id) : null;
+                const epgText = programaActual ? ` · ${programaActual.title}` : '';
                 html += `
                     <div class="channel-item" data-pais="${c.pais}" data-url="${c.url.replace(/'/g, "\\'")}" data-nombre="${c.nombre.replace(/'/g, "\\'")}" data-tipo="${c.tipo}" data-logo="${c.logo || ''}" data-categoria="${c.categoria}">
                         <div class="logo">${logoHtml}</div>
                         <div class="info">
                             <div class="name">${c.nombre}</div>
-                            <div class="category">${c.pais} · ${c.categoria}</div>
+                            <div class="category">${c.pais}${epgText}</div>
                         </div>
                         <button class="play-btn" onclick="event.stopPropagation(); reproducirCanal('${c.url.replace(/'/g, "\\'")}', '${c.nombre.replace(/'/g, "\\'")}', '${c.tipo}', '${c.logo || ''}')"><i class="fas fa-play"></i></button>
                     </div>
@@ -683,22 +664,20 @@ video::-webkit-media-controls-fullscreen-button {
             let visible = 0;
             items.forEach(item => {
                 let match = false;
-                if (paisActual === 'Todos') {
+                if (categoriaActual === 'Todos') {
                     match = true;
-                } else if (paisActual === 'Deportes') {
-                    match = item.dataset.categoria === 'deportes';
                 } else {
-                    match = item.dataset.pais === paisActual;
+                    match = item.dataset.categoria === categoriaActual;
                 }
                 item.classList.toggle('hidden', !match);
                 if (match) visible++;
             });
-            document.querySelectorAll('.country-chip').forEach(chip => {
-                if (chip.classList.contains('active')) {
-                    const count = chip.querySelector('.count');
-                    if (count) count.textContent = visible;
-                }
-            });
+        }
+
+        // ==================== EPG ====================
+        function obtenerProgramaActual(canalId) {
+            // Simulación de EPG (puedes reemplazar con datos reales)
+            return null;
         }
 
         // ==================== REPRODUCIR CANAL ====================
@@ -725,82 +704,79 @@ video::-webkit-media-controls-fullscreen-button {
             cargarStream(url, channelName, tipo);
         }
 
-        //////CARGAR TREEM//////////
         function cargarStream(url, channelName, tipo = 'm3u8') {
-    const video = document.getElementById('videoPlayer');
-    const iframe = document.getElementById('iframePlayer');
-    const loading = document.getElementById('modalLoading');
-    const overlay = document.getElementById('playerOverlayInfo');
-    const overlayName = document.getElementById('overlayChannelName');
-    
-    const dmMatch = url.match(/\/video\/([a-z0-9]+)/i);
-    if (dmMatch || tipo === 'dailymotion') {
-        const videoId = dmMatch ? dmMatch[1] : null;
-        if (videoId) {
-            video.style.display = 'none';
-            iframe.style.display = 'block';
-            iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
-            loading.classList.remove('active');
-            overlayName.textContent = channelName;
-            overlay.classList.add('active');
-            return;
-        }
-    }
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        let videoId = '';
-        if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-        else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-        if (videoId) {
-            video.style.display = 'none';
-            iframe.style.display = 'block';
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            loading.classList.remove('active');
-            overlayName.textContent = channelName;
-            overlay.classList.add('active');
-            return;
-        }
-    }
-    if (url.includes('.m3u8')) {
-        video.style.display = 'block';
-        iframe.style.display = 'none';
-        if (Hls.isSupported()) {
-            currentHls = new Hls({ debug: false, enableWorker: true });
-            currentHls.loadSource(url);
-            currentHls.attachMedia(video);
-            currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                loading.classList.remove('active');
-                overlayName.textContent = channelName;
-                overlay.classList.add('active');
-                // Reproducir automáticamente sin pantalla completa
-                video.play().catch(e => console.error('Error reproduciendo:', e));
-            });
-            currentHls.on(Hls.Events.ERROR, () => {
+            const video = document.getElementById('videoPlayer');
+            const iframe = document.getElementById('iframePlayer');
+            const loading = document.getElementById('modalLoading');
+            const overlay = document.getElementById('playerOverlayInfo');
+            const overlayName = document.getElementById('overlayChannelName');
+            
+            const dmMatch = url.match(/\/video\/([a-z0-9]+)/i);
+            if (dmMatch || tipo === 'dailymotion') {
+                const videoId = dmMatch ? dmMatch[1] : null;
+                if (videoId) {
+                    video.style.display = 'none';
+                    iframe.style.display = 'block';
+                    iframe.src = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=1`;
+                    loading.classList.remove('active');
+                    overlayName.textContent = channelName;
+                    overlay.classList.add('active');
+                    return;
+                }
+            }
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let videoId = '';
+                if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+                else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+                if (videoId) {
+                    video.style.display = 'none';
+                    iframe.style.display = 'block';
+                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    loading.classList.remove('active');
+                    overlayName.textContent = channelName;
+                    overlay.classList.add('active');
+                    return;
+                }
+            }
+            if (url.includes('.m3u8')) {
+                video.style.display = 'block';
+                iframe.style.display = 'none';
+                if (Hls.isSupported()) {
+                    currentHls = new Hls({ debug: false, enableWorker: true });
+                    currentHls.loadSource(url);
+                    currentHls.attachMedia(video);
+                    currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        loading.classList.remove('active');
+                        overlayName.textContent = channelName;
+                        overlay.classList.add('active');
+                        video.play().catch(e => console.error(e));
+                    });
+                    currentHls.on(Hls.Events.ERROR, () => {
+                        loading.classList.remove('active');
+                        overlay.classList.remove('active');
+                    });
+                } else {
+                    video.src = url;
+                    video.addEventListener('loadedmetadata', () => {
+                        loading.classList.remove('active');
+                        overlayName.textContent = channelName;
+                        overlay.classList.add('active');
+                        video.play();
+                    }, { once: true });
+                }
+            } else if (url.startsWith('http')) {
                 loading.classList.remove('active');
                 overlay.classList.remove('active');
-            });
-        } else {
-            video.src = url;
-            video.addEventListener('loadedmetadata', () => {
+                video.style.display = 'none';
+                iframe.style.display = 'none';
+                window.open(url, '_blank');
+            } else {
                 loading.classList.remove('active');
-                overlayName.textContent = channelName;
-                overlay.classList.add('active');
-                video.play().catch(e => console.error('Error reproduciendo:', e));
-            }, { once: true });
+                overlay.classList.remove('active');
+                video.style.display = 'none';
+                iframe.style.display = 'none';
+            }
         }
-    } else if (url.startsWith('http')) {
-        loading.classList.remove('active');
-        overlay.classList.remove('active');
-        video.style.display = 'none';
-        iframe.style.display = 'none';
-        window.open(url, '_blank');
-    } else {
-        loading.classList.remove('active');
-        overlay.classList.remove('active');
-        video.style.display = 'none';
-        iframe.style.display = 'none';
-    }
-}
-
 
         // ==================== BÚSQUEDA ====================
         function setupSearch() {
@@ -886,7 +862,7 @@ video::-webkit-media-controls-fullscreen-button {
         document.addEventListener('DOMContentLoaded', async () => {
             console.log('🎬 Iniciando SpayCine TV...');
             canalesData = await cargarTodosLosCanales();
-            renderCountries(canalesData);
+            renderCategories(canalesData);
             renderChannels(canalesData);
             setupSearch();
             console.log(`✅ ${canalesData.length} canales cargados`);
