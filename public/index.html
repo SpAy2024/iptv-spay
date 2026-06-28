@@ -353,6 +353,13 @@
             .channel-item .logo { width: 30px; height: 30px; font-size: 10px; }
             .channel-item .info .name { font-size: 0.75em; }
         }
+
+.categories-bar .separator {
+    color: rgba(255,255,255,0.08);
+    padding: 0 4px;
+    font-size: 0.8em;
+}
+
     </style>
 </head>
 <body>
@@ -592,57 +599,66 @@
         }
 
         // ==================== RENDERIZAR CATEGORÍAS + PAÍSES ====================
-        function renderCategories(canales) {
-            const bar = document.getElementById('categoriesBar');
-            const counts = {};
-            canales.forEach(c => {
-                counts[c.categoria] = (counts[c.categoria] || 0) + 1;
-                counts[c.pais] = (counts[c.pais] || 0) + 1;
-            });
-            
-            let html = `<span class="category-chip active" data-categoria="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
-            
-            // Categorías
-            for (const cat of CATEGORIAS) {
-                if (cat.id === 'Todos') continue;
-                const count = counts[cat.id] || 0;
-                if (count > 0) {
-                    html += `<span class="category-chip" data-categoria="${cat.id}">${cat.icon} ${cat.id.charAt(0).toUpperCase() + cat.id.slice(1)} <span class="count">${count}</span></span>`;
-                }
-            }
-            
-            html += `<span class="separator">|</span>`;
-            
-            // Países
-            for (const p of PAISES) {
-                const count = counts[p.nombre] || 0;
-                if (count > 0) {
-                    html += `<span class="category-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
-                }
-            }
-            
-            bar.innerHTML = html;
-
-            bar.querySelectorAll('.category-chip').forEach(el => {
-                el.addEventListener('click', function() {
-                    bar.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Limpiar filtros
-                    categoriaActual = 'Todos';
-                    paisActual = 'Todos';
-                    
-                    if (this.dataset.pais) {
-                        paisActual = this.dataset.pais;
-                    } else if (this.dataset.categoria) {
-                        categoriaActual = this.dataset.categoria;
-                    }
-                    
-                    filtrarCanales();
-                });
-            });
+      // ==================== RENDERIZAR CATEGORÍAS + PAÍSES ====================
+function renderCategories(canales) {
+    const bar = document.getElementById('categoriesBar');
+    const counts = {};
+    canales.forEach(c => {
+        counts[c.categoria] = (counts[c.categoria] || 0) + 1;
+        counts[c.pais] = (counts[c.pais] || 0) + 1;
+    });
+    
+    // ===== 1. CATEGORÍAS =====
+    let html = `<span class="category-chip active" data-categoria="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
+    
+    for (const cat of CATEGORIAS) {
+        if (cat.id === 'Todos') continue;
+        const count = counts[cat.id] || 0;
+        if (count > 0) {
+            html += `<span class="category-chip" data-categoria="${cat.id}">${cat.icon} ${cat.id.charAt(0).toUpperCase() + cat.id.slice(1)} <span class="count">${count}</span></span>`;
         }
+    }
+    
+    // ===== 2. SEPARADOR =====
+    html += `<span class="separator">|</span>`;
+    
+    // ===== 3. PAÍSES =====
+    let paisesMostrados = 0;
+    for (const p of PAISES) {
+        const count = counts[p.nombre] || 0;
+        if (count > 0) {
+            html += `<span class="category-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
+            paisesMostrados++;
+        }
+    }
+    
+    // Si no hay países con canales, mostrar mensaje
+    if (paisesMostrados === 0) {
+        html += `<span style="color:rgba(255,255,255,0.2);font-size:0.7em;padding:4px;">Sin países disponibles</span>`;
+    }
+    
+    bar.innerHTML = html;
 
+    // ===== EVENTOS =====
+    bar.querySelectorAll('.category-chip').forEach(el => {
+        el.addEventListener('click', function() {
+            bar.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Limpiar filtros
+            categoriaActual = 'Todos';
+            paisActual = 'Todos';
+            
+            if (this.dataset.pais) {
+                paisActual = this.dataset.pais;
+            } else if (this.dataset.categoria) {
+                categoriaActual = this.dataset.categoria;
+            }
+            
+            filtrarCanales();
+        });
+    });
+}99
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels(canales) {
             const list = document.getElementById('channelsList');
