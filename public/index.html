@@ -6,24 +6,74 @@
     <title>SpayCine TV</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ===== RESET Y BASE ===== */
+        /* =====================================================
+           SPAYCINE TV — SISTEMA DE DISEÑO
+           Concepto: marquesina de cine / boletería nocturna.
+           Paleta:
+             --bg        #0a0d16  fondo principal (sala oscura)
+             --surface   #12161f  barras y paneles
+             --surface-2 #1a1f2c  tarjetas de canal
+             --border    rgba(255,255,255,.07)
+             --text      #f4f5f8
+             --text-dim  #8a92a6
+             --text-faint#535c72
+             --gold      #ffb703  acento de marquesina (firma visual)
+             --gold-dim  rgba(255,183,3,.14)
+             --live      #ff3b3b  solo para el punto "en vivo"
+           Tipografía:
+             Display -> 'Bebas Neue' (letrero de marquesina, condensada)
+             Cuerpo  -> 'Inter'
+           Firma: cenefa perforada tipo fotograma de película bajo el
+           header + insignia "EN VIVO" con forma de boleto (ticket stub).
+        ===================================================== */
+        :root{
+            --bg:#0a0d16;
+            --surface:#12161f;
+            --surface-2:#1a1f2c;
+            --surface-3:#212739;
+            --border:rgba(255,255,255,.07);
+            --text:#f4f5f8;
+            --text-dim:#8a92a6;
+            --text-faint:#535c72;
+            --gold:#ffb703;
+            --gold-dim:rgba(255,183,3,.14);
+            --live:#ff3b3b;
+            --radius:14px;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0e27;
-            color: #fff;
+            background: var(--bg);
+            background-image:
+                radial-gradient(1200px 600px at 15% -10%, rgba(255,183,3,.06), transparent 60%),
+                radial-gradient(900px 500px at 110% 10%, rgba(255,183,3,.04), transparent 55%);
+            color: var(--text);
             height: 100vh;
             overflow: hidden;
         }
-        
+        ::selection { background: var(--gold-dim); color: var(--gold); }
+        :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+        /* Cenefa perforada — motivo de fotograma de película, reutilizable */
+        .filmstrip {
+            height: 6px;
+            flex-shrink: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,.16) 1.6px, transparent 1.7px);
+            background-size: 14px 6px;
+            background-position: 6px 3px;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
         /* ===== LAYOUT PRINCIPAL ===== */
         .app-container {
             display: flex;
             flex-direction: column;
             height: 100vh;
-            background: #0a0e27;
+            background: transparent;
             max-width: 480px;
             margin: 0 auto;
             position: relative;
@@ -31,55 +81,87 @@
 
         /* ===== HEADER ===== */
         .app-header {
-            padding: 12px 16px;
-            background: #0a0e27;
+            padding: 14px 16px;
+            background: var(--surface);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            min-height: 56px;
+            min-height: 58px;
+            grid-area: header;
         }
         .app-header .logo {
-            font-size: 1.4em;
-            font-weight: 900;
-            letter-spacing: -0.5px;
+            font-family: 'Bebas Neue', 'Inter', sans-serif;
+            font-size: 1.7em;
+            font-weight: 400;
+            letter-spacing: 1.5px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 9px;
         }
-        .app-header .logo span { color: #e50914; }
-        .app-header .logo i { font-size: 1.1em; color: #e50914; }
-        .app-header .header-badge {
-            font-size: 0.6em;
-            color: rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.06);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-weight: 500;
-        }
+        .app-header .logo i { font-size: 0.75em; color: var(--gold); }
+        .app-header .logo span { color: var(--gold); }
         .app-header .header-actions {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .app-header .header-actions .search-icon {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.6);
-            width: 36px;
-            height: 36px;
+        /* Insignia "EN VIVO" con forma de boleto (signature element) */
+        .header-badge {
+            position: relative;
+            font-size: 0.62em;
+            font-weight: 700;
+            letter-spacing: .6px;
+            color: #1a1206;
+            background: var(--gold);
+            padding: 5px 12px 5px 20px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        .header-badge::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--live);
+            box-shadow: 0 0 0 2px rgba(26,18,6,.25);
+            animation: pulse-live 1.8s ease-in-out infinite;
+        }
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .35; }
+        }
+        .header-actions .search-icon {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all .2s ease;
             font-size: 0.9em;
         }
-        .app-header .header-actions .search-icon:hover {
-            background: rgba(255,255,255,0.12);
-            color: #fff;
+        .header-actions .search-icon:hover {
+            background: var(--gold-dim);
+            border-color: rgba(255,183,3,.3);
+            color: var(--gold);
+        }
+
+        /* ===== ZONA PRINCIPAL (player + panel lateral en desktop) ===== */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            grid-area: main;
         }
 
         /* ===== REPRODUCTOR ===== */
@@ -91,6 +173,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+        }
+        .player-wrapper::before {
+            /* viñeta de "sala de cine" cuando no hay contenido reproduciéndose */
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.55) 100%);
+            pointer-events: none;
+            z-index: 1;
         }
         .player-wrapper video,
         .player-wrapper iframe {
@@ -98,6 +190,8 @@
             height: 100%;
             background: #000;
             border: none;
+            position: relative;
+            z-index: 0;
         }
         .player-wrapper iframe { display: none; }
 
@@ -105,11 +199,11 @@
             position: absolute;
             bottom: 16px;
             left: 16px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(10,13,22,.82);
             backdrop-filter: blur(10px);
-            padding: 8px 14px;
+            padding: 9px 16px;
             border-radius: 10px;
-            border-left: 3px solid #e50914;
+            border-left: 3px solid var(--gold);
             z-index: 5;
             display: none;
             max-width: 80%;
@@ -121,7 +215,9 @@
         }
         .player-overlay-info .overlay-status {
             font-size: 0.7em;
-            color: rgba(255,255,255,0.4);
+            color: var(--live);
+            font-weight: 600;
+            letter-spacing: .3px;
         }
         .player-overlay-info.active { display: block; }
 
@@ -133,29 +229,44 @@
             display: none;
             text-align: center;
             color: #fff;
-            background: rgba(0,0,0,0.7);
-            padding: 20px 30px;
+            background: rgba(10,13,22,.85);
+            padding: 22px 32px;
             border-radius: 16px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            z-index: 6;
         }
         .modal-loading .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.06);
-            border-top-color: #e50914;
+            width: 38px;
+            height: 38px;
+            border: 3px solid rgba(255,255,255,.08);
+            border-top-color: var(--gold);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin .8s linear infinite;
             margin: 0 auto 10px;
         }
         .modal-loading.active { display: block; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== PANEL LATERAL (categorías + lista) =====
+           flex:1 es obligatorio aquí: en móvil este panel es hermano
+           de .main-area dentro de la misma columna flex, así que sin
+           un flex-grow explícito se queda sin alto definido y los
+           chips de categorías/países se comprimen o desaparecen. */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            background: var(--bg);
+            grid-area: sidebar;
+        }
+
         /* ===== CATEGORÍAS + PAÍSES ===== */
         .categories-bar {
-            padding: 10px 16px;
-            background: #0a0e27;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 12px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
             flex-shrink: 0;
             overflow-x: auto;
             white-space: nowrap;
@@ -165,34 +276,35 @@
         .categories-bar::-webkit-scrollbar { display: none; }
         .categories-bar .category-chip {
             display: inline-block;
-            padding: 5px 14px;
-            margin-right: 4px;
-            background: rgba(255,255,255,0.06);
+            padding: 6px 14px;
+            margin-right: 6px;
+            background: var(--surface-2);
             border-radius: 20px;
-            font-size: 0.7em;
-            font-weight: 500;
-            color: rgba(255,255,255,0.5);
+            font-size: 0.72em;
+            font-weight: 600;
+            color: var(--text-dim);
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all .2s ease;
             border: 1px solid transparent;
         }
         .categories-bar .category-chip:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: var(--surface-3);
+            color: var(--text);
         }
         .categories-bar .category-chip.active {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            border-color: rgba(255,255,255,0.1);
+            background: var(--gold-dim);
+            color: var(--gold);
+            border-color: rgba(255,183,3,.35);
         }
         .categories-bar .category-chip .count {
-            font-size: 0.6em;
-            opacity: 0.4;
+            font-size: 0.62em;
+            opacity: .55;
             margin-left: 4px;
         }
         .categories-bar .separator {
-            color: rgba(255,255,255,0.08);
-            padding: 0 4px;
+            display: inline-block;
+            color: var(--border);
+            padding: 0 6px;
             font-size: 0.8em;
         }
 
@@ -200,36 +312,40 @@
         .channels-list {
             flex: 1;
             overflow-y: auto;
-            padding: 8px 16px;
-            background: #0a0e27;
+            padding: 10px 16px 20px;
+            background: var(--bg);
             -webkit-overflow-scrolling: touch;
         }
-        .channels-list::-webkit-scrollbar { width: 3px; }
-        .channels-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
-        .channels-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .channels-list::-webkit-scrollbar { width: 4px; }
+        .channels-list::-webkit-scrollbar-track { background: transparent; }
+        .channels-list::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
 
         .channel-item {
             display: flex;
             align-items: center;
             padding: 10px 12px;
-            margin-bottom: 4px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 10px;
+            margin-bottom: 6px;
+            background: var(--surface);
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
+            transition: all .18s ease;
+            border: 1px solid var(--border);
+        }
+        .channel-item:hover {
+            background: var(--surface-2);
+            border-color: rgba(255,255,255,.12);
         }
         .channel-item:active {
-            background: rgba(255,255,255,0.06);
+            transform: scale(.99);
         }
         .channel-item.active {
-            background: rgba(229, 9, 20, 0.08);
-            border-color: rgba(229, 9, 20, 0.1);
+            background: var(--gold-dim);
+            border-color: rgba(255,183,3,.35);
         }
         .channel-item .logo {
-            width: 36px;
-            height: 36px;
-            background: rgba(255,255,255,0.04);
+            width: 38px;
+            height: 38px;
+            background: var(--surface-3);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -237,7 +353,7 @@
             font-size: 12px;
             flex-shrink: 0;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
             margin-right: 12px;
             padding: 2px;
         }
@@ -247,9 +363,10 @@
             object-fit: contain;
         }
         .channel-item .logo .fallback {
-            font-size: 12px;
-            font-weight: 700;
-            color: rgba(255,255,255,0.2);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--text-faint);
         }
         .channel-item .info {
             flex: 1;
@@ -258,34 +375,36 @@
         .channel-item .info .name {
             font-size: 0.85em;
             font-weight: 600;
-            color: rgba(255,255,255,0.9);
+            color: var(--text);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .channel-item .info .category {
-            font-size: 0.6em;
-            color: rgba(255,255,255,0.3);
-            margin-top: 1px;
+            font-size: 0.62em;
+            color: var(--text-faint);
+            margin-top: 2px;
+            text-transform: capitalize;
         }
         .channel-item .play-btn {
-            background: rgba(255,255,255,0.04);
+            background: var(--surface-3);
             border: none;
-            color: rgba(255,255,255,0.2);
-            width: 28px;
-            height: 28px;
+            color: var(--text-dim);
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all .2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.8em;
             flex-shrink: 0;
         }
+        .channel-item .play-btn:hover,
         .channel-item .play-btn:active {
-            background: #e50914;
-            color: #fff;
+            background: var(--gold);
+            color: #1a1206;
         }
         .channel-item.hidden { display: none; }
 
@@ -296,8 +415,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(10px);
+            background: rgba(6,8,14,.94);
+            backdrop-filter: blur(12px);
             z-index: 200;
             display: none;
             padding: 20px;
@@ -309,57 +428,92 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
+            max-width: 640px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
         }
         .search-modal .search-header input {
             flex: 1;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--surface-2);
+            border: 1px solid var(--border);
             border-radius: 30px;
-            padding: 12px 18px;
+            padding: 13px 20px;
             font-size: 1em;
             color: #fff;
         }
-        .search-modal .search-header input::placeholder { color: rgba(255,255,255,0.3); }
+        .search-modal .search-header input::placeholder { color: var(--text-faint); }
         .search-modal .search-header input:focus {
             outline: none;
-            border-color: #e50914;
+            border-color: var(--gold);
         }
         .search-modal .search-header .close-search {
-            background: rgba(255,255,255,0.06);
-            border: none;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
             color: #fff;
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            font-size: 1.2em;
+            font-size: 1.1em;
             cursor: pointer;
+            flex-shrink: 0;
         }
+        .search-modal .search-header .close-search:hover { background: var(--surface-3); }
         .search-modal .search-results {
             flex: 1;
             overflow-y: auto;
+            max-width: 640px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        @media (min-width: 481px) {
-            .app-container { max-width: 600px; }
+        /* =====================================================
+           DESKTOP / TABLET (≥ 900px)
+           Panel de reproducción a la izquierda, canales a la
+           derecha — como una cabina de control, no una app
+           móvil estirada.
+        ===================================================== */
+        @media (min-width: 900px) {
+            body { overflow: auto; }
+            .app-container {
+                max-width: none;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 400px;
+                grid-template-rows: auto 1fr;
+                grid-template-areas:
+                    "header header"
+                    "main sidebar";
+                height: 100vh;
+                max-width: 1440px;
+            }
+            .filmstrip { grid-column: 1 / -1; }
+            .app-header { padding: 16px 28px; }
+            .app-header .logo { font-size: 2em; }
+            .main-area { grid-area: main; }
+            .player-wrapper { min-height: 0; }
+            .side-panel {
+                grid-area: sidebar;
+                border-left: 1px solid var(--border);
+            }
+            .channel-item { padding: 11px 14px; }
         }
+        @media (min-width: 1200px) {
+            .app-container { grid-template-columns: minmax(0, 1fr) 440px; }
+        }
+
+        /* ===== MÓVIL PEQUEÑO ===== */
         @media (max-width: 480px) {
-            .app-header .logo { font-size: 1.2em; }
-            .app-header .header-badge { font-size: 0.5em; padding: 2px 8px; }
-            .player-wrapper { min-height: 150px; }
-            .categories-bar { padding: 8px 12px; }
-            .categories-bar .category-chip { padding: 4px 10px; font-size: 0.65em; }
-            .channels-list { padding: 6px 12px; }
+            .app-header { padding: 10px 14px; min-height: 52px; }
+            .app-header .logo { font-size: 1.4em; }
+            .header-badge { font-size: 0.56em; padding: 4px 10px 4px 16px; }
+            .player-wrapper { min-height: 180px; }
+            .categories-bar { padding: 9px 12px; }
+            .categories-bar .category-chip { padding: 5px 11px; font-size: 0.66em; }
+            .channels-list { padding: 8px 12px 16px; }
             .channel-item { padding: 8px 10px; }
-            .channel-item .logo { width: 30px; height: 30px; font-size: 10px; }
-            .channel-item .info .name { font-size: 0.75em; }
+            .channel-item .logo { width: 32px; height: 32px; font-size: 10px; }
+            .channel-item .info .name { font-size: 0.76em; }
         }
-
-.categories-bar .separator {
-    color: rgba(255,255,255,0.08);
-    padding: 0 4px;
-    font-size: 0.8em;
-}
-
     </style>
 </head>
 <body>
@@ -368,46 +522,49 @@
         <!-- ===== HEADER ===== -->
         <header class="app-header">
             <div class="logo">
-                <i class="fas fa-play-circle"></i>
-                Spay<span>Cine</span>
+                <i class="fas fa-film"></i>
+                Spay<span>Tv</span>
             </div>
             <div class="header-actions">
-                <span class="header-badge">● EN VIVO</span>
-                <button class="search-icon" id="headerSearchBtn">
+                <span class="header-badge">EN VIVO</span>
+                <button class="search-icon" id="headerSearchBtn" aria-label="Buscar canal">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
         </header>
+        <div class="filmstrip"></div>
 
-        <!-- ===== REPRODUCTOR ===== -->
-        <div class="player-wrapper" id="playerWrapper">
-            <video id="videoPlayer" controls preload="auto"></video>
-            <iframe id="iframePlayer" allow="autoplay; fullscreen"></iframe>
-            
-            <div class="player-overlay-info" id="playerOverlayInfo">
-                <div class="overlay-name" id="overlayChannelName">Canal</div>
-                <div class="overlay-status">● EN VIVO</div>
-            </div>
-            
-            <div class="modal-loading" id="modalLoading">
-                <div class="spinner"></div>
-                <span>Cargando...</span>
+        <!-- ===== ÁREA PRINCIPAL: REPRODUCTOR ===== -->
+        <div class="main-area">
+            <div class="player-wrapper" id="playerWrapper">
+                <video id="videoPlayer" controls preload="auto"></video>
+                <iframe id="iframePlayer" allow="autoplay; fullscreen"></iframe>
+
+                <div class="player-overlay-info" id="playerOverlayInfo">
+                    <div class="overlay-name" id="overlayChannelName">Canal</div>
+                    <div class="overlay-status">● EN VIVO</div>
+                </div>
+
+                <div class="modal-loading" id="modalLoading">
+                    <div class="spinner"></div>
+                    <span>Cargando...</span>
+                </div>
             </div>
         </div>
 
-        <!-- ===== CATEGORÍAS + PAÍSES ===== -->
-        <div class="categories-bar" id="categoriesBar">
-            <!-- Se llena con JS -->
+        <!-- ===== PANEL LATERAL: CATEGORÍAS + CANALES ===== -->
+        <div class="side-panel">
+            <div class="categories-bar" id="categoriesBar">
+                <!-- Se llena con JS -->
+            </div>
+            <div class="channels-list" id="channelsList"></div>
         </div>
-
-        <!-- ===== LISTA DE CANALES ===== -->
-        <div class="channels-list" id="channelsList"></div>
 
         <!-- ===== MODAL BÚSQUEDA ===== -->
         <div class="search-modal" id="searchModal">
             <div class="search-header">
-                <input type="text" id="searchInput" placeholder="🔍 Buscar canal...">
-                <button class="close-search" id="closeSearch"><i class="fas fa-times"></i></button>
+                <input type="text" id="searchInput" placeholder="Buscar canal...">
+                <button class="close-search" id="closeSearch" aria-label="Cerrar búsqueda"><i class="fas fa-times"></i></button>
             </div>
             <div class="search-results" id="searchResults"></div>
         </div>
@@ -496,12 +653,12 @@
                     const id = idMatch ? idMatch[1] : '';
                     const groupMatch = line.match(/group-title="([^"]*)"/);
                     const grupo = groupMatch ? groupMatch[1] : '';
-                    
+
                     let categoria = detectarCategoria(nombre, grupo);
                     if (grupo && (grupo.toLowerCase().includes('sport') || grupo.toLowerCase().includes('deporte'))) {
                         categoria = 'deportes';
                     }
-                    
+
                     currentChannel = {
                         id: id || nombre.replace(/\s/g, ''),
                         nombre: nombre,
@@ -544,7 +701,7 @@
         async function cargarTodosLosCanales() {
             let todos = [...misCanalesDailymotion];
             console.log('📡 Cargando canales...');
-            
+
             for (const pais of PAISES) {
                 try {
                     const canales = await cargarListaM3U(`https://iptv-org.github.io/iptv/countries/${pais.codigo}.m3u`, pais.nombre);
@@ -552,7 +709,7 @@
                     todos = todos.concat(canales);
                 } catch (e) {}
             }
-            
+
             try {
                 const deportes = await cargarListaM3U('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes');
                 console.log(`⚽ Deportes (iptv-org): ${deportes.length} canales`);
@@ -561,7 +718,7 @@
             } catch (e) {
                 console.error('Error cargando deportes iptv-org:', e);
             }
-            
+
             try {
                 const deportesArg = await cargarListaM3U('https://raw.githubusercontent.com/Kewsito/lista-deportes-argentina/refs/heads/main/lista.m3u8', 'Argentina');
                 console.log(`⚽ Deportes Argentina (Kewsito): ${deportesArg.length} canales`);
@@ -573,7 +730,7 @@
             } catch (e) {
                 console.error('Error cargando deportes Argentina:', e);
             }
-            
+
             try {
                 const misCanales = await cargarListaM3U('https://raw.githubusercontent.com/SpAy2024/MisCanalesTV/refs/heads/main/mis_canales_tv.m3u', 'Internacional');
                 console.log(`📺 Mis Canales TV: ${misCanales.length} canales`);
@@ -594,72 +751,72 @@
             } catch (e) {
                 console.error('Error cargando Mis Canales TV:', e);
             }
-            
+
             console.log(`✅ Total canales: ${todos.length}`);
             return todos;
         }
 
         // ==================== RENDERIZAR CATEGORÍAS + PAÍSES ====================
-      // ==================== RENDERIZAR CATEGORÍAS + PAÍSES ====================
-function renderCategories(canales) {
-    const bar = document.getElementById('categoriesBar');
-    const counts = {};
-    canales.forEach(c => {
-        counts[c.categoria] = (counts[c.categoria] || 0) + 1;
-        counts[c.pais] = (counts[c.pais] || 0) + 1;
-    });
-    
-    // ===== 1. CATEGORÍAS =====
-    let html = `<span class="category-chip active" data-categoria="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
-    
-    for (const cat of CATEGORIAS) {
-        if (cat.id === 'Todos') continue;
-        const count = counts[cat.id] || 0;
-        if (count > 0) {
-            html += `<span class="category-chip" data-categoria="${cat.id}">${cat.icon} ${cat.id.charAt(0).toUpperCase() + cat.id.slice(1)} <span class="count">${count}</span></span>`;
-        }
-    }
-    
-    // ===== 2. SEPARADOR =====
-    html += `<span class="separator">|</span>`;
-    
-    // ===== 3. PAÍSES =====
-    let paisesMostrados = 0;
-    for (const p of PAISES) {
-        const count = counts[p.nombre] || 0;
-        if (count > 0) {
-            html += `<span class="category-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
-            paisesMostrados++;
-        }
-    }
-    
-    // Si no hay países con canales, mostrar mensaje
-    if (paisesMostrados === 0) {
-        html += `<span style="color:rgba(255,255,255,0.2);font-size:0.7em;padding:4px;">Sin países disponibles</span>`;
-    }
-    
-    bar.innerHTML = html;
+        function renderCategories(canales) {
+            const bar = document.getElementById('categoriesBar');
+            const counts = {};
+            canales.forEach(c => {
+                counts[c.categoria] = (counts[c.categoria] || 0) + 1;
+                counts[c.pais] = (counts[c.pais] || 0) + 1;
+            });
 
-    // ===== EVENTOS =====
-    bar.querySelectorAll('.category-chip').forEach(el => {
-        el.addEventListener('click', function() {
-            bar.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Limpiar filtros
-            categoriaActual = 'Todos';
-            paisActual = 'Todos';
-            
-            if (this.dataset.pais) {
-                paisActual = this.dataset.pais;
-            } else if (this.dataset.categoria) {
-                categoriaActual = this.dataset.categoria;
+            // ===== 1. CATEGORÍAS =====
+            let html = `<span class="category-chip active" data-categoria="Todos">🌐 Todos <span class="count">${canales.length}</span></span>`;
+
+            for (const cat of CATEGORIAS) {
+                if (cat.id === 'Todos') continue;
+                const count = counts[cat.id] || 0;
+                if (count > 0) {
+                    html += `<span class="category-chip" data-categoria="${cat.id}">${cat.icon} ${cat.id.charAt(0).toUpperCase() + cat.id.slice(1)} <span class="count">${count}</span></span>`;
+                }
             }
-            
-            filtrarCanales();
-        });
-    });
-}99
+
+            // ===== 2. SEPARADOR =====
+            html += `<span class="separator">|</span>`;
+
+            // ===== 3. PAÍSES =====
+            let paisesMostrados = 0;
+            for (const p of PAISES) {
+                const count = counts[p.nombre] || 0;
+                if (count > 0) {
+                    html += `<span class="category-chip" data-pais="${p.nombre}">${p.emoji} ${p.nombre} <span class="count">${count}</span></span>`;
+                    paisesMostrados++;
+                }
+            }
+
+            // Si no hay países con canales, mostrar mensaje
+            if (paisesMostrados === 0) {
+                html += `<span style="color:rgba(255,255,255,0.2);font-size:0.7em;padding:4px;">Sin países disponibles</span>`;
+            }
+
+            bar.innerHTML = html;
+
+            // ===== EVENTOS =====
+            bar.querySelectorAll('.category-chip').forEach(el => {
+                el.addEventListener('click', function() {
+                    bar.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Limpiar filtros
+                    categoriaActual = 'Todos';
+                    paisActual = 'Todos';
+
+                    if (this.dataset.pais) {
+                        paisActual = this.dataset.pais;
+                    } else if (this.dataset.categoria) {
+                        categoriaActual = this.dataset.categoria;
+                    }
+
+                    filtrarCanales();
+                });
+            });
+        }
+
         // ==================== RENDERIZAR CANALES ====================
         function renderChannels(canales) {
             const list = document.getElementById('channelsList');
@@ -692,7 +849,7 @@ function renderCategories(canales) {
                     reproducirCanal(url, nombre, tipo, logo);
                 });
             });
-            
+
             filtrarCanales();
         }
 
@@ -715,21 +872,21 @@ function renderCategories(canales) {
             const iframe = document.getElementById('iframePlayer');
             const loading = document.getElementById('modalLoading');
             const overlay = document.getElementById('playerOverlayInfo');
-            
+
             if (currentHls) { currentHls.destroy(); currentHls = null; }
             if (video.src) { video.pause(); video.removeAttribute('src'); video.load(); }
             if (iframe.src) { iframe.src = ''; iframe.style.display = 'none'; }
-            
+
             video.style.display = 'none';
             iframe.style.display = 'none';
             loading.classList.add('active');
             overlay.classList.remove('active');
-            
+
             currentChannelName = channelName;
             currentChannelLogo = logo;
-            
+
             document.getElementById('overlayChannelName').textContent = channelName;
-            
+
             cargarStream(url, channelName, tipo);
         }
 
@@ -739,7 +896,7 @@ function renderCategories(canales) {
             const loading = document.getElementById('modalLoading');
             const overlay = document.getElementById('playerOverlayInfo');
             const overlayName = document.getElementById('overlayChannelName');
-            
+
             const dmMatch = url.match(/\/video\/([a-z0-9]+)/i);
             if (dmMatch || tipo === 'dailymotion') {
                 const videoId = dmMatch ? dmMatch[1] : null;
@@ -854,7 +1011,7 @@ function renderCategories(canales) {
                 const items = document.querySelectorAll('.channel-item:not(.hidden)');
                 let html = '';
                 let count = 0;
-                
+
                 if (!term) {
                     items.forEach(item => {
                         if (!item.classList.contains('hidden')) {
@@ -871,9 +1028,9 @@ function renderCategories(canales) {
                         }
                     });
                 }
-                
+
                 results.innerHTML = html || `<div style="text-align:center;padding:30px;color:rgba(255,255,255,0.2);">No se encontraron resultados para "${termino}"</div>`;
-                
+
                 results.querySelectorAll('.channel-item').forEach(el => {
                     el.addEventListener('click', function() {
                         const url = this.dataset.url;
